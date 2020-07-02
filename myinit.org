@@ -330,3 +330,10 @@ For conda use still `M-x pyvenv-activateRET path to conda env`
 | evaluate line/expression     | C-c C-c          |
 | interface to R documentation | C-c C-v          |
 | help                         | ess-help, C-h h  |
+
+* Common Lisp Roswell
+#+BEGIN_SRC elisp
+  ;; for slime
+  (load (expand-file-name "~/.roswell/helper.el"))
+
+#+END_SRC
