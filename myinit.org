@@ -310,6 +310,19 @@ sudo pip install --upgrade epc
     (yas-global-mode 1))
 #+END_SRC
 
+* Common Lisp 
+#+BEGIN_SRC elisp
+  (load (expand-file-name "~/quicklisp/slime-helper.el"))
+  ;; Replace "sbcl" with the path to your implementation
+  (setq inferior-lisp-program "/usr/bin/sbcl")
+
+#+END_SRC
+* Common Lisp Roswell
+#+BEGIN_SRC elisp
+  ;; ;; for slime
+  ;; (load (expand-file-name "~/.roswell/helper.el"))
+  ;; (setq inferior-lisp-program "/usr/local/bin/ros run")
+#+END_SRC
 * R/Julia ESS
 
 For conda use still `M-x pyvenv-activateRET path to conda env`
@@ -331,9 +344,4 @@ For conda use still `M-x pyvenv-activateRET path to conda env`
 | interface to R documentation | C-c C-v          |
 | help                         | ess-help, C-h h  |
 
-* Common Lisp Roswell
-#+BEGIN_SRC elisp
-  ;; for slime
-  (load (expand-file-name "~/.roswell/helper.el"))
 
-#+END_SRC
