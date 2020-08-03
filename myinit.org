@@ -310,6 +310,12 @@ sudo pip install --upgrade epc
     (yas-global-mode 1))
 #+END_SRC
 
+* Common Lisp Roswell
+#+BEGIN_SRC elisp
+  ;; for slime
+  (load (expand-file-name "~/.roswell/helper.el"))
+
+#+END_SRC
 * R/Julia ESS
 
 For conda use still `M-x pyvenv-activateRET path to conda env`
@@ -331,9 +337,4 @@ For conda use still `M-x pyvenv-activateRET path to conda env`
 | interface to R documentation | C-c C-v          |
 | help                         | ess-help, C-h h  |
 
-* Common Lisp Roswell
-#+BEGIN_SRC elisp
-  ;; for slime
-  (load (expand-file-name "~/.roswell/helper.el"))
 
-#+END_SRC
