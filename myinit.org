@@ -332,9 +332,9 @@ For conda use still `M-x pyvenv-activateRET path to conda env`
     :ensure t
     :init 
     (require 'ess-site)
-    :mode 
-    (("\\.[rR]\\'" . R-mode)
-     ("\\.Rnw\\'" . Rnw-mode)))
+    (setq ess-use-flymake nil)
+    (setq ess-eval-visibly-p nil)
+    (setq ess-use-eldoc nil))
 
 #+END_SRC
 
