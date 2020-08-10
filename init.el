@@ -36,8 +36,14 @@
 (setq-default indent-tabs-mode nil)
 
 ;; memory of sbcl
-(setq slime-lisp-implementations '(("sbcl" ("sbcl" "--dynamic-space-size" "16000"))
-				   ("clisp" ("clisp" "-m" "16000MB"))
+(defun linux-system-ram-size ()
+  (string-to-number (shell-command-to-string "free --mega | awk 'FNR == 2 {print $2}'")))
+
+(setq slime-lisp-implementations `(("sbcl" ("sbcl" "--dynamic-space-size"
+                                            ,(number-to-string (linux-system-ram-size))))
+				   ("clisp" ("clisp" "-m"
+                                             ,(number-to-string (linux-system-ram-size))
+                                             "MB"))
 				   ("ecl" ("ecl"))
 				   ("cmucl" ("cmucl"))))
 
