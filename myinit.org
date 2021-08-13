@@ -214,11 +214,11 @@ results!
                             ("l" . "LaTeX")
                             ("h" . "HTML")
                             ("a" . "ASCII")
-                            ("E" . "SRC")
-                            ("H" . "SRC")
-                            ("R" . "SRC")
-                            ("P" . "SRC")
-                            ("S" . "SRC"))
+                            ("S-e" . "SRC")
+                            ("S-h" . "SRC")
+                            ("S-h" . "SRC")
+                            ("S-p" . "SRC")
+                            ("S-l" . "SRC"))
                  (add-additionally '(("s" . "")
                                      ("e" . "")
                                      ("q" . "")
@@ -227,15 +227,15 @@ results!
                                      ("l" . "")
                                      ("h" . "")
                                      ("a" . "")
-                                     ("E" . " elisp")
-                                     ("H" . " haskell")
-                                     ("R" . " r")
-                                     ("P" . " python")
-                                     ("S" . " lisp"))
+                                     ("S-e" . " elisp")
+                                     ("S-h" . " haskell")
+                                     ("S-r" . " r")
+                                     ("S-p" . " python")
+                                     ("S-l" . " lisp"))
                  (key
                   (key-description
                    (vector
-                    (read-key
+                    (read-key-sequence
                      (concat (propertize "Template type: " 'face 'minibuffer-prompt)
                              (mapconcat (lambda (choice)
                                           (concat (propertize (car choice) 'face 'font-lock-type-face)
