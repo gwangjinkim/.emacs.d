@@ -197,63 +197,71 @@ results!
 [[http://pragmaticemacs.com/emacs/wrap-text-in-an-org-mode-block/][taken from here]]
 
  #+BEGIN_SRC emacs-lisp
-   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-   ;; function to wrap blocks of text in org templates                       ;;
-   ;; e.g. latex or src etc                                                  ;;
-   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-   (defun org-begin-template ()
-     "Make a template at point."
-     (interactive)
-     (if (org-at-table-p)
-         (call-interactively 'org-table-rotate-recalc-marks)
-       (let* ((choices '(("s" . "SRC")
-                         ("e" . "EXAMPLE")
-                         ("q" . "QUOTE")
-                         ("v" . "VERSE")
-                         ("c" . "CENTER")
-                         ("l" . "LaTeX")
-                         ("h" . "HTML")
-                         ("a" . "ASCII")
-                         ("r" . "SRC")))
-              (add-additionally '(("s" . "")
-                                  ("e" . "")
-                                  ("q" . "")
-                                  ("v" . "")
-                                  ("c" . "")
-                                  ("l" . "")
-                                  ("h" . "")
-                                  ("a" . "")
-                                  ("r" . " r")))
-              (key
-               (key-description
-                (vector
-                 (read-key
-                  (concat (propertize "Template type: " 'face 'minibuffer-prompt)
-                          (mapconcat (lambda (choice)
-                                       (concat (propertize (car choice) 'face 'font-lock-type-face)
-                                               ": "
-                                               (cdr choice)))
-                                     choices
-                                     ", ")))))))
-         (let ((result (assoc key choices))
-               (add-result (assoc key add-additionally)))
-           (when result
-             (let ((choice (cdr result))
-                   (adder  (cdr add-result)))
-               (cond
-                ((region-active-p)
-                 (let ((start (region-beginning))
-                       (end (region-end)))
-                   (goto-char end)
-                   (insert "#+END_" choice "\n")
-                   (goto-char start)
-                   (insert "#+BEGIN_" choice adder "\n")))
-                (t
-                 (insert "#+BEGIN_" choice adder "\n")
-                 (save-excursion (insert "#+END_" choice))))))))))
+      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+      ;; function to wrap blocks of text in org templates                       ;;
+      ;; e.g. latex or src etc                                                  ;;
+      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+      (defun org-begin-template ()
+        "Make a template at point."
+        (interactive)
+        (if (org-at-table-p)
+            (call-interactively 'org-table-rotate-recalc-marks)
+          (let* ((choices '(("s" . "SRC")
+                            ("e" . "EXAMPLE")
+                            ("q" . "QUOTE")
+                            ("v" . "VERSE")
+                            ("c" . "CENTER")
+                            ("l" . "LaTeX")
+                            ("h" . "HTML")
+                            ("a" . "ASCII")
+                            ("E" . "SRC")
+                            ("H" . "SRC")
+                            ("R" . "SRC")
+                            ("P" . "SRC")
+                            ("S" . "SRC"))
+                 (add-additionally '(("s" . "")
+                                     ("e" . "")
+                                     ("q" . "")
+                                     ("v" . "")
+                                     ("c" . "")
+                                     ("l" . "")
+                                     ("h" . "")
+                                     ("a" . "")
+                                     ("E" . " elisp")
+                                     ("H" . " haskell")
+                                     ("R" . " r")
+                                     ("P" . " python")
+                                     ("S" . " lisp"))
+                 (key
+                  (key-description
+                   (vector
+                    (read-key
+                     (concat (propertize "Template type: " 'face 'minibuffer-prompt)
+                             (mapconcat (lambda (choice)
+                                          (concat (propertize (car choice) 'face 'font-lock-type-face)
+                                                  ": "
+                                                  (cdr choice)))
+                                        choices
+                                        ", ")))))))
+            (let ((result (assoc key choices))
+                  (add-result (assoc key add-additionally)))
+              (when result
+                (let ((choice (cdr result))
+                      (adder  (cdr add-result)))
+                  (cond
+                   ((region-active-p)
+                    (let ((start (region-beginning))
+                          (end (region-end)))
+                      (goto-char end)
+                      (insert "#+END_" choice "\n")
+                      (goto-char start)
+                      (insert "#+BEGIN_" choice adder "\n")))
+                   (t
+                    (insert "#+BEGIN_" choice adder "\n")
+                    (save-excursion (insert "#+END_" choice))))))))))
 
-   ;;bind to key
-   (define-key org-mode-map (kbd "C-<") 'org-begin-template)
+      ;;bind to key
+      (define-key org-mode-map (kbd "C-<") 'org-begin-template)
  #+END_SRC
 
 ** <sTAB didn't work

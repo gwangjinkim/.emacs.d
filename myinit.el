@@ -163,6 +163,16 @@
 ;;bind to key
 (define-key org-mode-map (kbd "C-<") 'org-begin-template)
 
+(use-package org-roam
+  :ensure t
+  :custom
+  (org-roam-directory "~/RoamNotes")
+  :bind
+  (("C-c n l" . org-roam-buffer-toggle)
+   ("C-c n f" . org-roam-node-find)
+   ("C-c n i" . org-roam-node-insert))
+  :config (org-roam-setup))
+
 ;; (use-package undo-tree
 ;;   :ensure t
 ;;   :init
