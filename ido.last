@@ -1,0 +1,45 @@
+;;; -*- coding: utf-8 -*-
+
+;; ----- ido-last-directory-list -----
+(
+ ("/home/josephus/projects/clj/plinko/src/" . "plinko/")
+ ("/home/josephus/projects/clj/plinko/" . "src/")
+ ("/home/josephus/projects/clj/" . "plinko/")
+ ("/home/josephus/projects/" . "clj/")
+ ("/home/josephus/" . "projects/")
+)
+
+;; ----- ido-work-directory-list -----
+(
+ "/home/josephus/projects/clj/plinko/src/plinko/"
+ "/home/josephus/notes/clj/"
+)
+
+;; ----- ido-work-file-list -----
+(
+ "core.clj"
+ "plinko-game.clj"
+ "AoC.clj"
+)
+
+;; ----- ido-dir-file-cache -----
+(
+ ("/home/josephus/projects/clj/plinko/src/plinko/" (25180 51539 100766 189000) "../" "./" "core.clj")
+
+ ("/home/josephus/projects/clj/plinko/src/" (25180 51539 100766 189000) "../" "./" "plinko/")
+
+ ("/home/josephus/projects/clj/plinko/" (25180 51539 104766 301000) "../" "./" "test/" ".hgignore" "CHANGELOG.md" "src/" "resources/" "project.clj" "LICENSE" ".gitignore" "doc/" "README.md")
+
+ ("/home/josephus/projects/clj/" (25180 51539 96766 77000) "../" "./" "plinko/")
+
+ ("/home/josephus/projects/" (25180 51332 750966 587000) "../" "./" "clj/")
+
+ ("/home/josephus/" (25180 51538 352745 174000) "../" "./" ".conda/" "roswell.deb" "Desktop/" "raman.py" ".bash_history" ".roswell/" ".clojure_history" "r4ds.org~" ".lein/" "ruby.rb~" "snap/" ".#on-lisp.org" "rlang.org~" ".racket/" "jobinterviews.org~" ".Xauthority" "c/" "s.save" ".#metaprogramming-in-R.R" ".profile" ".local/" ".wget-hsts" ".#test.lisp" ".pki/" "vaccipy.sh" ".r/" ".seleniumwire/" ".vscode-server/" ".node_repl_history" ".irb_history" ".pam_environment" ".slime/" ".emacs.d.orig/" "miniconda3/" "b.txt" ".bash_logout" "Documents/" "rust/" ".ghc/" "books_my_old1.txt" "writing-zulie.org~" ".emacs.d/" "vaccipy/" "zettelkasten.org~" "new/" ".rustup/" "notes/" ".s.swp" "Downloads/" "pass" ".mozilla/" "myc/" ".slime-history.eld" ".sudo_as_admin_successful" "books_my_old.txt" "Videos/" ".ipython/" ".ssh/" ".cache/" "emacs/" ".poetry/" "Pictures/" ".gem/" "bitbucket/" ".vscode/" "projects/" ".gitconfig" ".lem/" ".bashrc" ".cargo/" ".python_history" "Music/" ".config/" ".gnupg/" "Public/" "rpath/" "s" "Templates/")
+
+ ("/home/josephus/notes/clj/" (25142 39079 531930 752000) "../" "./" "clj-projects.clj" "cljs-loves-react.cljs" "living-clojure.clj" ".nrepl-port" "multipledispatch.clj" "repl-driven-mobile-dev.org" "the-joy-of-clojure.clj" "the-joy-of-clojure.org" "my-clojure-notes.clj" "generator.test.clj" "knowledge-graphs.clj" "my-cookbook.clj" "aoc-6.clj" "web-dev-with-clj.clj" "stackoverflow.clj" "#clojure.org#" "advent-of-code-2021.clj" "map_star.clj" "some-SO.clj" "reactive-clojurescript.cljs" "tests-are-living-documentation.clj" "graphs.clj" "mobile-apps-with-clojurescript.clj" "clojurescript.cljs" "clojure.clj" "AoC.clj" "braveclojure-reducers.clj" "mobile-app.org")
+
+ ("/home/josephus/notes/" (25178 38450 230620 463000) "nice-book-lists.txt" "../" "./" "haskell/" "mini.c" "vim/" "clj/" "better-code/" "freecodecamp/" "app_programming/" "sidehustle/" "java/" "misc/" "web/" "github/" "R/" "c_cpp/" "bas/" "rust/" "design_patterns/" "lisp/" ".#notes.txt" "android/" "js/" "sql/" ".gitignore" "requirements.txt" "mini" "hack/" "julia/" "ruby/" "writing/" "books_my_old.txt" "README.md" "investments/" "jobsearch/" "emacs/" "statistics.py" "ubuntu-notes.sh" "work/" "algotrader/" "haskell.zip" "cardano/" "booktitles.txt" "python/" ".git/" "codeacademy/" "cs_notes/" "blockchain/")
+)
+
+;; ----- ido-unc-hosts-cache -----
+t

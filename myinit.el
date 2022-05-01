@@ -121,17 +121,7 @@
                       ("c" . "CENTER")
                       ("l" . "LaTeX")
                       ("h" . "HTML")
-                      ("a" . "ASCII")
-                      ("r" . "SRC")))
-           (add-additionally '(("s" . "")
-                               ("e" . "")
-                               ("q" . "")
-                               ("v" . "")
-                               ("c" . "")
-                               ("l" . "")
-                               ("h" . "")
-                               ("a" . "")
-                               ("r" . " r")))
+                      ("a" . "ASCII")))
            (key
             (key-description
              (vector
@@ -143,11 +133,9 @@
                                             (cdr choice)))
                                   choices
                                   ", ")))))))
-      (let ((result (assoc key choices))
-            (add-result (assoc key add-additionally)))
+      (let ((result (assoc key choices)))
         (when result
-          (let ((choice (cdr result))
-                (adder  (cdr add-result)))
+          (let ((choice (cdr result)))
             (cond
              ((region-active-p)
               (let ((start (region-beginning))
@@ -155,23 +143,83 @@
                 (goto-char end)
                 (insert "#+END_" choice "\n")
                 (goto-char start)
-                (insert "#+BEGIN_" choice adder "\n")))
+                (insert "#+BEGIN_" choice "\n")))
              (t
-              (insert "#+BEGIN_" choice adder "\n")
+              (insert "#+BEGIN_" choice "\n")
               (save-excursion (insert "#+END_" choice))))))))))
 
 ;;bind to key
 (define-key org-mode-map (kbd "C-<") 'org-begin-template)
 
-(use-package org-roam
-  :ensure t
-  :custom
-  (org-roam-directory "~/RoamNotes")
-  :bind
-  (("C-c n l" . org-roam-buffer-toggle)
-   ("C-c n f" . org-roam-node-find)
-   ("C-c n i" . org-roam-node-insert))
-  :config (org-roam-setup))
+
+
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;; function to wrap blocks of text in org templates                       ;;
+;; ;; e.g. latex or src etc                                                  ;;
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; (defun org-begin-template ()
+;;   "Make a template at point."
+;;   (interactive)
+;;   (if (org-at-table-p)
+;;       (call-interactively 'org-table-rotate-recalc-marks)
+;;     (let* ((choices '(("s" . "SRC")
+;;                       ("e" . "EXAMPLE")
+;;                       ("q" . "QUOTE")
+;;                       ("v" . "VERSE")
+;;                       ("c" . "CENTER")
+;;                       ("l" . "LaTeX")
+;;                       ("h" . "HTML")
+;;                       ("a" . "ASCII")))
+;;            (add-additionally '(("s" . "")
+;;                                ("e" . "")
+;;                                ("q" . "")
+;;                                ("v" . "")
+;;                                ("c" . "")
+;;                                ("l" . "")
+;;                                ("h" . "")
+;;                                ("a" . ""))))
+;;       (key
+;;        (key-description
+;;         (vector
+;;          (read-key
+;;           (concat (propertize "Template type: " 'face 'minibuffer-prompt)
+;;                   (mapconcat (lambda (choice)
+;;                                (concat (propertize (car choice) 'face 'font-lock-type-face)
+;;                                        ": "
+;;                                        (cdr choice)))
+;;                              choices
+;;                              ", ")))))))
+;;     (let ((result (assoc key choices))
+;;           (add-result (assoc key add-additionally)))
+;;       (when result
+;;         (let ((choice (cdr result))
+;;               (adder  (cdr add-result)))
+;;           (cond
+;;            ((region-active-p)
+;;             (let ((start (region-beginning))
+;;                   (end (region-end)))
+;;               (goto-char end)
+;;               (insert "#+END_" choice "\n")
+;;               (goto-char start)
+;;               (insert "#+BEGIN_" choice adder "\n")))
+;;            (t
+;;             (insert "#+BEGIN_" choice adder "\n")
+;;             (save-excursion (insert "#+END_" choice)))))))))
+
+;; ;;bind to key
+;; (define-key org-mode-map (kbd "C-<") 'org-begin-template)
+;; ;;;;; this was my bad attempt which did not work - to allow multikeycombination
+;; ;;;;; to have more choices in templates
+
+;; (use-package org-roam
+;;   :ensure t
+;;   :custom
+;;   (org-roam-directory "~/RoamNotes")
+;;   :bind
+;;   (("C-c n l" . org-roam-buffer-toggle)
+;;    ("C-c n f" . org-roam-node-find)
+;;    ("C-c n i" . org-roam-node-insert))
+;;   :config (org-roam-setup))
 
 ;; (use-package undo-tree
 ;;   :ensure t
@@ -198,6 +246,44 @@
   :ensure t
   :init
   (yas-global-mode 1))
+
+;; for slime
+
+(use-package slime
+  :ensure t
+  :config
+  (load (expand-file-name "~/.roswell/helper.el"))
+  ;; $ ros config
+  ;; $ ros use sbcl dynamic-space-size=3905
+  ;; query with: (/ (- sb-vm:dynamic-space-end sb-vm:dynamic-space-start) (expt 1024 2))
+
+  nil)
+
+  ;; set memory of sbcl to your machine's RAM size for sbcl and clisp
+  ;; (but for others - I didn't used them yet)
+  (defun linux-system-ram-size ()
+    (string-to-number (shell-command-to-string "free --mega | awk 'FNR == 2 {print $2}'")))
+  ;; (linux-system-ram-size)
+
+  (setq inferior-lisp-program (concat "ros -Q dynamic-space-size=" (number-to-string (linux-system-ram-size)) " run"))
+
+  ;; and for fancier look I personally add:
+  (setq slime-contribs '(slime-fancy))
+
+  ;; ensure correct indentation e.g. of `loop` form
+  (add-to-list 'slime-contribs 'slime-cl-indent)
+
+  ;; don't use tabs
+  (setq-default indent-tabs-mode 
+
+  ;; (setq slime-lisp-implementations `(("sbcl" ("ros use sbcl && ros run --" "--dynamic-space-size"
+  ;;                                             ,(number-to-string (linux-system-ram-size))))
+  ;;                                    ("clisp" ("ros use clisp && ros run --" "-m"
+  ;;                                              ,(number-to-string (linux-system-ram-size))
+  ;;                                              "MB"))
+  ;;                                    ("ecl" ("ros use ecl && ros run --"))
+  ;;                                    ("cmucl" ("ros use cmucl && ros run --"))))
+  )
 
 (use-package ess
   :ensure t

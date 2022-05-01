@@ -1,0 +1,19 @@
+
+;; ----- smex-history -----
+(
+ cider-connect-clj
+ cider-jack-in
+ shell
+ cider-run
+ cd
+ 5x5
+ arp
+)
+
+;; ----- smex-data -----
+(
+ (cider-jack-in . 2)
+ (cider-run . 1)
+ (shell . 1)
+ (cider-connect-clj . 1)
+)

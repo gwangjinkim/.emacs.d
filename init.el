@@ -24,43 +24,28 @@
 
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; slime for common-lisp
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;; slime for common-lisp
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(load (expand-file-name "~/quicklisp/slime-helper.el"))
-(setq inferior-lisp-program (expand-file-name "~/miniconda3/envs/cl/bin/sbcl"))
-(add-to-list 'slime-contribs 'slime-cl-indent) ;; correct indentation
+;; (load (expand-file-name "~/quicklisp/slime-helper.el"))
+;; (setq inferior-lisp-program (expand-file-name "~/miniconda3/envs/cl/bin/sbcl"))
+;; (add-to-list 'slime-contribs 'slime-cl-indent) ;; correct indentation
 
-;; don't use tabs
-(setq-default indent-tabs-mode nil)
+;; ;; don't use tabs
+;; (setq-default indent-tabs-mode nil)
 
-;; memory of sbcl
-(defun linux-system-ram-size ()
-  (string-to-number (shell-command-to-string "free --mega | awk 'FNR == 2 {print $2}'")))
+;; ;; memory of sbcl
+;; (defun linux-system-ram-size ()
+;;   (string-to-number (shell-command-to-string "free --mega | awk 'FNR == 2 {print $2}'")))
 
-(setq slime-lisp-implementations `(("sbcl" ("sbcl" "--dynamic-space-size"
-                                            ,(number-to-string (linux-system-ram-size))))
-				   ("clisp" ("clisp" "-m"
-                                             ,(number-to-string (linux-system-ram-size))
-                                             "MB"))
-				   ("ecl" ("ecl"))
-				   ("cmucl" ("cmucl"))))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+;; (setq slime-lisp-implementations `(("sbcl" ("sbcl" "--dynamic-space-size"
+;;                                             ,(number-to-string (linux-system-ram-size))))
+;; 				   ("clisp" ("clisp" "-m"
+;;                                              ,(number-to-string (linux-system-ram-size))
+;;                                              "MB"))
+;; 				   ("ecl" ("ecl"))
+;; 				   ("cmucl" ("cmucl"))))
 
 
 (custom-set-variables
@@ -72,7 +57,7 @@
  '(package-selected-packages
    (quote
     (slime-volleyball ob-clojurescript unicode-progress-reporter tabbar use-package which-key websocket try slime skewer-mode request-deferred projector ox-reveal org2blog org-email org-bullets org-blog org-babel-eval-in-repl material-theme jedi geiser flycheck exec-path-from-shell emojify elpy counsel clojure-snippets clojure-cheatsheet clj-mode cl-generic cider-spy cider-hydra cider-eval-sexp-fu cider-decompile better-defaults))))
-(custom-set-faces
+(custom-set-faceshttps://qua.name/mrb/an-org-babel-based-emacs-configuration
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
