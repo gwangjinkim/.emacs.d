@@ -418,7 +418,7 @@ sudo pip install --upgrade epc
     (add-to-list 'slime-contribs 'slime-cl-indent)
 
     ;; don't use tabs
-    (setq-default indent-tabs-mode 
+    (setq-default indent-tabs-mode nil))
 
     ;; (setq slime-lisp-implementations `(("sbcl" ("ros use sbcl && ros run --" "--dynamic-space-size"
     ;;                                             ,(number-to-string (linux-system-ram-size))))
@@ -427,7 +427,6 @@ sudo pip install --upgrade epc
     ;;                                              "MB"))
     ;;                                    ("ecl" ("ros use ecl && ros run --"))
     ;;                                    ("cmucl" ("ros use cmucl && ros run --"))))
-    ))
 #+END_SRC
 * R/Julia ESS
 
