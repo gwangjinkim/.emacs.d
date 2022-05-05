@@ -1,0 +1,40 @@
+;;; -*- coding: utf-8 -*-
+
+;; ----- ido-last-directory-list -----
+(
+ ("/home/josephus/emacs/emacs-for-racket/" . ".emacs.d/")
+ ("/home/josephus/emacs/" . "emacs-for-racket/")
+ ("/home/josephus/" . "emacs/")
+)
+
+;; ----- ido-work-directory-list -----
+(
+ "/home/josephus/emacs/emacs-for-racket/.emacs.d/"
+ "/home/josephus/notes/racket/"
+)
+
+;; ----- ido-work-file-list -----
+(
+ "myinit.org"
+ "minmax-lol.rkt"
+)
+
+;; ----- ido-dir-file-cache -----
+(
+ ("/home/josephus/emacs/emacs-for-racket/.emacs.d/" (25175 60227 269025 22000) "init.el" "../" "myinit.el" "network-security.data" "elpa/" "myinit.org" "./" "auto-save-list/")
+
+ ("/home/josephus/emacs/emacs-for-racket/" (25175 60482 554137 841000) "../" ".bash_history" "README.md" ".git/" "./" ".config/" ".gitignore" ".bashrc" ".emacs.d/" ".cache/")
+
+ ("/home/josephus/emacs/" (25175 55720 80449 203000) "python/" "../" "ruby/" "emacs-for-python/" "./" "github/" "emacs-for-racket/" "clojure/" "emacs-lsp/")
+
+ ("/home/josephus/notes/racket/" (25175 60298 997355 147000) "minmax-lol.rkt~" "../" "./" "minmax-lol.rkt" ".#minmax-lol.rkt" "#minmax-lol.rkt#")
+
+ ("/home/josephus/notes/" (25175 56850 801224 339000) "freecodecamp/" "web/" "R/" "emacs/" "python/" "silverlight-alternative.txt" "c_cpp/" "statistics.py" "hack/" "raman/" "writing/" "better-code/" "cardano/" "julia/" "../" ".#notes.txt" "ruby/" "investments/" "neo4j/" "creating-vbox-win7.org" "mini.c" "design_patterns/" "blockchain/" "jobsearch/" "sidehustle/" "raspi-setup.sh" "versions-miriam-schmidt.txt" "#notes.txt#" "README.md" "network/" "algotrader/" "mini" "nice-book-lists.txt" "chroot.sh" "rust/" "bas/" ".git/" "./" "github/" "clj/" "conda_problem.txt" "brot.txt" "requirements.txt" "chroot-session.sh" "cs_notes/" "haskell/" "work/" "lisp/" "misc/" "racket/" "app_programming/" "creating-vbox-win7.org~" "android/" "codeacademy/" "js/" "booktitles.txt" ".gitignore" "java/" "ubuntu-notes.sh" "haskell.zip" "sql/")
+
+ ("/home/josephus/" (25175 56568 476775 317000) "test" "collab/" ".sbclrc" "#setup-computer.org#" "react-native/" "raman.py" "granges.lisp" "ArchLinuxARM-rpi-aarch64-latest.tar.gz" "archlinux-raspi4.sh" "cheeky-scientist.org~" ".zoom/" ".npm/" "o2-prepaid-stick-connect" "Templates/" "Public/" ".profile" "emacs/" ".ssh/" "thank.txt" "python/" ".gradle/" "wt-vs-k2-mixl1-otx2/" "install_julia.jl" "miniconda3_old/" "var/" "Music/" ".gitconfig" ".node_repl_history" "analysis.py" "orig.emacs.d/" "ubuntu_repairs.txt" ".irb-history" "SpectralMachine/" ".rpmdb/" ".irb_history" "boot/" ".clojure/" "graphio-test.py~" ".slime/" "raman-search.py" "kaggle/" "gitprojects/" "renewable_energy_repo/" "roswell/" "scrnaseqdl/" ".wget-hsts" ".dbus/" ".#setup-computer.org" "tinder-clone/" "yarn.lock" "test.c" "IPD.R" "code-exercise/" ".roswell/" "WoeUSB/" "setup-computer.org~" "bkb.txt" ".gnupg/" "todo.txt" "install.python-poetry.org" ".pki/" "somecsc.txt" "ruby/" "quicklisp.lisp" ".react-native-cli/" "node_modules/" "hello.clj" ".sudo_as_admin_successful" ".xournal/" "Dropbox (Old)/" "wonderland/" ".linuxbrew/" "quicklisp/" "multiasset_strategytester/" ".adobe/" "code-exercise.zip" ".m2/" "AoC/" ".r/" ".mozilla/" ".android/" "pip_zipline/" ".python_history" "code-exercise-gwangjin/" ".lem/" "julia-jupyter.jl" "handypass" "long-trade-BTC.txt" "Videos/" ".rvm/" "projects/" "my_kivy_project/" ".condarc" ".vscode/" ".keras/" ".Rhistory" "Pictures/" ".dropbox/" "Desktop/" ".julia/" ".expo/" "myapp/" "bin/" ".telegram-cli/" ".java/" "biotech/" "package.json" ".bash_logout" ".ipython/" "graphio-test.py" "julia-notes.jl" ".ICEauthority" "app.py" "installations.txt" ".local/" ".slime-history.eld" ".clojure_history" "svg_stack/" ".rstudio-desktop/" "rsyncing-dropbox.org" ".bash_history" "setup-computer.org" "package-lock.json" "Android/" ".nrepl-history" "env_zipline_20190904b_office.yml" "Downloads/" "test-clj/" "VirtualBox VMs/" "miniconda3/" "MAIC_calculate.R" "test.lisp" "wlan.txt" ".conda/" ".racket/" ".netrc" ".lein/" ".xinputrc" "svg_arrange" "local/" ".boot/" "notes/" ".vuerc" ".emulator_console_auth_token" "exercise_gwangjinkim.py" "java-for-python-programmers.java" "test.csv" "Documents/" "tapply-example.R" "cljs/" "validation.key.neo4j" ".jupyter/" "Untitled.ipynb" "Dropbox/" "cheeky-scientist.org" "make-example-master/" "IdeaProjects/" ".kivy/" "guestbook/" ".yarn/" ".config/" "ArchLinuxARM-rpi-armv7-latest.tar.gz" "woeusb-5.2.4.bash" "packages.microsoft.gpg" "vaccipy-run.sh" "root/" "granges.lisp~" ".bash_profile" "heidelberg.txt" ".macromedia/" "work/" ".yarnrc" "MSOffice2019/" ".dropbox-dist/" "vue/" "tinder/" ".jdks/" ".zipline/" "lisp/" "wohnung.txt" "snap/" "people.tsv" "zugang_knnu_kirchzarten.txt" ".wine/" ".mkshrc" ".zshrc" ".hdfview2.14" "code-exercise-gwangjin.zip" "js/" ".launchpadlib/" ".racket_history" ".zlogin" "clojure/" "rstudio/" ".nuxtrc" "vaccipy/" "java/" "clojure-tut/" ".condard" "make-example-master.tgz" ".bashrc" "julia-1.3.1/" "covidgraph/" "test.xlsx" "cl-env-installation.sh" ".emacs.d/" "my-project/" ".ipynb_checkpoints/" "Miniconda3-latest-Linux-x86_64.sh" "desktop_backup/" "linux-install-1.10.3.986.sh" ".cache/" "../" "./")
+
+ ("/home/josephus/.emacs.d/" (25175 60180 676801 721000) "init.el" "session.10a97b6b43cfee3ed916461219048728100000017520085" "ac-comphist.dat" "ido.last~" "../" ".python-environments/" "myinit.el" "elpy/" "session.10d8ec8d2cb30d2fbb164572766819876800000017460086" "snippets/" "README.md" "elpa/" "recentf~" "myinit.org" ".git/" "ido.last" "./" "smex-items" "racket-mode/" "session.107a7536bb4ef527eb160841304421368700000017110089" "auto-save-list/" "recentf")
+)
+
+;; ----- ido-unc-hosts-cache -----
+t

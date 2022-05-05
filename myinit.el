@@ -257,8 +257,6 @@
   ;; $ ros use sbcl dynamic-space-size=3905
   ;; query with: (/ (- sb-vm:dynamic-space-end sb-vm:dynamic-space-start) (expt 1024 2))
 
-  nil)
-
   ;; set memory of sbcl to your machine's RAM size for sbcl and clisp
   ;; (but for others - I didn't used them yet)
   (defun linux-system-ram-size ()
@@ -283,7 +281,7 @@
   ;;                                              "MB"))
   ;;                                    ("ecl" ("ros use ecl && ros run --"))
   ;;                                    ("cmucl" ("ros use cmucl && ros run --"))))
-  )
+  ))
 
 (use-package ess
   :ensure t
@@ -292,3 +290,7 @@
   (setq ess-use-flymake nil)
   (setq ess-eval-visibly-p nil)
   (setq ess-use-eldoc nil))
+
+;; (load (expand-file-name "~/quicklisp/slime-helper.el"))
+;; ;; Replace "sbcl" with the path to your implementation
+;; (setq inferior-lisp-program "/usr/bin/sbcl")

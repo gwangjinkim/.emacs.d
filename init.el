@@ -57,7 +57,8 @@
  '(package-selected-packages
    (quote
     (slime-volleyball ob-clojurescript unicode-progress-reporter tabbar use-package which-key websocket try slime skewer-mode request-deferred projector ox-reveal org2blog org-email org-bullets org-blog org-babel-eval-in-repl material-theme jedi geiser flycheck exec-path-from-shell emojify elpy counsel clojure-snippets clojure-cheatsheet clj-mode cl-generic cider-spy cider-hydra cider-eval-sexp-fu cider-decompile better-defaults))))
-(custom-set-faceshttps://qua.name/mrb/an-org-babel-based-emacs-configuration
+(custom-set-faces
+ ;; https://qua.name/mrb/an-org-babel-based-emacs-configuration
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.

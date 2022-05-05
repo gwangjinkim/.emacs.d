@@ -116,7 +116,7 @@ Move via C-c left-right-arrow
 #+END_SRC
 
   if using swiper, comment out ido.
-
+  
 * Navigation with Avy
 
 #+BEGIN_SRC emacs-lisp
@@ -391,8 +391,7 @@ sudo pip install --upgrade epc
   ;; (setq inferior-lisp-program "/usr/bin/sbcl")
 
 #+END_SRC
-* Common Lisp Ro
-swell
+* Common Lisp Roswell
 #+BEGIN_SRC emacs-lisp
   ;; for slime
 
@@ -403,8 +402,6 @@ swell
     ;; $ ros config
     ;; $ ros use sbcl dynamic-space-size=3905
     ;; query with: (/ (- sb-vm:dynamic-space-end sb-vm:dynamic-space-start) (expt 1024 2))
-
-    nil)
 
     ;; set memory of sbcl to your machine's RAM size for sbcl and clisp
     ;; (but for others - I didn't used them yet)
@@ -430,11 +427,11 @@ swell
     ;;                                              "MB"))
     ;;                                    ("ecl" ("ros use ecl && ros run --"))
     ;;                                    ("cmucl" ("ros use cmucl && ros run --"))))
-    )
+    ))
 #+END_SRC
 * R/Julia ESS
 
-For conda use still `M-x pyvenv-activateRET path to conda env`
+For conda use still `M-x pyvenv-activate RET path to conda env`
 
 #+BEGIN_SRC emacs-lisp
   (use-package ess
