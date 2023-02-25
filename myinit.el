@@ -302,10 +302,58 @@
   ;;                                    ("ecl" ("ros use ecl && ros run --"))
   ;;                                    ("cmucl" ("ros use cmucl && ros run --"))))
 
+;; (use-package ess
+;;   :ensure t
+;;   :init 
+;;   (require 'ess-site)
+;;   (setq ess-use-flymake nil)
+;;   (setq ess-eval-visibly-p nil)
+;;   (setq ess-use-eldoc nil))
+
 (use-package ess
   :ensure t
-  :init 
-  (require 'ess-site)
+  :mode (("\\.R\\'" . R-mode)
+         ("\\.Rmd\\'" . R-markdown-mode)
+         ("\\.Rnw\\'" . R-noweb-mode))
+  :init
+  (setq ess-eval-visibly 'nowait)
+  (setq ess-ask-for-ess-directory nil)
+  :config
+  (ess-toggle-underscore nil)
+  (setq ess-default-style 'DEFAULT)
+  (setq ess-indent-with-fancy-comments nil)
+  (setq ess-fancy-comments nil)
+  (setq ess-history-file nil)
   (setq ess-use-flymake nil)
-  (setq ess-eval-visibly-p nil)
-  (setq ess-use-eldoc nil))
+  (setq ess-R-font-lock-keywords
+        '((ess-R-fl-keyword:fun-calls . t)
+          (ess-R-fl-keyword:keywords . t)
+          (ess-R-fl-keyword:assign-ops . t)
+          (ess-R-fl-keyword:constants . t)
+          (ess-R-fl-keyword:messages . t)
+          (ess-R-fl-keyword:modifiers . t)
+          (ess-R-fl-keyword:fun-defs . t)
+          (ess-R-fl-keyword:numbers . t)
+          (ess-R-fl-keyword:operators . t)
+          (ess-R-fl-keyword:delimiters . t)
+          (ess-R-fl-keyword:= . t)
+          (ess-R-fl-keyword:+ . t)
+          (ess-R-fl-keyword:- . t)
+          (ess-R-fl-keyword:* . t)
+          (ess-R-fl-keyword:/ . t)
+          (ess-R-fl-keyword:^ . t)
+          (ess-R-fl-keyword:< . t)
+          (ess-R-fl-keyword:> . t)
+          (ess-R-fl-keyword:! . t)
+          (ess-R-fl-keyword:% . t)
+          (ess-R-fl-keyword:%op% . t)
+          (ess-R-fl-keyword:%!in% . t)
+          (ess-R-fl-keyword:%notin% . t)))
+  :bind
+  (:map ess-mode-map
+        ("C-c C-j" . ess-eval-line-and-step)
+        ("C-c C-l" . ess-eval-region-or-function-or-paragraph-and-step)
+        ("C-c C-r" . ess-eval-region)
+        ("C-c C-p" . ess-eval-buffer)
+        ("C-c C-o" . ess-eval-chunk))
+  )
