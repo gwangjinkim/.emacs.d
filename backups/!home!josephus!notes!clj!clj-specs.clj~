@@ -1,0 +1,10 @@
+;; https://www.youtube.com/watch?v=B_Farscj0hY
+
+(require '[clojure.spec :as s])
+
+(s/def ::big-even (s/and int? even? #(> % 1000)))
+
+(s/valid? ::big-even 42)   ;; => false
+
+(s/valid? ::big-even 4200) ;; => true
+

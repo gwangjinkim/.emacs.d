@@ -1,19 +1,21 @@
 
 ;; ----- smex-history -----
 (
- cider-connect-clj
+ cider
+ slitex-mode
+ package-install
  cider-jack-in
- shell
- cider-run
+ cider-connect
+ cider-jack-in-clojure
  cd
- 5x5
- arp
 )
 
 ;; ----- smex-data -----
 (
- (cider-jack-in . 2)
- (cider-run . 1)
- (shell . 1)
- (cider-connect-clj . 1)
+ (cider-jack-in . 3)
+ (cider-jack-in-clojure . 1)
+ (cider-connect . 2)
+ (package-install . 1)
+ (cider . 2)
+ (slitex-mode . 1)
 )

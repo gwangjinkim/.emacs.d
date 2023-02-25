@@ -1,0 +1,6 @@
+;; actions are dependent on when they are called or how many times they are called (or both)
+;; calculations are independent - always give the same result - given the same input
+;; data is inert
+
+;; prefer data over calculations over actions
+

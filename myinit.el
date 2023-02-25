@@ -78,7 +78,9 @@
 (use-package org-bullets
   :ensure t
   :config
-  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+  (setq org-adapt-indentation t) ;; align text to header's start
+  )
 
 ;; (require 'org)
 ;; (require 'ob)
@@ -211,15 +213,24 @@
 ;; ;;;;; this was my bad attempt which did not work - to allow multikeycombination
 ;; ;;;;; to have more choices in templates
 
+;; (add-to-list 'package-archives
+;;              (cons "gnu-devel" "https://elpa.gnu.org/devel/")
+;;              t)
+
 ;; (use-package org-roam
-;;   :ensure t
-;;   :custom
-;;   (org-roam-directory "~/RoamNotes")
-;;   :bind
-;;   (("C-c n l" . org-roam-buffer-toggle)
-;;    ("C-c n f" . org-roam-node-find)
-;;    ("C-c n i" . org-roam-node-insert))
-;;   :config (org-roam-setup))
+;;  :ensure t)
+
+(use-package org-roam
+  :ensure t
+  :custom
+  (org-roam-directory "~/RoamNotes")
+  (org-roam-completion-everywhere t)
+  :bind (("C-c n l" . org-roam-buffer-toggle)
+         ("C-c n f" . org-roam-node-find)
+         ("C-c n i" . org-roam-node-insert)
+         :map org-mode-map
+         ("C-M-i"   . completion-at-point))
+  :config (org-roam-setup))
 
 ;; (use-package undo-tree
 ;;   :ensure t
@@ -247,6 +258,15 @@
   :init
   (yas-global-mode 1))
 
+;; Git integration for emacs
+(use-package magit
+  :ensure t
+  :bind (("C-x g" . magit-status)))
+
+;; (load (expand-file-name "~/quicklisp/slime-helper.el"))
+;; ;; Replace "sbcl" with the path to your implementation
+;; (setq inferior-lisp-program "/usr/bin/sbcl")
+
 ;; for slime
 
 (use-package slime
@@ -272,7 +292,7 @@
   (add-to-list 'slime-contribs 'slime-cl-indent)
 
   ;; don't use tabs
-  (setq-default indent-tabs-mode 
+  (setq-default indent-tabs-mode nil))
 
   ;; (setq slime-lisp-implementations `(("sbcl" ("ros use sbcl && ros run --" "--dynamic-space-size"
   ;;                                             ,(number-to-string (linux-system-ram-size))))
@@ -281,7 +301,6 @@
   ;;                                              "MB"))
   ;;                                    ("ecl" ("ros use ecl && ros run --"))
   ;;                                    ("cmucl" ("ros use cmucl && ros run --"))))
-  ))
 
 (use-package ess
   :ensure t
@@ -290,7 +309,3 @@
   (setq ess-use-flymake nil)
   (setq ess-eval-visibly-p nil)
   (setq ess-use-eldoc nil))
-
-;; (load (expand-file-name "~/quicklisp/slime-helper.el"))
-;; ;; Replace "sbcl" with the path to your implementation
-;; (setq inferior-lisp-program "/usr/bin/sbcl")

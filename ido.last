@@ -2,43 +2,53 @@
 
 ;; ----- ido-last-directory-list -----
 (
- ("/home/josephus/projects/clj/plinko/src/" . "plinko/")
- ("/home/josephus/projects/clj/plinko/" . "src/")
- ("/home/josephus/projects/clj/" . "plinko/")
- ("/home/josephus/projects/" . "clj/")
- ("/home/josephus/" . "projects/")
+ ("/home/josephus/emacs/" . "emacs-for-clojure/")
+ ("/home/" . "josephus/")
 )
 
 ;; ----- ido-work-directory-list -----
 (
- "/home/josephus/projects/clj/plinko/src/plinko/"
+ "/home/josephus/projects/clj/csv-parse/src/csv_parse/"
+ "/home/josephus/projects/clj/csv-parse/"
+ "/home/josephus/emacs/emacs-for-clojure/.emacs.d/customizations/"
+ "/home/josephus/emacs/emacs-for-clojure/.emacs.d/"
  "/home/josephus/notes/clj/"
 )
 
 ;; ----- ido-work-file-list -----
 (
  "core.clj"
- "plinko-game.clj"
- "AoC.clj"
+ "project.clj"
+ "editing.el"
+ "init.el"
+ "clj-specs.clj"
 )
 
 ;; ----- ido-dir-file-cache -----
 (
- ("/home/josephus/projects/clj/plinko/src/plinko/" (25180 51539 100766 189000) "../" "./" "core.clj")
+ ("/home/josephus/projects/clj/csv-parse/src/csv_parse/" (25480 11765 112163 76000) "../" "./" "core.clj")
 
- ("/home/josephus/projects/clj/plinko/src/" (25180 51539 100766 189000) "../" "./" "plinko/")
+ ("/home/josephus/projects/clj/csv-parse/src/" (25480 11765 112163 76000) "../" "csv_parse/" "./")
 
- ("/home/josephus/projects/clj/plinko/" (25180 51539 104766 301000) "../" "./" "test/" ".hgignore" "CHANGELOG.md" "src/" "resources/" "project.clj" "LICENSE" ".gitignore" "doc/" "README.md")
+ ("/home/josephus/projects/clj/csv-parse/" (25480 11902 424679 876000) "test/" "LICENSE" "src/" ".nrepl-port" "../" "target/" "CHANGELOG.md" "doc/" "project.clj" ".lein-repl-history" "README.md" "./" ".hgignore" "resources/" ".gitignore")
 
- ("/home/josephus/projects/clj/" (25180 51539 96766 77000) "../" "./" "plinko/")
+ ("/home/josephus/emacs/emacs-for-clojure/.emacs.d/customizations/" (25188 47764 594709 470000) "elisp-editing.el" "../" "navigation.el" "setup-js.el" "ui.el" "misc.el" "./" "editing.el" "setup-clojure.el" "shell-integration.el")
 
- ("/home/josephus/projects/" (25180 51332 750966 587000) "../" "./" "clj/")
+ ("/home/josephus/emacs/emacs-for-clojure/.emacs.d/" (25400 7836 22949 987000) "init.el" "customizations/" "../" "elpa/" "themes/" "./" "projectile-bookmarks.eld" "auto-save-list/")
 
- ("/home/josephus/" (25180 51538 352745 174000) "../" "./" ".conda/" "roswell.deb" "Desktop/" "raman.py" ".bash_history" ".roswell/" ".clojure_history" "r4ds.org~" ".lein/" "ruby.rb~" "snap/" ".#on-lisp.org" "rlang.org~" ".racket/" "jobinterviews.org~" ".Xauthority" "c/" "s.save" ".#metaprogramming-in-R.R" ".profile" ".local/" ".wget-hsts" ".#test.lisp" ".pki/" "vaccipy.sh" ".r/" ".seleniumwire/" ".vscode-server/" ".node_repl_history" ".irb_history" ".pam_environment" ".slime/" ".emacs.d.orig/" "miniconda3/" "b.txt" ".bash_logout" "Documents/" "rust/" ".ghc/" "books_my_old1.txt" "writing-zulie.org~" ".emacs.d/" "vaccipy/" "zettelkasten.org~" "new/" ".rustup/" "notes/" ".s.swp" "Downloads/" "pass" ".mozilla/" "myc/" ".slime-history.eld" ".sudo_as_admin_successful" "books_my_old.txt" "Videos/" ".ipython/" ".ssh/" ".cache/" "emacs/" ".poetry/" "Pictures/" ".gem/" "bitbucket/" ".vscode/" "projects/" ".gitconfig" ".lem/" ".bashrc" ".cargo/" ".python_history" "Music/" ".config/" ".gnupg/" "Public/" "rpath/" "s" "Templates/")
+ ("/home/josephus/emacs/emacs-for-clojure/" (25400 7647 669477 420000) "../" "README.md" ".git/" "./" ".config/" ".gitignore" ".emacs.d/" ".cache/")
 
- ("/home/josephus/notes/clj/" (25142 39079 531930 752000) "../" "./" "clj-projects.clj" "cljs-loves-react.cljs" "living-clojure.clj" ".nrepl-port" "multipledispatch.clj" "repl-driven-mobile-dev.org" "the-joy-of-clojure.clj" "the-joy-of-clojure.org" "my-clojure-notes.clj" "generator.test.clj" "knowledge-graphs.clj" "my-cookbook.clj" "aoc-6.clj" "web-dev-with-clj.clj" "stackoverflow.clj" "#clojure.org#" "advent-of-code-2021.clj" "map_star.clj" "some-SO.clj" "reactive-clojurescript.cljs" "tests-are-living-documentation.clj" "graphs.clj" "mobile-apps-with-clojurescript.clj" "clojurescript.cljs" "clojure.clj" "AoC.clj" "braveclojure-reducers.clj" "mobile-app.org")
+ ("/home/josephus/notes/clj/" (25364 46268 164561 559000) "grokking-simplicity.clj" "aoc-6.clj" "solving-problems-the-clojure-way.clj" "braveclojure-reducers.clj" "mobile-apps-with-clojurescript.clj" "clojure-android-talk.clj" "clj-specs.clj" "clojure-miscellaneous.clj" "clojure-in-a-nutshell.clj" ".nrepl-port" "web-dev-with-clj.clj" "tests-are-living-documentation.clj" "../" "reactive-clojurescript.cljs" "braveclojure-chapters.clj" "the-joy-of-clojure.org" "match/" "clj-projects.clj" "knowledge-graphs.clj" "map_star.clj" "clojure-web-tutorial.clj" "babashka.clj" "mobile-app.org" "living-clojure.clj" "multipledispatch.clj" "the-joy-of-clojure.clj" "#clojure.org#" "./" "clojurescript.cljs" "generator.test.clj" "graphs.clj" "AoC.clj" "some-SO.clj" "my-clojure-notes.clj" "plinko-game.clj" "split-by.clj" "advent-of-code-2021.clj" "repl-driven-mobile-dev.org" "stackoverflow.clj" "cljs-loves-react.cljs" "my-cookbook.clj" "clojure.clj" "api-app/")
 
- ("/home/josephus/notes/" (25178 38450 230620 463000) "nice-book-lists.txt" "../" "./" "haskell/" "mini.c" "vim/" "clj/" "better-code/" "freecodecamp/" "app_programming/" "sidehustle/" "java/" "misc/" "web/" "github/" "R/" "c_cpp/" "bas/" "rust/" "design_patterns/" "lisp/" ".#notes.txt" "android/" "js/" "sql/" ".gitignore" "requirements.txt" "mini" "hack/" "julia/" "ruby/" "writing/" "books_my_old.txt" "README.md" "investments/" "jobsearch/" "emacs/" "statistics.py" "ubuntu-notes.sh" "work/" "algotrader/" "haskell.zip" "cardano/" "booktitles.txt" "python/" ".git/" "codeacademy/" "cs_notes/" "blockchain/")
+ ("/home/josephus/notes/" (25391 64208 370188 428000) "freecodecamp/" "web/" "R/" "cooking/" "emacs/" "python/" "silverlight-alternative.txt" "c_cpp/" "babashka/" "statistics.py" "hack/" "raman/" "writing/" "vim/" "better-code/" "cardano/" "julia/" "../" ".#notes.txt" "ruby/" "investments/" "neo4j/" "creating-vbox-win7.org" "mini.c" "functional-friday.clj" "design_patterns/" "blockchain/" "jobsearch/" "CtCI-6th-Edition-Java/" "sidehustle/" "raspi-setup.sh" "versions-miriam-schmidt.txt" "elisp/" "josephuskim_gesuntsheitsmagazin.sh" "#notes.txt#" ".nrepl-history" "README.md" "network/" "algotrader/" "mini" "nice-book-lists.txt" "books_my_old.txt" "chroot.sh" "rust/" "bas/" ".git/" "meal/" "./" "github/" "clj/" "bitbucket" "conda_problem.txt" "brot.txt" "requirements.txt" "chroot-session.sh" "cs_notes/" "haskell/" "work/" "lisp/" "misc/" "racket/" "app_programming/" "creating-vbox-win7.org~" "android/" "codeacademy/" "js/" "booktitles.txt" ".gitignore" "java/" "ubuntu-notes.sh" "haskell.zip" "sql/")
+
+ ("/home/" (24661 16739 836078 511000) "../" "./" "linuxbrew/" "log/" "lost+found/" "josephus/")
+
+ ("/home/josephus/" (25400 7637 909418 297000) "test" "collab/" ".sbclrc" "#setup-computer.org#" "react-native/" "raman.py" "granges.lisp" "ArchLinuxARM-rpi-aarch64-latest.tar.gz" "Untitled Document 1" "archlinux-raspi4.sh" "cheeky-scientist.org~" ".zoom/" ".npm/" ".profile.bak" "o2-prepaid-stick-connect" ".streamlit/" "Templates/" "Public/" "miniconda3_orig/" ".profile" "emacs/" ".ssh/" "thank.txt" "python/" ".gradle/" "wt-vs-k2-mixl1-otx2/" "install_julia.jl" "miniconda3_old/" "Music/" ".gitconfig" "alfonso_konto" "Miniconda3-py39_4.12.0-Linux-x86_64.sh" ".node_repl_history" "analysis.py" "orig.emacs.d/" "scheduled_tweets/" "ubuntu_repairs.txt" "test1.lisp" ".irb-history" "SpectralMachine/" ".rpmdb/" ".irb_history" "boot/" ".clojure/" "graphio-test.py~" ".slime/" "raman-search.py" "raman/" "kaggle/" "gitprojects/" "renewable_energy_repo/" "roswell/" "scrnaseqdl/" ".wget-hsts" ".dbus/" ".#setup-computer.org" "tinder-clone/" "yarn.lock" "test.c" "IPD.R" "code-exercise/" ".mysql_history" ".roswell/" "WoeUSB/" "setup-computer.org~" "bkb.txt" ".gnupg/" "todo.txt" "install.python-poetry.org" ".pki/" ".bundle/" "somecsc.txt" "ruby/" "quicklisp.lisp" ".react-native-cli/" "node_modules/" "hello.clj" ".sudo_as_admin_successful" ".xournal/" "Dropbox (Old)/" "wonderland/" ".linuxbrew/" "quicklisp/" "multiasset_strategytester/" ".adobe/" "code-exercise.zip" ".m2/" "AoC/" ".r/" ".mozilla/" ".android/" "pip_zipline/" ".python_history" "code-exercise-gwangjin/" ".lem/" "julia-jupyter.jl" "handypass" "long-trade-BTC.txt" "Videos/" "projects/" "my_kivy_project/" ".condarc" ".vscode/" ".gem/" ".keras/" ".Rhistory" "Pictures/" "rails/" ".dropbox/" "Desktop/" ".julia/" ".expo/" "myapp/" "bin/" ".telegram-cli/" ".java/" "biotech/" "package.json" ".bash_logout" ".ipython/" "graphio-test.py" "streamlit/" "julia-notes.jl" ".ICEauthority" "app.py" "installations.txt" ".local/" ".slime-history.eld" ".clojure_history" "test.svg" "svg_stack/" ".rstudio-desktop/" "rsyncing-dropbox.org" ".bash_history" "setup-computer.org" "package-lock.json" "Android/" ".nrepl-history" "env_zipline_20190904b_office.yml" "Downloads/" "test-clj/" "VirtualBox VMs/" "miniconda3/" "MAIC_calculate.R" "test.lisp" "wlan.txt" ".conda/" ".racket/" ".netrc" ".lein/" ".xinputrc" "svg_arrange" "local/" ".boot/" "notes/" ".vuerc" ".emulator_console_auth_token" "exercise_gwangjinkim.py" "java-for-python-programmers.java" "test.csv" "Documents/" "tapply-example.R" "cljs/" "validation.key.neo4j" ".jupyter/" "Untitled.ipynb" ".gitpass" "Dropbox/" "cheeky-scientist.org" "make-example-master/" "IdeaProjects/" ".kivy/" "guestbook/" ".yarn/" ".config/" "ArchLinuxARM-rpi-armv7-latest.tar.gz" "woeusb-5.2.4.bash" "packages.microsoft.gpg" "vaccipy-run.sh" "root/" "granges.lisp~" ".bash_profile" "heidelberg.txt" ".macromedia/" "work/" ".yarnrc" "MSOffice2019/" ".dropbox-dist/" "vue/" "tinder/" ".jdks/" ".zipline/" "lisp/" "wohnung.txt" "snap/" "people.tsv" ".bash_profile.bak" "zugang_knnu_kirchzarten.txt" ".wine/" ".mkshrc" ".zshrc" ".hdfview2.14" "code-exercise-gwangjin.zip" "js/" ".launchpadlib/" ".rbenv/" ".racket_history" ".zlogin" "clojure/" "rstudio/" ".nuxtrc" "vaccipy/" "java/" "clojure-tut/" ".condard" "make-example-master.tgz" ".bashrc" ".bitbucket" "julia-1.3.1/" "covidgraph/" "test.xlsx" "cl-env-installation.sh" ".emacs.d/" "my-project/" ".ipynb_checkpoints/" "Miniconda3-latest-Linux-x86_64.sh" "desktop_backup/" "linux-install-1.10.3.986.sh" ".cache/" "../" "./")
+
+ ("/home/josephus/emacs/" (25400 1086 573804 788000) "emacs/" "python/" "emacs-for-r/" "../" "ruby/" "emacs-for-python/" "./" "github/" "emacs-for-clojure/" "emacs-for-python-simple/" "emacs-for-racket/" "js/" "clojure/" "emacs-lsp/")
+
+ ("/home/josephus/emacs/emacs/" (25400 7090 37901 261000) "test/" "INSTALL" "lib/" "src/" "ChangeLog.2" "make-dist" ".mailmap" "README" "config.status" "autogen.sh" "configure" "CONTRIBUTE" "../" "autom4te.cache/" "nextstep/" "config.log" "configure.ac" ".dir-locals.el" "BUGS" ".clang-format" "aclocal.m4" "doc/" "nt/" "lwlib/" "admin/" "INSTALL.REPO" "info/" "msdos/" "build-aux/" ".gitattributes" ".git/" "m4/" "./" "ChangeLog.3" "lib-src/" "GNUmakefile" "lisp/" "modules/" "COPYING" "Makefile" ".gitignore" ".gitlab-ci.yml" "config.bat" "ChangeLog.1" "oldXMenu/" "leim/" "Makefile.in" "etc/")
 )
 
 ;; ----- ido-unc-hosts-cache -----
