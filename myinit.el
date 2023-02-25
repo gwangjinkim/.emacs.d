@@ -316,6 +316,7 @@
          ("\\.Rmd\\'" . R-markdown-mode)
          ("\\.Rnw\\'" . R-noweb-mode))
   :init
+  (require 'ess-site)
   (setq ess-eval-visibly 'nowait)
   (setq ess-ask-for-ess-directory nil)
   :config

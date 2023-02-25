@@ -4,6 +4,7 @@
 ;; (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 ;; 'failed load gnu archive' preventer
 ;; to put infront package-initialize ;; works!
+;;; code:
 (setq package-enable-at-startup nil)
 (setq package-archives '())
 (add-to-list 'package-archives '("elpa"      . "http://elpa.gnu.org/packages/") t) ;; beware "https://url-to-sth/" it has to end with '/'!
@@ -62,3 +63,5 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(aw-leading-char-face ((t (:inherit ace-jump-face-foreground :height 3.0)))))
+
+

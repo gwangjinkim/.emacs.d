@@ -465,6 +465,7 @@ For conda use still `M-x pyvenv-activate RET path to conda env`
            ("\\.Rmd\\'" . R-markdown-mode)
            ("\\.Rnw\\'" . R-noweb-mode))
     :init
+    (require 'ess-site)
     (setq ess-eval-visibly 'nowait)
     (setq ess-ask-for-ess-directory nil)
     :config
@@ -499,7 +500,7 @@ For conda use still `M-x pyvenv-activate RET path to conda env`
             (ess-R-fl-keyword:%!in% . t)
             (ess-R-fl-keyword:%notin% . t)))
     :bind
-    (:map inferior-ess-mode-map
+    (:map ess-mode-map
           ("C-c C-j" . ess-eval-line-and-step)
           ("C-c C-l" . ess-eval-region-or-function-or-paragraph-and-step)
           ("C-c C-r" . ess-eval-region)
@@ -514,7 +515,5 @@ For conda use still `M-x pyvenv-activate RET path to conda env`
 | evaluate line/expression     | C-c C-c          |
 | interface to R documentation | C-c C-v          |
 | help                         | ess-help, C-h h  |
-
-
 
 
