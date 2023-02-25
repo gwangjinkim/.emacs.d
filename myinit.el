@@ -319,7 +319,7 @@
   (setq ess-eval-visibly 'nowait)
   (setq ess-ask-for-ess-directory nil)
   :config
-  (ess-toggle-underscore nil)
+  (setq ess-toggle-underscore nil)
   (setq ess-default-style 'DEFAULT)
   (setq ess-indent-with-fancy-comments nil)
   (setq ess-fancy-comments nil)

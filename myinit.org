@@ -499,7 +499,7 @@ For conda use still `M-x pyvenv-activate RET path to conda env`
             (ess-R-fl-keyword:%!in% . t)
             (ess-R-fl-keyword:%notin% . t)))
     :bind
-    (:map ess-mode-map
+    (:map inferior-ess-mode-map
           ("C-c C-j" . ess-eval-line-and-step)
           ("C-c C-l" . ess-eval-region-or-function-or-paragraph-and-step)
           ("C-c C-r" . ess-eval-region)
