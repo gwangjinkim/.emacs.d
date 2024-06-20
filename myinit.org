@@ -157,21 +157,23 @@ They recommend `:config (avy-setup-default)
 
 ** Org-babel-execute
 #+BEGIN_SRC emacs-lisp
-          ;; (require 'org)
-          ;; (require 'ob)
+              ;; (require 'org)
+              ;; (require 'ob)
 
-          ;; (require 'ob-clojure)
-          ;; (setq org-babel-clojure-backend 'cider)
+              ;; (require 'ob-clojure)
+              ;; (setq org-babel-clojure-backend 'cider)
 
-          (org-babel-do-load-languages
-           'org-babel-load-languages
-           '((python . t)
-             (R . t)
-             (lisp . t)
-             (clojure . t)))
+              (org-babel-do-load-languages
+               'org-babel-load-languages
+               '((python . t)
+                 (R . t)
+                 (lisp . t)
+                 (clojure . t)
+                 (js . t)
+                 (typescript . t)))
 
-          ;; stop emacs asking for confirmation
-          (setq org-confirm-babel-evaluate nil)
+              ;; stop emacs asking for confirmation
+              (setq org-confirm-babel-evaluate nil)
 
 #+END_SRC
 
