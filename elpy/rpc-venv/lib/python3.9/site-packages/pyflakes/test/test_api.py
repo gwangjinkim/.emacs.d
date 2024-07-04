@@ -233,9 +233,7 @@ class TestReporter(TestCase):
         """
         err = io.StringIO()
         reporter = Reporter(None, err)
-        reporter.syntaxError('foo.py', 'a problem', 3,
-                             8 if sys.version_info >= (3, 8) else 7,
-                             'bad line of source')
+        reporter.syntaxError('foo.py', 'a problem', 3, 8, 'bad line of source')
         self.assertEqual(
             ("foo.py:3:8: a problem\n"
              "bad line of source\n"
@@ -281,11 +279,10 @@ class TestReporter(TestCase):
         reporter = Reporter(None, err)
         reporter.syntaxError('foo.py', 'a problem', 3, len(lines[0]) + 7,
                              '\n'.join(lines))
-        column = 25 if sys.version_info >= (3, 8) else 7
         self.assertEqual(
-            ("foo.py:3:%d: a problem\n" % column +
+            ("foo.py:3:25: a problem\n" +
              lines[-1] + "\n" +
-             " " * (column - 1) + "^\n"),
+             " " * 24 + "^\n"),
             err.getvalue())
 
     def test_unexpectedError(self):
@@ -417,10 +414,8 @@ def baz():
 
             if PYPY or sys.version_info >= (3, 10):
                 column = 12
-            elif sys.version_info >= (3, 8):
-                column = 8
             else:
-                column = 11
+                column = 8
             self.assertHasErrors(
                 sourcePath,
                 ["""\
@@ -479,6 +474,11 @@ def foo(bar=baz, bax):
     pass
 """
         with self.makeTempFile(source) as sourcePath:
+            if sys.version_info >= (3, 12):
+                msg = 'parameter without a default follows parameter with a default'  # noqa: E501
+            else:
+                msg = 'non-default argument follows default argument'
+
             if PYPY and sys.version_info >= (3, 9):
                 column = 18
             elif PYPY:
@@ -487,18 +487,16 @@ def foo(bar=baz, bax):
                 column = 18
             elif sys.version_info >= (3, 9):
                 column = 21
-            elif sys.version_info >= (3, 8):
-                column = 9
             else:
-                column = 8
+                column = 9
             last_line = ' ' * (column - 1) + '^\n'
-            columnstr = '%d:' % column
             self.assertHasErrors(
                 sourcePath,
-                ["""\
-{}:1:{} non-default argument follows default argument
+                [f"""\
+{sourcePath}:1:{column}: {msg}
 def foo(bar=baz, bax):
-{}""".format(sourcePath, columnstr, last_line)])
+{last_line}"""]
+            )
 
     def test_nonKeywordAfterKeywordSyntaxError(self):
         """
@@ -512,7 +510,7 @@ foo(bar=baz, bax)
         with self.makeTempFile(source) as sourcePath:
             if sys.version_info >= (3, 9):
                 column = 17
-            elif not PYPY and sys.version_info >= (3, 8):
+            elif not PYPY:
                 column = 14
             else:
                 column = 13
@@ -539,7 +537,7 @@ foo(bar=baz, bax)
                 column = 7
             elif PYPY:
                 column = 6
-            elif sys.version_info >= (3, 9):
+            elif (3, 9) <= sys.version_info < (3, 12):
                 column = 13
             else:
                 column = 7
@@ -628,8 +626,12 @@ x = "%s"
 x = "%s"
 """ % SNOWMAN).encode('utf-16')
         with self.makeTempFile(source) as sourcePath:
-            self.assertHasErrors(
-                sourcePath, [f"{sourcePath}: problem decoding source\n"])
+            if sys.version_info < (3, 11, 4):
+                expected = f"{sourcePath}: problem decoding source\n"
+            else:
+                expected = f"{sourcePath}:1: source code string cannot contain null bytes\n"  # noqa: E501
+
+            self.assertHasErrors(sourcePath, [expected])
 
     def test_checkRecursive(self):
         """
@@ -679,17 +681,9 @@ x = "%s"
                 "max(1 for i in range(10), key=lambda x: x+1)",
                 "   ^",
             ]
-        elif sys.version_info >= (3, 8):
+        else:
             expected_error = [
                 "<stdin>:1:5: Generator expression must be parenthesized",
-            ]
-        elif sys.version_info >= (3, 7):
-            expected_error = [
-                "<stdin>:1:4: Generator expression must be parenthesized",
-            ]
-        elif sys.version_info >= (3, 6):
-            expected_error = [
-                "<stdin>:1:4: Generator expression must be parenthesized if not sole argument",  # noqa: E501
             ]
 
         self.assertEqual(errlines, expected_error)

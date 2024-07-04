@@ -72,6 +72,83 @@
     (ac-config-default)
     (global-auto-complete-mode t)))
 
+;; js itself is natively recognized
+
+
+
+;; we add typescript
+
+
+;; ;; Define ts-mode for editing TypeScript src blocks in Org mode
+;; (define-derived-mode ts-mode typescript-mode "ts"
+;;   "Major mode for editing TypeScript src blocks in Org mode.")
+
+;; ;; TypeScript Mode
+;; (use-package typescript-mode
+;;   :ensure t  ;; Install `typescript-mode` if not already installed
+;;   :mode ("\\.ts\\'" . typescript-mode)  ;; Automatically associate `.ts` files with `typescript-mode`
+;;   :init
+;;   ;; Optional initialization if needed
+;;   (setq typescript-indent-level 2)  ;; Set indentation level to 2 spaces
+;;   )
+
+;; ;; DAP Mode for Debugging
+;; (use-package dap-mode
+;;   :ensure t  ;; Install `dap-mode` if not already installed
+;;   :config
+;;   ;; Configure dap-mode as needed
+;;   )
+
+;; ;; LSP Mode for Language Server Protocol
+;; (use-package lsp-mode
+;;   :ensure t  ;; Install `lsp-mode` if not already installed
+;;   :commands lsp  ;; Initialize lsp-mode when needed
+;;   :hook
+;;   ((typescript-mode . lsp)
+;;    (javascript-mode . lsp))
+;;   :custom
+;;   (lsp-enable-file-watchers nil)  ;; Disable file watchers for better performance
+;;   )
+
+;; ;; Include Org Babel TypeScript Execution Configuration
+;; ;; Reference: https://www.reddit.com/r/emacs/comments/b7rsxu/behold_orgbabelexecutetypescript/
+;; (use-package ob-typescript
+;;   :after org
+;;   :config
+;;   (add-to-list 'org-babel-load-languages '(typescript . t))
+;;   (setq org-babel-default-header-args:typescript
+;;         '((:results . "output")
+;;           (:exports . "both")
+;;           (:shebang . "#!/usr/bin/env ts-node")
+;;           (:eval . "typescript")))
+;;   )
+
+;; ;; Optional: Add tree-sitter and tree-sitter-langs configuration if needed
+;; ;; (use-package tree-sitter
+;; ;;   :ensure t
+;; ;;   :config
+;; ;;   (require 'tree-sitter-langs)
+;; ;;   (global-tree-sitter-mode)
+
+
+
+
+(use-package typescript-mode
+  :ensure t
+  :mode "\\.ts\\'"
+  :config
+  ;; Optional additional configuration can go here
+  :init
+  (setq typescript-indent-level 2)  ;; Set indentation level to 2 spaces
+  )
+
+;; and add org support
+(use-package ob-typescript
+  :ensure t
+  :config
+  ;; Set the command for TypeScript execution
+  (setq org-babel-command:typescript "npx ts-node"))
+
 ;; (add-to-list 'load-path (expand-file-name "~/src/lisp") t)
 ;; (add-to-list 'load-path (expand-file-name "~/path/to/orgdir/contrib/lisp") t)
 
@@ -93,7 +170,9 @@
  '((python . t)
    (R . t)
    (lisp . t)
-   (clojure . t)))
+   (clojure . t)
+   (js . t)
+   (typescript . t)))
 
 ;; stop emacs asking for confirmation
 (setq org-confirm-babel-evaluate nil)

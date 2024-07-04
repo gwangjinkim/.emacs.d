@@ -29,7 +29,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV "/home/josephus/.emacs.d/elpy/rpc-venv"
+set -gx VIRTUAL_ENV "/Users/josephus/.emacs.d/elpy/rpc-venv"
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/bin" $PATH

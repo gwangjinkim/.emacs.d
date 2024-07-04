@@ -11,22 +11,23 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Pytree nodes with extra formatting information.
-
-This is a thin wrapper around a pytree.Leaf node.
-"""
+"""Enhanced token information for formatting."""
 
 import keyword
 import re
+from functools import lru_cache
 
-from lib2to3.pgen2 import token
+from yapf_third_party._ylib2to3.pgen2 import token
+from yapf_third_party._ylib2to3.pytree import type_repr
 
-from yapf.yapflib import py3compat
-from yapf.yapflib import pytree_utils
+from yapf.pytree import pytree_utils
 from yapf.yapflib import style
 from yapf.yapflib import subtypes
 
 CONTINUATION = token.N_TOKENS
+
+_OPENING_BRACKETS = frozenset({'(', '[', '{'})
+_CLOSING_BRACKETS = frozenset({')', ']', '}'})
 
 
 def _TabbedContinuationAlignPadding(spaces, align_style, tab_width):
@@ -48,13 +49,13 @@ def _TabbedContinuationAlignPadding(spaces, align_style, tab_width):
 
 
 class FormatToken(object):
-  """A wrapper around pytree Leaf nodes.
+  """Enhanced token information for formatting.
 
   This represents the token plus additional information useful for reformatting
   the code.
 
   Attributes:
-    node: The PyTree node this token represents.
+    node: The original token node.
     next_token: The token in the logical line after this token or None if this
       is the last token in the logical line.
     previous_token: The token in the logical line before this token or None if
@@ -83,13 +84,23 @@ class FormatToken(object):
     newlines: The number of newlines needed before this token.
   """
 
-  def __init__(self, node):
+  def __init__(self, node, name):
     """Constructor.
 
     Arguments:
       node: (pytree.Leaf) The node that's being wrapped.
+      name: (string) The name of the node.
     """
     self.node = node
+    self.name = name
+    self.type = node.type
+    self.column = node.column
+    self.lineno = node.lineno
+    self.value = node.value
+
+    if self.is_continuation:
+      self.value = node.value.rstrip()
+
     self.next_token = None
     self.previous_token = None
     self.matching_bracket = None
@@ -104,19 +115,10 @@ class FormatToken(object):
         node, pytree_utils.Annotation.MUST_SPLIT, default=False)
     self.newlines = pytree_utils.GetNodeAnnotation(
         node, pytree_utils.Annotation.NEWLINES)
-
-    self.type = node.type
-    self.column = node.column
-    self.lineno = node.lineno
-    self.name = pytree_utils.NodeName(node)
-
     self.spaces_required_before = 0
+
     if self.is_comment:
       self.spaces_required_before = style.Get('SPACES_BEFORE_COMMENT')
-
-    self.value = node.value
-    if self.is_continuation:
-      self.value = node.value.rstrip()
 
     stypes = pytree_utils.GetNodeAnnotation(node,
                                             pytree_utils.Annotation.SUBTYPE)
@@ -195,7 +197,7 @@ class FormatToken(object):
       return
 
     cur_column = self.column
-    prev_column = previous.node.column
+    prev_column = previous.column
     prev_len = len(previous.value)
 
     if previous.is_pseudo and previous.value == ')':
@@ -210,10 +212,10 @@ class FormatToken(object):
     self.spaces_required_before = cur_column - (prev_column + prev_len)
 
   def OpensScope(self):
-    return self.value in pytree_utils.OPENING_BRACKETS
+    return self.value in _OPENING_BRACKETS
 
   def ClosesScope(self):
-    return self.value in pytree_utils.CLOSING_BRACKETS
+    return self.value in _CLOSING_BRACKETS
 
   def AddSubtype(self, subtype):
     self.subtypes.add(subtype)
@@ -238,7 +240,7 @@ class FormatToken(object):
     return subtypes.BINARY_OPERATOR in self.subtypes
 
   @property
-  @py3compat.lru_cache()
+  @lru_cache()
   def is_arithmetic_op(self):
     """Token is an arithmetic operator."""
     return self.value in frozenset({
@@ -276,9 +278,13 @@ class FormatToken(object):
     return self.type == CONTINUATION
 
   @property
-  @py3compat.lru_cache()
+  @lru_cache()
   def is_keyword(self):
-    return keyword.iskeyword(self.value)
+    return keyword.iskeyword(
+        self.value) or (self.value == 'match' and
+                        type_repr(self.node.parent.type) == 'match_stmt') or (
+                            self.value == 'case' and
+                            type_repr(self.node.parent.type) == 'case_block')
 
   @property
   def is_name(self):

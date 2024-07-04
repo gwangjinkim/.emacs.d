@@ -19,14 +19,13 @@ line if there were no line length restrictions. It's then used by the parser to
 perform the wrapping required to comply with the style guide.
 """
 
+from yapf_third_party._ylib2to3.fixer_util import syms as python_symbols
+
+from yapf.pytree import pytree_utils
+from yapf.pytree import split_penalty
 from yapf.yapflib import format_token
-from yapf.yapflib import py3compat
-from yapf.yapflib import pytree_utils
-from yapf.yapflib import split_penalty
 from yapf.yapflib import style
 from yapf.yapflib import subtypes
-
-from lib2to3.fixer_util import syms as python_symbols
 
 
 class LogicalLine(object):
@@ -135,16 +134,6 @@ class LogicalLine(object):
       self.last.next_token = token
     self._tokens.append(token)
 
-  def AppendNode(self, node):
-    """Convenience method to append a pytree node directly.
-
-    Wraps the node with a FormatToken.
-
-    Arguments:
-      node: the node to append
-    """
-    self.AppendToken(format_token.FormatToken(node))
-
   @property
   def first(self):
     """Returns the first non-whitespace token."""
@@ -169,7 +158,7 @@ class LogicalLine(object):
     have spaces around them, for example).
 
     Arguments:
-      indent_per_depth: how much spaces to indend per depth level.
+      indent_per_depth: how much spaces to indent per depth level.
 
     Returns:
       A string representing the line as code.
@@ -312,9 +301,9 @@ def _SpaceRequiredBetween(left, right, is_line_disabled):
     return True
   if style.Get('SPACE_INSIDE_BRACKETS'):
     # Supersede the "no space before a colon or comma" check.
-    if lval in pytree_utils.OPENING_BRACKETS and rval == ':':
+    if left.OpensScope() and rval == ':':
       return True
-    if rval in pytree_utils.CLOSING_BRACKETS and lval == ':':
+    if right.ClosesScope() and lval == ':':
       return True
   if (style.Get('SPACES_AROUND_SUBSCRIPT_COLON') and
       (_IsSubscriptColonAndValuePair(left, right) or
@@ -365,7 +354,7 @@ def _SpaceRequiredBetween(left, right, is_line_disabled):
       # A string followed by something other than a subscript, closing bracket,
       # dot, or a binary op should have a space after it.
       return True
-    if rval in pytree_utils.CLOSING_BRACKETS:
+    if right.ClosesScope():
       # A string followed by closing brackets should have a space after it
       # depending on SPACE_INSIDE_BRACKETS.  A string followed by opening
       # brackets, however, should not.
@@ -449,28 +438,26 @@ def _SpaceRequiredBetween(left, right, is_line_disabled):
         (rval == ')' and
          _IsDictListTupleDelimiterTok(right, is_opening=False)))):
       return True
-  if (lval in pytree_utils.OPENING_BRACKETS and
-      rval in pytree_utils.OPENING_BRACKETS):
+  if left.OpensScope() and right.OpensScope():
     # Nested objects' opening brackets shouldn't be separated, unless enabled
     # by SPACE_INSIDE_BRACKETS.
     return style.Get('SPACE_INSIDE_BRACKETS')
-  if (lval in pytree_utils.CLOSING_BRACKETS and
-      rval in pytree_utils.CLOSING_BRACKETS):
+  if left.ClosesScope() and right.ClosesScope():
     # Nested objects' closing brackets shouldn't be separated, unless enabled
     # by SPACE_INSIDE_BRACKETS.
     return style.Get('SPACE_INSIDE_BRACKETS')
-  if lval in pytree_utils.CLOSING_BRACKETS and rval in '([':
+  if left.ClosesScope() and rval in '([':
     # A call, set, dictionary, or subscript that has a call or subscript after
     # it shouldn't have a space between them.
     return False
-  if lval in pytree_utils.OPENING_BRACKETS and _IsIdNumberStringToken(right):
+  if left.OpensScope() and _IsIdNumberStringToken(right):
     # Don't separate the opening bracket from the first item, unless enabled
     # by SPACE_INSIDE_BRACKETS.
     return style.Get('SPACE_INSIDE_BRACKETS')
   if left.is_name and rval in '([':
     # Don't separate a call or array access from the name.
     return False
-  if rval in pytree_utils.CLOSING_BRACKETS:
+  if right.ClosesScope():
     # Don't separate the closing bracket from the last item, unless enabled
     # by SPACE_INSIDE_BRACKETS.
     # FIXME(morbo): This might be too permissive.
@@ -478,13 +465,12 @@ def _SpaceRequiredBetween(left, right, is_line_disabled):
   if lval == 'print' and rval == '(':
     # Special support for the 'print' function.
     return False
-  if lval in pytree_utils.OPENING_BRACKETS and _IsUnaryOperator(right):
+  if left.OpensScope() and _IsUnaryOperator(right):
     # Don't separate a unary operator from the opening bracket, unless enabled
     # by SPACE_INSIDE_BRACKETS.
     return style.Get('SPACE_INSIDE_BRACKETS')
-  if (lval in pytree_utils.OPENING_BRACKETS and
-      (subtypes.VARARGS_STAR in right.subtypes or
-       subtypes.KWARGS_STAR_STAR in right.subtypes)):
+  if (left.OpensScope() and (subtypes.VARARGS_STAR in right.subtypes or
+                             subtypes.KWARGS_STAR_STAR in right.subtypes)):
     # Don't separate a '*' or '**' from the opening bracket, unless enabled
     # by SPACE_INSIDE_BRACKETS.
     return style.Get('SPACE_INSIDE_BRACKETS')
@@ -518,13 +504,12 @@ def _CanBreakBefore(prev_token, cur_token):
   """Return True if a line break may occur before the current token."""
   pval = prev_token.value
   cval = cur_token.value
-  if py3compat.PY3:
-    if pval == 'yield' and cval == 'from':
-      # Don't break before a yield argument.
-      return False
-    if pval in {'async', 'await'} and cval in {'def', 'with', 'for'}:
-      # Don't break after sync keywords.
-      return False
+  if pval == 'yield' and cval == 'from':
+    # Don't break before a yield argument.
+    return False
+  if pval in {'async', 'await'} and cval in {'def', 'with', 'for'}:
+    # Don't break after sync keywords.
+    return False
   if cur_token.split_penalty >= split_penalty.UNBREAKABLE:
     return False
   if pval == '@':
