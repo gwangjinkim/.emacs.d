@@ -7,7 +7,9 @@
 (use-package which-key
   :ensure t
   :config
-  (which-key-mode))
+  (which-key-mode)
+  (setq which-key-separator " → " )
+  (setq which-key-prefix-prefix "+"))
 
 ;; (setq ido-enable-flex-matching t)
 ;; (setq ido-everywhere t)
@@ -242,6 +244,33 @@
 
 ;; for slime
 
+
+(defun system-ram-size-in-mb ()
+  "Return the system RAM size in megabytes, platform-independent."
+  (interactive)
+  (let ((ram-size-command
+         (cond
+          ((eq system-type 'darwin) "sysctl -n hw.memsize")
+          ((eq system-type 'gnu/linux) "grep MemTotal /proc/meminfo | awk '{print $2 * 1024}'")
+          ((eq system-type 'windows-nt) "wmic computersystem get TotalPhysicalMemory /Value | findstr TotalPhysicalMemory="))))
+    (let ((output (shell-command-to-string ram-size-command)))
+      (if output
+          (/ (string-to-number (string-trim (cadr (split-string output "=")))) (* 1024 1024))
+        (error "Failed to get system RAM size")))))
+
+(defun string-trim (str)
+  "Trim leading and trailing whitespace from STR."
+  (replace-regexp-in-string "\\`[ \t\n\r]+" "" (replace-regexp-in-string "[ \t\n\r]+\\'" "" str)))
+
+;; ;; set memory of sbcl to your machine's RAM size for sbcl and clisp
+;; ;; (but for others - I didn't used them yet)
+;; (defun unix-system-ram-size ()
+;;   (let ((bytes (string-to-number (shell-command-to-string "sysctl hw.memsize | awk '{print $2}'"))))
+;;     (/ bytes (* 1024 1024)))) ;; this works also for macos
+;; ;; previously  "free --mega | awk 'FNR == 2 {print $2}'"
+;; ;; (linux-system-ram-size)
+
+
 (use-package slime
   :ensure t
   :config
@@ -250,13 +279,7 @@
   ;; $ ros use sbcl dynamic-space-size=3905
   ;; query with: (/ (- sb-vm:dynamic-space-end sb-vm:dynamic-space-start) (expt 1024 2))
 
-  ;; set memory of sbcl to your machine's RAM size for sbcl and clisp
-  ;; (but for others - I didn't used them yet)
-  (defun linux-system-ram-size ()
-    (string-to-number (shell-command-to-string "free --mega | awk 'FNR == 2 {print $2}'")))
-  ;; (linux-system-ram-size)
-
-  (setq inferior-lisp-program (concat "ros -Q dynamic-space-size=" (number-to-string (linux-system-ram-size)) " run"))
+  (setq inferior-lisp-program (concat "ros -Q dynamic-space-size=" (number-to-string (system-ram-size-in-mb)) " run"))
 
   ;; and for fancier look I personally add:
   (setq slime-contribs '(slime-fancy))
