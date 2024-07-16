@@ -7,6 +7,18 @@
 #+BEGIN_SRC emacs-lisp
   (setq inhibit-startup-message t)
   (tool-bar-mode -1)
+
+
+
+  (use-package sweet-theme
+    :ensure t
+    :init
+    (load-theme 'sweet t))
+
+  (use-package doom-modeline
+    :ensure t
+    :hook
+    (after-init . doom-modeline-mode))
 #+END_SRC
 
 
@@ -421,6 +433,34 @@ sudo pip install --upgrade epc
     ;;                                    ("ecl" ("ros use ecl && ros run --"))
     ;;                                    ("cmucl" ("ros use cmucl && ros run --"))))
 #+END_SRC
+* Racket
+#+begin_src emacs-lisp
+  (use-package racket-mode
+    :ensure t
+    :hook (racket-mode . racket-xp-mode))
+
+  (use-package company
+    :ensure t
+    :config
+    (setq company-minimum-prefix-length 2)
+    (setq company-idle-delay 0.1)
+    (setq company-tooltip-align-annotations t)
+    :hook
+    ((racket-mode . company-mode)
+     (racket-repl-mode . company-mode)))
+
+  (use-package rainbow-delimiters
+    :ensure t
+    :hook
+    ((racket-mode . rainbow-delimiters-mode)
+     (racket-repl-mode . rainbow-delimiters-mode)))
+
+  (use-package paredit
+    :ensure t
+    :hook
+    ((racket-mode . paredit-mode)
+     (racket-repl-mode . paredit-mode)))
+#+end_src
 * R/Julia ESS
 
 For conda use still `M-x pyvenv-activate RET path to conda env`

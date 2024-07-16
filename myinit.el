@@ -1,6 +1,18 @@
 (setq inhibit-startup-message t)
 (tool-bar-mode -1)
 
+
+
+(use-package sweet-theme
+  :ensure t
+  :init
+  (load-theme 'sweet t))
+
+(use-package doom-modeline
+  :ensure t
+  :hook
+  (after-init . doom-modeline-mode))
+
 (use-package try
   :ensure t)
 
@@ -297,6 +309,32 @@
   ;;                                              "MB"))
   ;;                                    ("ecl" ("ros use ecl && ros run --"))
   ;;                                    ("cmucl" ("ros use cmucl && ros run --"))))
+
+(use-package racket-mode
+  :ensure t
+  :hook (racket-mode . racket-xp-mode))
+
+(use-package company
+  :ensure t
+  :config
+  (setq company-minimum-prefix-length 2)
+  (setq company-idle-delay 0.1)
+  (setq company-tooltip-align-annotations t)
+  :hook
+  ((racket-mode . company-mode)
+   (racket-repl-mode . company-mode)))
+
+(use-package rainbow-delimiters
+  :ensure t
+  :hook
+  ((racket-mode . rainbow-delimiters-mode)
+   (racket-repl-mode . rainbow-delimiters-mode)))
+
+(use-package paredit
+  :ensure t
+  :hook
+  ((racket-mode . paredit-mode)
+   (racket-repl-mode . paredit-mode)))
 
 ;; (use-package ess
 ;;   :ensure t
