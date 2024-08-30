@@ -368,17 +368,18 @@ sudo pip install --upgrade epc
     :ensure t
     :bind (("C-x g" . magit-status)))
 #+end_src
-* Common Lisp 
+* Common
+Lisp
 #+BEGIN_SRC elisp
   ;; (load (expand-file-name "~/quicklisp/slime-helper.el"))
   ;; ;; Replace "sbcl" with the path to your implementation
   ;; (setq inferior-lisp-program "/usr/bin/sbcl")
 
 #+END_SRC
-* Common Lisp Roswell
+* Common
+Lisp Roswell
 #+BEGIN_SRC emacs-lisp
   ;; for slime
-
 
   (defun system-ram-size-in-mb ()
     "Return the system RAM size in megabytes, platform-independent."
@@ -409,12 +410,22 @@ sudo pip install --upgrade epc
   (use-package slime
     :ensure t
     :config
-    (load (expand-file-name "~/.roswell/helper.el"))
+    ;; roswell is not available for windows.
+    (cond
+     ((eq system-type 'darwin) (load (expand-file-name "~/.roswell/helper.el")))
+     ((eq system-type 'gnu/linux) (load (expand-file-name "~/.roswell/helper.el")))
+     ((eq system-type 'windows-nt) (load (expand-file-name "C://Users/josephus/quicklisp/slime-helper.el"))
+      (setq inferior-lisp-program (concat "sbcl --dynamic-space-size "
+                                          (number-to-string (system-ram-size-in-mb)))))
+     (t
+      (error "Failed to load helper.el")))
+
     ;; $ ros config
     ;; $ ros use sbcl dynamic-space-size=3905
     ;; query with: (/ (- sb-vm:dynamic-space-end sb-vm:dynamic-space-start) (expt 1024 2))
-
-    (setq inferior-lisp-program (concat "ros -Q dynamic-space-size=" (number-to-string (system-ram-size-in-mb)) " run"))
+    (cond
+     ((or (eq system-type 'darwin) (eq system-type 'gnu/linux))
+      (setq inferior-lisp-program (concat "ros -Q dynamic-space-size=" (number-to-string (system-ram-size-in-mb)) " run"))))
 
     ;; and for fancier look I personally add:
     (setq slime-contribs '(slime-fancy))
@@ -425,15 +436,16 @@ sudo pip install --upgrade epc
     ;; don't use tabs
     (setq-default indent-tabs-mode nil))
 
-    ;; (setq slime-lisp-implementations `(("sbcl" ("ros use sbcl && ros run --" "--dynamic-space-size"
-    ;;                                             ,(number-to-string (linux-system-ram-size))))
-    ;;                                    ("clisp" ("ros use clisp && ros run --" "-m"
-    ;;                                              ,(number-to-string (linux-system-ram-size))
-    ;;                                              "MB"))
-    ;;                                    ("ecl" ("ros use ecl && ros run --"))
-    ;;                                    ("cmucl" ("ros use cmucl && ros run --"))))
+  ;; (setq slime-lisp-implementations `(("sbcl" ("ros use sbcl && ros run --" "--dynamic-space-size"
+  ;;                                             ,(number-to-string (linux-system-ram-size))))
+  ;;                                    ("clisp" ("ros use clisp && ros run --" "-m"
+  ;;                                              ,(number-to-string (linux-system-ram-size))
+  ;;                                              "MB"))
+  ;;                                    ("ecl" ("ros use ecl && ros run --"))
+  ;;                                    ("cmucl" ("ros use cmucl && ros run --"))))
 #+END_SRC
-* Racket
+* Rac
+ket
 #+begin_src emacs-lisp
   (use-package racket-mode
     :ensure t
