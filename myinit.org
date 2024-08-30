@@ -376,7 +376,8 @@ Lisp
   ;; (setq inferior-lisp-program "/usr/bin/sbcl")
 
 #+END_SRC
-* Common
+* C
+ommon
 Lisp Roswell
 #+BEGIN_SRC emacs-lisp
   ;; for slime
@@ -414,7 +415,7 @@ Lisp Roswell
     (cond
      ((eq system-type 'darwin) (load (expand-file-name "~/.roswell/helper.el")))
      ((eq system-type 'gnu/linux) (load (expand-file-name "~/.roswell/helper.el")))
-     ((eq system-type 'windows-nt) (load (expand-file-name "C://Users/josephus/quicklisp/slime-helper.el"))
+     ((eq system-type 'windows-nt) (load (concat (getenv "USERPROFILE") "\\quicklisp\\slime-helper.el"))
       (setq inferior-lisp-program (concat "sbcl --dynamic-space-size "
                                           (number-to-string (system-ram-size-in-mb)))))
      (t
