@@ -427,6 +427,7 @@ sudo pip install --upgrade epc
 
     ;; and for fancier look I personally add:
     (setq slime-contribs '(slime-fancy slime-cl-indent))
+    (setq listp-indent-function 'common-lisp-indent-function)
 
     ;; ;; ensure correct indentation e.g. of `loop` form
     ;; (add-to-list 'slime-contribs 'slime-cl-indent)

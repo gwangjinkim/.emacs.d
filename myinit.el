@@ -256,7 +256,6 @@
 
 ;; for slime
 
-
 (defun system-ram-size-in-mb ()
   "Return the system RAM size in megabytes, platform-independent."
   (interactive)
@@ -286,29 +285,62 @@
 (use-package slime
   :ensure t
   :config
-  (load (expand-file-name "~/.roswell/helper.el"))
+  ;; roswell is not available for windows.
+  (cond
+   ((eq system-type 'darwin) (load (expand-file-name "~/.roswell/helper.el")))
+   ((eq system-type 'gnu/linux) (load (expand-file-name "~/.roswell/helper.el")))
+   ((eq system-type 'windows-nt) (load (concat (getenv "USERPROFILE") "\\quicklisp\\slime-helper.el"))
+    (setq inferior-lisp-program (concat "sbcl --dynamic-space-size "
+                                        (number-to-string (system-ram-size-in-mb)))))
+   (t
+    (error "Failed to load helper.el")))
+
   ;; $ ros config
   ;; $ ros use sbcl dynamic-space-size=3905
   ;; query with: (/ (- sb-vm:dynamic-space-end sb-vm:dynamic-space-start) (expt 1024 2))
-
-  (setq inferior-lisp-program (concat "ros -Q dynamic-space-size=" (number-to-string (system-ram-size-in-mb)) " run"))
+  (cond
+   ((or (eq system-type 'darwin) (eq system-type 'gnu/linux))
+    (setq inferior-lisp-program (concat "ros -Q dynamic-space-size=" (number-to-string (system-ram-size-in-mb)) " run"))))
 
   ;; and for fancier look I personally add:
-  (setq slime-contribs '(slime-fancy))
+  (setq slime-contribs '(slime-fancy slime-cl-indent))
 
-  ;; ensure correct indentation e.g. of `loop` form
-  (add-to-list 'slime-contribs 'slime-cl-indent)
+  ;; ;; ensure correct indentation e.g. of `loop` form
+  ;; (add-to-list 'slime-contribs 'slime-cl-indent)
 
   ;; don't use tabs
-  (setq-default indent-tabs-mode nil))
+  (setq-default indent-tabs-mode nil)
 
-  ;; (setq slime-lisp-implementations `(("sbcl" ("ros use sbcl && ros run --" "--dynamic-space-size"
-  ;;                                             ,(number-to-string (linux-system-ram-size))))
-  ;;                                    ("clisp" ("ros use clisp && ros run --" "-m"
-  ;;                                              ,(number-to-string (linux-system-ram-size))
-  ;;                                              "MB"))
-  ;;                                    ("ecl" ("ros use ecl && ros run --"))
-  ;;                                    ("cmucl" ("ros use cmucl && ros run --"))))
+  )
+
+;; (setq slime-lisp-implementations `(("sbcl" ("ros use sbcl && ros run --" "--dynamic-space-size"
+;;                                             ,(number-to-string (linux-system-ram-size))))
+;;                                    ("clisp" ("ros use clisp && ros run --" "-m"
+;;                                              ,(number-to-string (linux-system-ram-size))
+;;                                              "MB"))
+;;                                    ("ecl" ("ros use ecl && ros run --"))
+;;                                    ("cmucl" ("ros use cmucl && ros run --"))))
+
+;; ;; doesn't work as expected!! ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;; Debugger display values
+;; (defun my-slime-step-display-value (n)
+;;   "Step N times through the code and display the return value."
+;;   (interactive "p")
+;;   (slime-eval `(swank:stepper-step ,n))
+;;   (let ((last-result (slime-eval '(swank:inspector-call-nth-function 0))))
+;;     (message "Return value: %s" last-result)))
+
+;; (define-key slime-mode-map (kbd "C-c C-s") 'my-slime-step-display-value)
+
+;; (defun my-sly-step-display-value (n)
+;;   "Step N times through the code and display the return value."
+;;   (interactive "p")
+;;   (sly-db-step n)
+;;   (let ((last-result (sly-eval '(slynk:call-with-last-step-result))))
+;;     (message "Return value: %s" last-result)))
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+    ;; (define-key sly-db-mode-map (kbd "C-c C-s") 'my-sly-step-display-value)
 
 (use-package racket-mode
   :ensure t
