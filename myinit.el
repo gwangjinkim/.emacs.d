@@ -424,3 +424,126 @@
         ("C-c C-p" . ess-eval-buffer)
         ("C-c C-o" . ess-eval-chunk))
   )
+
+;; Enable Org-mode and Org-roam
+(use-package org
+  :ensure t
+  :bind
+  ("C-c a" . org-agenda)
+  ("C-c c" . org-capture)
+  ("C-c o" . org-open-at-point)
+  ("C-c r" . org-refile)
+  ("C-c A" . org-archive-subtree)
+  ("C-c t" . org-todo)
+  ("C-c i" . org-clock-in)
+  ("C-c o" . org-clock-out)
+  ("C-c d" . org-deadline)
+  ("C-c s" . org-schedule)
+  ("C-c l" . org-store-link)
+  :config
+  ;; Basic Org-mode settings
+  (setq org-agenda-files '("~/org/tasks.org" "~/org/projects.org"))
+  (setq org-log-done 'time)  ;; Log when tasks are marked as DONE
+  (setq org-use-tag-inheritance t)  ;; Enable tag inheritance
+
+  ;; Custom TODO keywords
+  (setq org-todo-keywords
+        '((sequence "TODO(t)" "IN-PROGRESS(i)" "WAITING(w)" "BLOCKED(b)" "|" "DONE(d)" "CANCELED(c)")))
+
+  ;; Define available tags globally
+  (setq org-tag-alist '((:startgroup)
+                        ("@work" . ?w)
+                        ("@home" . ?h)
+                        (:endgroup)
+                        ("urgent" . ?u)
+                        ("important" . ?i)
+                        ("lowpriority" . ?l)
+                        ("reading" . ?r)
+                        ("project" . ?p)))
+
+  ;; Custom agenda views for Eisenhower Matrix, PARA, etc.
+  (setq org-agenda-custom-commands
+        '(("e" "Eisenhower Matrix"
+           ((tags-todo "+urgent+important"
+                       ((org-agenda-overriding-header "Quadrant I: Urgent and Important")))
+            (tags-todo "+important-urgent"
+                       ((org-agenda-overriding-header "Quadrant II: Not Urgent but Important")))
+            (tags-todo "+urgent-important"
+                       ((org-agenda-overriding-header "Quadrant III: Urgent but Not Important")))
+            (tags-todo "+low"
+                       ((org-agenda-overriding-header "Quadrant IV: Not Urgent and Not Important")))))
+          ("p" "PARA View"
+           ((tags-todo "+project"
+                       ((org-agenda-overriding-header "Projects")))
+            (tags-todo "+area"
+                       ((org-agenda-overriding-header "Areas of Responsibility")))
+            (tags-todo "+resource"
+                       ((org-agenda-overriding-header "Resources")))
+            (tags-todo "+archive"
+                       ((org-agenda-overriding-header "Archives")))))))
+
+  ;; Enable time tracking and log idle time
+  (setq org-clock-idle-time 10)  ;; Auto-pause after 10 mins idle
+  )
+
+;; Enable Org-roam for Zettelkasten-like note-taking
+(use-package org-roam
+  :ensure t
+  :custom
+  (org-roam-directory "~/org/roam/")  ;; Directory for Org-roam notes
+  :config
+  ;; Keybindings for Org-roam
+  (setq org-roam-v2-ack t)
+  (org-roam-db-autosync-mode)
+
+  ;; Set up daily notes
+  (use-package org-roam-dailies
+    :ensure nil
+    :after org-roam
+    :config
+    (setq org-roam-dailies-directory "daily/")
+    ;; Custom capture template for daily notes
+    (setq org-roam-dailies-capture-templates
+          '(("d" "default" entry
+             "* %<%H:%M> - %?"
+             :target (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n")))))
+
+  ;; Keybindings for Org-roam
+  (global-set-key (kbd "C-c n f") 'org-roam-node-find)
+  (global-set-key (kbd "C-c n i") 'org-roam-node-insert)
+  (global-set-key (kbd "C-c n l") 'org-roam-buffer-toggle)
+  (global-set-key (kbd "C-c n t") 'org-roam-dailies-capture-today)
+
+  ;; Add tags to Org-roam notes
+  (setq org-roam-tag-sources '(prop all-directories))
+  )
+
+;; Enable Pomodoro Technique in Org-mode with org-pomodoro
+(use-package org-pomodoro
+  :ensure t
+  :bind (:map org-mode-map
+              ("C-c C-x p" . org-pomodoro))  ;; Start Pomodoro timer
+  :config
+  ;; Customize sounds and settings for Pomodoro
+  (setq org-pomodoro-length 25)
+  (setq org-pomodoro-short-break-length 5)
+  (setq org-pomodoro-long-break-length 15)
+  (setq org-pomodoro-finished-sound "~/.emacs.d/mixkit-achievement-bell-600.wav")
+  ;; got it from: https://mixkit.co/free-sound-effects/bell/ it is free! You can search there for other bells.
+  )
+
+;; Optional: Enable org-ql for advanced queries in Org-mode
+(use-package org-ql
+  :ensure t
+  :config
+  (setq org-ql-search-headline-sorting-functions '(org-ql--sort-by-date org-ql--sort-by-todo))
+  )
+
+;; Org-capture templates for GTD and PARA
+(setq org-capture-templates
+      '(("t" "Todo" entry (file "~/org/inbox.org")
+         "* TODO %?\n  %u\n")
+        ("p" "Project" entry (file "~/org/projects.org")
+         "* PROJECT %?\n  %u\n")
+        ("n" "Note" entry (file "~/org/notes.org")
+         "* %u %?\n")))
