@@ -3,9 +3,9 @@
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
 (("org-capture-last-stored"
- (filename . "~/RoamNotes/20221001144409-scheme.org")
- (front-context-string)
- (rear-context-string . "#+title: Scheme\n")
- (position . 84)
- (last-modified 25400 13851 488919 162000))
+ (filename . "~/org/inbox.org")
+ (front-context-string . "* TODO test it\n ")
+ (rear-context-string . "       |\n#+END:\n")
+ (position . 761)
+ (last-modified 26336 39178 501493 0))
 )

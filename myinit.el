@@ -1,6 +1,22 @@
 (setq inhibit-startup-message t)
 (tool-bar-mode -1)
 
+;; maximize window
+(global-set-key (kbd "C-c M") 'toggle-frame-maximized)
+
+(defun enlarge-my-window (&optional height-increase-lines width-increase-columns)
+  "Resize the current window. Default: height by 10 lines and width by 20 columns.
+   You can specify custom values for both height and width."
+  (interactive
+   (list
+    (read-number "Increase height by (lines): " 10)  ;; Default is 10
+    (read-number "Increase width by (columns): " 20)))  ;; Default is 20
+  ;; Apply height and width increases
+  (enlarge-window height-increase-lines)
+  ;; (enlarge-window-horizontally width-increase-columns)
+  (enlarge-window width-increase-columns t))
+
+(global-set-key (kbd "C-c w") 'enlarge-my-window)
 
 
 (use-package sweet-theme
@@ -41,6 +57,7 @@
 
 (use-package ace-window
   :ensure t
+  :bind (("M-o" . ace-window))
   :init
   (progn
     (global-set-key [remap other-window] 'ace-window)
@@ -207,22 +224,22 @@
 ;; (use-package org-roam
 ;;  :ensure t)
 
-(use-package org-roam
-  :ensure t
-  :custom
-  (org-roam-directory "~/RoamNotes")
-  (org-roam-completion-everywhere t)
-  :bind (("C-c n l" . org-roam-buffer-toggle)
-         ("C-c n f" . org-roam-node-find)
-         ("C-c n i" . org-roam-node-insert)
-         :map org-mode-map
-         ("C-M-i"   . completion-at-point))
-  :config (org-roam-setup))
+;; (use-package org-roam
+;;   :ensure t
+;;   :custom
+;;   (org-roam-directory "~/RoamNotes")
+;;   (org-roam-completion-everywhere t)
+;;   :bind (("C-c n l" . org-roam-buffer-toggle)
+;;          ("C-c n f" . org-roam-node-find)
+;;          ("C-c n i" . org-roam-node-insert)
+;;          :map org-mode-map
+;;          ("C-M-i"   . completion-at-point))
+;;   :config (org-roam-setup))
 
 ;; (use-package undo-tree
 ;;   :ensure t
 ;;   :init
-;;   (global-undo-tree-mode))
+;;   (global-undo-tree-mode))  ;; erroneus package!
 
 (use-package flycheck
   :ensure t
@@ -256,6 +273,10 @@
 
 ;; for slime
 
+(defun string-trim (str)
+  "Trim leading and trailing whitespace from STR."
+  (replace-regexp-in-string "\\`[ \t\n\r]+" "" (replace-regexp-in-string "[ \t\n\r]+\\'" "" str)))
+
 (defun system-ram-size-in-mb ()
   "Return the system RAM size in megabytes, platform-independent."
   (interactive)
@@ -266,12 +287,14 @@
           ((eq system-type 'windows-nt) "wmic computersystem get TotalPhysicalMemory /Value | findstr TotalPhysicalMemory="))))
     (let ((output (shell-command-to-string ram-size-command)))
       (if output
-          (/ (string-to-number (string-trim (cadr (split-string output "=")))) (* 1024 1024))
+          (let* ((output (split-string output "="))
+                 (output (or (cadr output) (car output)))
+                 (output (string-to-number (string-trim output))))
+            (/ output (* 1024 1024)))
         (error "Failed to get system RAM size")))))
 
-(defun string-trim (str)
-  "Trim leading and trailing whitespace from STR."
-  (replace-regexp-in-string "\\`[ \t\n\r]+" "" (replace-regexp-in-string "[ \t\n\r]+\\'" "" str)))
+
+
 
 ;; ;; set memory of sbcl to your machine's RAM size for sbcl and clisp
 ;; ;; (but for others - I didn't used them yet)
@@ -306,7 +329,7 @@
   (setq slime-contribs '(slime-fancy slime-cl-indent))
 
   ;; ;; ensure correct indentation e.g. of `loop` form
-  ;; (add-to-list 'slime-contribs 'slime-cl-indent)
+  (add-to-list 'slime-contribs 'slime-cl-indent)
 
   ;; don't use tabs
   (setq-default indent-tabs-mode nil)
@@ -340,7 +363,7 @@
 ;;     (message "Return value: %s" last-result)))
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-    ;; (define-key sly-db-mode-map (kbd "C-c C-s") 'my-sly-step-display-value)
+;; (define-key sly-db-mode-map (kbd "C-c C-s") 'my-sly-step-display-value)
 
 (use-package racket-mode
   :ensure t
@@ -443,8 +466,11 @@
   :config
   ;; Basic Org-mode settings
   (setq org-agenda-files '("~/org/tasks.org" "~/org/projects.org"))
+
+  (setq org-agenda-files (directory-files-recursively "~/org/" "\\.org$")) ;; all files in org folder in org agenda
   (setq org-log-done 'time)  ;; Log when tasks are marked as DONE
   (setq org-use-tag-inheritance t)  ;; Enable tag inheritance
+
 
   ;; Custom TODO keywords
   (setq org-todo-keywords
@@ -459,7 +485,8 @@
                         ("important" . ?i)
                         ("lowpriority" . ?l)
                         ("reading" . ?r)
-                        ("project" . ?p)))
+                        ("project" . ?p))
+        org-fast-tag-selection-include-custom t) ;; allow on-the-fly generation
 
   ;; Custom agenda views for Eisenhower Matrix, PARA, etc.
   (setq org-agenda-custom-commands
@@ -522,7 +549,7 @@
 (use-package org-pomodoro
   :ensure t
   :bind (:map org-mode-map
-              ("C-c C-x p" . org-pomodoro))  ;; Start Pomodoro timer
+              ("C-c p" . org-pomodoro))  ;; Start Pomodoro timer
   :config
   ;; Customize sounds and settings for Pomodoro
   (setq org-pomodoro-length 25)
@@ -547,3 +574,9 @@
          "* PROJECT %?\n  %u\n")
         ("n" "Note" entry (file "~/org/notes.org")
          "* %u %?\n")))
+
+(when (eq system-type 'darwin)
+  (setq mac-option-key-is-meta t)
+  (setq mac-command-key-is-meta nil)
+  (setq mac-command-modifier 'super)
+  (setq mac-option-modifier 'meta))

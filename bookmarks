@@ -4,8 +4,8 @@
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
 (("org-capture-last-stored"
  (filename . "~/org/inbox.org")
- (front-context-string . "* TODO test it\n ")
- (rear-context-string . "       |\n#+END:\n")
- (position . 761)
- (last-modified 26336 39178 501493 0))
+ (front-context-string . "* TODO programmi")
+ (rear-context-string . "2024-09-14 Sat>\n")
+ (position . 867)
+ (last-modified 26338 45461 147337 0))
 )
