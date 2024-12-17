@@ -1,0 +1,334 @@
+Leaving directory ‘/Users/josephus/.emacs.d/elpa/slime-20240928.1151’
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/slime-tests.el at Wed Oct  2 22:19:54 2024
+Entering directory ‘/Users/josephus/.emacs.d/elpa/slime-20240928.1151/’
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/slime.el at Wed Oct  2 22:19:55 2024
+Leaving directory ‘/Users/josephus/.emacs.d/elpa/slime-20240928.1151/’
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/bridge.el at Wed Oct  2 22:19:56 2024
+Entering directory ‘/Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/’
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/inferior-slime.el at Wed Oct  2 22:19:56 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-asdf.el at Wed Oct  2 22:19:56 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-autodoc.el at Wed Oct  2 22:19:56 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-banner.el at Wed Oct  2 22:19:56 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-buffer-streams.el at Wed Oct  2 22:19:56 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-c-p-c.el at Wed Oct  2 22:19:56 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-cl-indent.el at Wed Oct  2 22:19:57 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-clipboard.el at Wed Oct  2 22:19:57 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-compiler-notes-tree.el at Wed Oct  2 22:19:57 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-editing-commands.el at Wed Oct  2 22:19:57 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-enclosing-context.el at Wed Oct  2 22:19:57 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-fancy-inspector.el at Wed Oct  2 22:19:57 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-fancy-trace.el at Wed Oct  2 22:19:57 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-fancy.el at Wed Oct  2 22:19:57 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-fontifying-fu.el at Wed Oct  2 22:19:57 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-fuzzy.el at Wed Oct  2 22:19:57 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-highlight-edits.el at Wed Oct  2 22:19:57 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-hyperdoc.el at Wed Oct  2 22:19:57 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-indentation.el at Wed Oct  2 22:19:57 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-listener-hooks.el at Wed Oct  2 22:19:57 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-macrostep.el at Wed Oct  2 22:19:57 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-mdot-fu.el at Wed Oct  2 22:19:57 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-media.el at Wed Oct  2 22:19:57 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-mrepl.el at Wed Oct  2 22:19:57 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-package-fu.el at Wed Oct  2 22:19:57 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-parse.el at Wed Oct  2 22:19:57 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-presentation-streams.el at Wed Oct  2 22:19:57 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-presentations.el at Wed Oct  2 22:19:57 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-quicklisp.el at Wed Oct  2 22:19:58 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-references.el at Wed Oct  2 22:19:58 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-repl.el at Wed Oct  2 22:19:58 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-sbcl-exts.el at Wed Oct  2 22:19:58 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-scheme.el at Wed Oct  2 22:19:58 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-scratch.el at Wed Oct  2 22:19:58 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-snapshot.el at Wed Oct  2 22:19:58 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-sprof.el at Wed Oct  2 22:19:58 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-trace-dialog.el at Wed Oct  2 22:19:58 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-tramp.el at Wed Oct  2 22:19:58 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-typeout-frame.el at Wed Oct  2 22:19:58 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-xref-browser.el at Wed Oct  2 22:19:58 2024
+Leaving directory ‘/Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/’
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/lib/hyperspec.el at Wed Oct  2 22:19:58 2024
+Entering directory ‘/Users/josephus/.emacs.d/elpa/slime-20240928.1151/lib/’
+
+Compiling internal form(s) at Wed Oct  2 22:19:59 2024
+Warning (bytecomp): Alias for ‘slime-contribs’ should be declared before its referent
+Warning (bytecomp): defcustom for ‘slime-completion-at-point-functions’ fails to specify type
+Warning (bytecomp): Doc string after `declare'
+Warning (bytecomp): ‘byte-compile-file’ called with 2 arguments, but accepts only 1
+Warning (bytecomp): ‘hide-entry’ is an obsolete function (as of 25.1); use ‘outline-hide-entry’ instead.
+Warning (bytecomp): ‘beginning-of-sexp’ is an obsolete function (as of 25.1); use ‘thing-at-point--beginning-of-sexp’ instead. [2 times]
+Warning (bytecomp): ‘find-tag-marker-ring’ is an obsolete variable (as of 25.1); use ‘xref-push-marker-stack’ or ‘xref-go-back’ instead.
+Warning (bytecomp): docstring has wrong usage of unescaped single quotes (use \= or different quoting)
+Warning (bytecomp): ‘font-lock-fontify-buffer’ is for interactive use only; use ‘font-lock-ensure’ or ‘font-lock-flush’ instead.
+Warning (bytecomp): ‘inhibit-point-motion-hooks’ is an obsolete variable (as of 25.1); use ‘cursor-intangible-mode’ or ‘cursor-sensor-mode’ instead [3 times]
+Warning (bytecomp): Obsolete calling convention for 'sit-for'
+Warning (bytecomp): docstring has wrong usage of unescaped single quotes (use \= or different quoting)
+Warning (bytecomp): ‘easy-menu-add’ is an obsolete function (as of 28.1); this was always a no-op in Emacs and can be safely removed. [2 times]
+Warning (bytecomp): docstring has wrong usage of unescaped single quotes (use \= or different quoting)
+Warning (bytecomp): defvar `bridge-leftovers' docstring wider than 80 characters
+Warning (bytecomp): defcustom for ‘slime-asdf-collect-notes’ fails to specify type
+Warning (bytecomp): Unused lexical argument `system'
+Warning (bytecomp): Unused lexical argument `name'
+Warning (bytecomp): ‘tags-query-replace’ called with 4 arguments, but accepts only 2 or 3
+Warning (bytecomp): Lexical argument shadows the dynamic variable system-name
+Warning (bytecomp): ‘system-name’ is an obsolete variable (as of 25.1); use (system-name) instead
+Warning (bytecomp): the function ‘second’ is not known to be defined.
+Warning (bytecomp): ‘eldoc-message’ is an obsolete function (as of eldoc-1.1.0); use ‘eldoc-documentation-functions’ instead. [3 times]
+Warning (bytecomp): ‘font-lock-fontify-buffer’ is for interactive use only; use ‘font-lock-ensure’ or ‘font-lock-flush’ instead.
+Warning (bytecomp): ‘eldoc-display-message-p’ is an obsolete function (as of eldoc-1.6.0); Use ‘eldoc-documentation-functions’ instead.
+Warning (bytecomp): ‘eldoc-message’ is an obsolete function (as of eldoc-1.1.0); use ‘eldoc-documentation-functions’ instead.
+Warning (bytecomp): custom-declare-variable `lisp-align-keywords-in-calls' docstring has wrong usage of unescaped single quotes (use \= or different quoting)
+Warning (bytecomp): defvar `common-lisp-indent-clause-joining-loop-macro-keyword' docstring has wrong usage of unescaped single quotes (use \= or different quoting)
+Warning (bytecomp): Use keywords rather than deprecated positional arguments to `define-minor-mode'
+Warning (bytecomp): ‘looking-back’ called with 1 argument, but requires 2 or 3 [2 times]
+Warning (bytecomp): Stray ‘declare’ form: (declare (ignore args))
+Warning (bytecomp): docstring wider than 80 characters
+Warning (bytecomp): ‘easy-menu-add’ is an obsolete function (as of 28.1); this was always a no-op in Emacs and can be safely removed. [4 times]
+Warning (bytecomp): reference to free variable ‘name’
+Warning (bytecomp): ‘:info’ called as a function
+Warning (bytecomp): ‘t’ called as a function
+Warning (bytecomp): the function ‘t’ is not known to be defined.
+Warning (bytecomp): the function ‘:info’ is not known to be defined.
+Warning (bytecomp): the function ‘case’ is not known to be defined.
+Warning (bytecomp): defvar `slime-repl-history-use-mark' docstring has wrong usage of unescaped single quotes (use \= or different quoting)
+Warning (bytecomp): docstring has wrong usage of unescaped single quotes (use \= or different quoting) [2 times]
+Warning (bytecomp): Stray ‘declare’ form: (declare (ignore args))
+Warning (bytecomp): ‘easy-menu-add’ is an obsolete function (as of 28.1); this was always a no-op in Emacs and can be safely removed.
+Warning (bytecomp): the function ‘slime-output-filter’ is not known to be defined.
+Warning (bytecomp): reference to free variable ‘for’
+Warning (bytecomp): reference to free variable ‘name’
+Warning (bytecomp): reference to free variable ‘in’
+Warning (bytecomp): reference to free variable ‘do’
+Warning (bytecomp): reference to free variable ‘label’
+Warning (bytecomp): ‘goto-line’ is for interactive use only; use ‘forward-line’ instead.
+Warning (bytecomp): ‘point-at-bol’ is an obsolete function (as of 29.1); use ‘line-beginning-position’ or ‘pos-bol’ instead.
+Warning (bytecomp): ‘point-at-eol’ is an obsolete function (as of 29.1); use ‘line-end-position’ or ‘pos-eol’ instead.
+Warning (bytecomp): ‘point-at-bol’ is an obsolete function (as of 29.1); use ‘line-beginning-position’ or ‘pos-bol’ instead.
+Warning (bytecomp): ‘point-at-eol’ is an obsolete function (as of 29.1); use ‘line-end-position’ or ‘pos-eol’ instead.
+Warning (bytecomp): the function ‘label’ is not known to be defined.
+Warning (bytecomp): the function ‘loop’ is not known to be defined.
+Warning (bytecomp): ‘inhibit-point-motion-hooks’ is an obsolete variable (as of 25.1); use ‘cursor-intangible-mode’ or ‘cursor-sensor-mode’ instead [5 times]
+Warning (bytecomp): custom-declare-variable `slime-filename-translations' docstring has wrong usage of unescaped single quotes (use \= or different quoting)
+Warning (bytecomp): ‘tramp-make-tramp-file-name’ called with 6 arguments, but accepts only 1 or 2
+Warning (bytecomp): ‘tramp-make-tramp-file-name’ called with 5 arguments, but accepts only 1 or 2
+Warning (bytecomp): ‘tramp-make-tramp-file-name’ called with 4 arguments, but accepts only 1 or 2
+Warning (bytecomp): Alias for ‘common-lisp-hyperspec-glossary-function’ should be declared before its referent
+
+
+
+
+;; new slime install
+
+
+
+
+
+
+
+
+
+
+
+
+
+Leaving directory ‘/Users/josephus/.emacs.d/elpa/slime-20240928.1151’
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/slime-tests.el at Wed Oct  2 22:30:07 2024
+Entering directory ‘/Users/josephus/.emacs.d/elpa/slime-20240928.1151/’
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/slime.el at Wed Oct  2 22:30:07 2024
+Leaving directory ‘/Users/josephus/.emacs.d/elpa/slime-20240928.1151/’
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/bridge.el at Wed Oct  2 22:30:09 2024
+Entering directory ‘/Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/’
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/inferior-slime.el at Wed Oct  2 22:30:09 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-asdf.el at Wed Oct  2 22:30:09 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-autodoc.el at Wed Oct  2 22:30:09 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-banner.el at Wed Oct  2 22:30:09 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-buffer-streams.el at Wed Oct  2 22:30:09 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-c-p-c.el at Wed Oct  2 22:30:09 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-cl-indent.el at Wed Oct  2 22:30:09 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-clipboard.el at Wed Oct  2 22:30:09 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-compiler-notes-tree.el at Wed Oct  2 22:30:09 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-editing-commands.el at Wed Oct  2 22:30:09 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-enclosing-context.el at Wed Oct  2 22:30:09 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-fancy-inspector.el at Wed Oct  2 22:30:09 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-fancy-trace.el at Wed Oct  2 22:30:09 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-fancy.el at Wed Oct  2 22:30:09 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-fontifying-fu.el at Wed Oct  2 22:30:09 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-fuzzy.el at Wed Oct  2 22:30:09 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-highlight-edits.el at Wed Oct  2 22:30:09 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-hyperdoc.el at Wed Oct  2 22:30:09 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-indentation.el at Wed Oct  2 22:30:09 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-listener-hooks.el at Wed Oct  2 22:30:09 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-macrostep.el at Wed Oct  2 22:30:09 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-mdot-fu.el at Wed Oct  2 22:30:09 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-media.el at Wed Oct  2 22:30:10 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-mrepl.el at Wed Oct  2 22:30:10 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-package-fu.el at Wed Oct  2 22:30:10 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-parse.el at Wed Oct  2 22:30:10 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-presentation-streams.el at Wed Oct  2 22:30:10 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-presentations.el at Wed Oct  2 22:30:10 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-quicklisp.el at Wed Oct  2 22:30:10 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-references.el at Wed Oct  2 22:30:10 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-repl.el at Wed Oct  2 22:30:10 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-sbcl-exts.el at Wed Oct  2 22:30:10 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-scheme.el at Wed Oct  2 22:30:10 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-scratch.el at Wed Oct  2 22:30:10 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-snapshot.el at Wed Oct  2 22:30:10 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-sprof.el at Wed Oct  2 22:30:10 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-trace-dialog.el at Wed Oct  2 22:30:10 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-tramp.el at Wed Oct  2 22:30:10 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-typeout-frame.el at Wed Oct  2 22:30:11 2024
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/slime-xref-browser.el at Wed Oct  2 22:30:11 2024
+Leaving directory ‘/Users/josephus/.emacs.d/elpa/slime-20240928.1151/contrib/’
+
+Compiling file /Users/josephus/.emacs.d/elpa/slime-20240928.1151/lib/hyperspec.el at Wed Oct  2 22:30:11 2024
+Entering directory ‘/Users/josephus/.emacs.d/elpa/slime-20240928.1151/lib/’
+
+Compiling internal form(s) at Wed Oct  2 22:30:11 2024
+Warning (bytecomp): Alias for ‘slime-contribs’ should be declared before its referent
+Warning (bytecomp): defcustom for ‘slime-completion-at-point-functions’ fails to specify type
+Warning (bytecomp): Doc string after `declare'
+Warning (bytecomp): ‘byte-compile-file’ called with 2 arguments, but accepts only 1
+Warning (bytecomp): ‘hide-entry’ is an obsolete function (as of 25.1); use ‘outline-hide-entry’ instead.
+Warning (bytecomp): ‘beginning-of-sexp’ is an obsolete function (as of 25.1); use ‘thing-at-point--beginning-of-sexp’ instead. [2 times]
+Warning (bytecomp): ‘find-tag-marker-ring’ is an obsolete variable (as of 25.1); use ‘xref-push-marker-stack’ or ‘xref-go-back’ instead.
+Warning (bytecomp): docstring has wrong usage of unescaped single quotes (use \= or different quoting)
+Warning (bytecomp): ‘font-lock-fontify-buffer’ is for interactive use only; use ‘font-lock-ensure’ or ‘font-lock-flush’ instead.
+Warning (bytecomp): ‘inhibit-point-motion-hooks’ is an obsolete variable (as of 25.1); use ‘cursor-intangible-mode’ or ‘cursor-sensor-mode’ instead [3 times]
+Warning (bytecomp): Obsolete calling convention for 'sit-for'
+Warning (bytecomp): docstring has wrong usage of unescaped single quotes (use \= or different quoting)
+Warning (bytecomp): ‘easy-menu-add’ is an obsolete function (as of 28.1); this was always a no-op in Emacs and can be safely removed. [2 times]
+Warning (bytecomp): docstring has wrong usage of unescaped single quotes (use \= or different quoting)
+Warning (bytecomp): defvar `bridge-leftovers' docstring wider than 80 characters
+Warning (bytecomp): defcustom for ‘slime-asdf-collect-notes’ fails to specify type
+Warning (bytecomp): Unused lexical argument `system'
+Warning (bytecomp): Unused lexical argument `name'
+Warning (bytecomp): ‘tags-query-replace’ called with 4 arguments, but accepts only 2 or 3
+Warning (bytecomp): Lexical argument shadows the dynamic variable system-name
+Warning (bytecomp): ‘system-name’ is an obsolete variable (as of 25.1); use (system-name) instead
+Warning (bytecomp): the function ‘second’ is not known to be defined.
+Warning (bytecomp): ‘eldoc-message’ is an obsolete function (as of eldoc-1.1.0); use ‘eldoc-documentation-functions’ instead. [3 times]
+Warning (bytecomp): ‘font-lock-fontify-buffer’ is for interactive use only; use ‘font-lock-ensure’ or ‘font-lock-flush’ instead.
+Warning (bytecomp): ‘eldoc-display-message-p’ is an obsolete function (as of eldoc-1.6.0); Use ‘eldoc-documentation-functions’ instead.
+Warning (bytecomp): ‘eldoc-message’ is an obsolete function (as of eldoc-1.1.0); use ‘eldoc-documentation-functions’ instead.
+Warning (bytecomp): custom-declare-variable `lisp-align-keywords-in-calls' docstring has wrong usage of unescaped single quotes (use \= or different quoting)
+Warning (bytecomp): defvar `common-lisp-indent-clause-joining-loop-macro-keyword' docstring has wrong usage of unescaped single quotes (use \= or different quoting)
+Warning (bytecomp): Use keywords rather than deprecated positional arguments to `define-minor-mode'
+Warning (bytecomp): ‘looking-back’ called with 1 argument, but requires 2 or 3 [2 times]
+Warning (bytecomp): Stray ‘declare’ form: (declare (ignore args))
+Warning (bytecomp): docstring wider than 80 characters
+Warning (bytecomp): ‘easy-menu-add’ is an obsolete function (as of 28.1); this was always a no-op in Emacs and can be safely removed. [4 times]
+Warning (bytecomp): reference to free variable ‘name’
+Warning (bytecomp): ‘:info’ called as a function
+Warning (bytecomp): ‘t’ called as a function
+Warning (bytecomp): the function ‘t’ is not known to be defined.
+Warning (bytecomp): the function ‘:info’ is not known to be defined.
+Warning (bytecomp): the function ‘case’ is not known to be defined.
+Warning (bytecomp): defvar `slime-repl-history-use-mark' docstring has wrong usage of unescaped single quotes (use \= or different quoting)
+Warning (bytecomp): docstring has wrong usage of unescaped single quotes (use \= or different quoting) [2 times]
+Warning (bytecomp): Stray ‘declare’ form: (declare (ignore args))
+Warning (bytecomp): ‘easy-menu-add’ is an obsolete function (as of 28.1); this was always a no-op in Emacs and can be safely removed.
+Warning (bytecomp): the function ‘slime-output-filter’ is not known to be defined.
+Warning (bytecomp): reference to free variable ‘for’
+Warning (bytecomp): reference to free variable ‘name’
+Warning (bytecomp): reference to free variable ‘in’
+Warning (bytecomp): reference to free variable ‘do’
+Warning (bytecomp): reference to free variable ‘label’
+Warning (bytecomp): ‘goto-line’ is for interactive use only; use ‘forward-line’ instead.
+Warning (bytecomp): ‘point-at-bol’ is an obsolete function (as of 29.1); use ‘line-beginning-position’ or ‘pos-bol’ instead.
+Warning (bytecomp): ‘point-at-eol’ is an obsolete function (as of 29.1); use ‘line-end-position’ or ‘pos-eol’ instead.
+Warning (bytecomp): ‘point-at-bol’ is an obsolete function (as of 29.1); use ‘line-beginning-position’ or ‘pos-bol’ instead.
+Warning (bytecomp): ‘point-at-eol’ is an obsolete function (as of 29.1); use ‘line-end-position’ or ‘pos-eol’ instead.
+Warning (bytecomp): the function ‘label’ is not known to be defined.
+Warning (bytecomp): the function ‘loop’ is not known to be defined.
+Warning (bytecomp): ‘inhibit-point-motion-hooks’ is an obsolete variable (as of 25.1); use ‘cursor-intangible-mode’ or ‘cursor-sensor-mode’ instead [5 times]
+Warning (bytecomp): custom-declare-variable `slime-filename-translations' docstring has wrong usage of unescaped single quotes (use \= or different quoting)
+Warning (bytecomp): ‘tramp-make-tramp-file-name’ called with 6 arguments, but accepts only 1 or 2
+Warning (bytecomp): ‘tramp-make-tramp-file-name’ called with 5 arguments, but accepts only 1 or 2
+Warning (bytecomp): ‘tramp-make-tramp-file-name’ called with 4 arguments, but accepts only 1 or 2
+Warning (bytecomp): Alias for ‘common-lisp-hyperspec-glossary-function’ should be declared before its referent

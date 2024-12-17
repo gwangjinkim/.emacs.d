@@ -399,7 +399,7 @@ sudo pip install --upgrade epc
   (defun string-trim (str)
     "Trim leading and trailing whitespace from STR."
     (replace-regexp-in-string "\\`[ \t\n\r]+" "" (replace-regexp-in-string "[ \t\n\r]+\\'" "" str)))
-  
+
   (defun system-ram-size-in-mb ()
     "Return the system RAM size in megabytes, platform-independent."
     (interactive)
@@ -416,7 +416,7 @@ sudo pip install --upgrade epc
               (/ output (* 1024 1024)))
           (error "Failed to get system RAM size")))))
 
-
+  
 
 
   ;; ;; set memory of sbcl to your machine's RAM size for sbcl and clisp
@@ -428,6 +428,22 @@ sudo pip install --upgrade epc
   ;; ;; (linux-system-ram-size)
 
 
+  ;; ;; Define functions to manually switch between SLIME and SLY
+  ;; (defun use-sly ()
+  ;;   "Switch to using SLY for this session."
+  ;;   (interactive)
+  ;;   (remove-hook 'lisp-mode-hook 'slime-lisp-mode-hook)
+  ;;   (require 'sly)
+  ;;   (sly))
+
+  ;; (defun use-slime ()
+  ;;   "Switch to using SLIME for this session."
+  ;;   (interactive)
+  ;;   (remove-hook 'lisp-mode-hook 'sly-editing-mode)
+  ;;   (require 'slime)
+  ;;   (slime))
+
+  ;; long time my slime setting
   (use-package slime
     :ensure t
     :config
@@ -459,6 +475,10 @@ sudo pip install --upgrade epc
 
     )
 
+
+
+
+
   ;; (setq slime-lisp-implementations `(("sbcl" ("ros use sbcl && ros run --" "--dynamic-space-size"
   ;;                                             ,(number-to-string (linux-system-ram-size))))
   ;;                                    ("clisp" ("ros use clisp && ros run --" "-m"
@@ -487,6 +507,56 @@ sudo pip install --upgrade epc
   ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
   ;; (define-key sly-db-mode-map (kbd "C-c C-s") 'my-sly-step-display-value)
+
+
+  ;; sly
+
+  ;; (use-package sly
+  ;;   :ensure t
+  ;;   :config
+  ;;   ;; Roswell is not available for Windows.
+  ;;   (cond
+  ;;    ((eq system-type 'darwin) (load (expand-file-name "~/.roswell/helper.el")))
+  ;;    ((eq system-type 'gnu/linux) (load (expand-file-name "~/.roswell/helper.el")))
+  ;;    ((eq system-type 'windows-nt) (load (concat (getenv "USERPROFILE") "\\quicklisp\\sly-helper.el"))
+  ;;     (setq inferior-lisp-program (concat "sbcl --dynamic-space-size "
+  ;;                                         (number-to-string (system-ram-size-in-mb)))))
+  ;;    (t
+  ;;     (error "Failed to load helper.el")))
+
+  ;;   ;; Set dynamic-space-size for SBCL with Roswell for macOS and Linux
+  ;;   (cond
+  ;;    ((or (eq system-type 'darwin) (eq system-type 'gnu/linux))
+  ;;     (setq inferior-lisp-program (concat "ros -Q dynamic-space-size=" (number-to-string (system-ram-size-in-mb)) " run"))))
+
+  ;;   ;; Enable SLY contribs for a fancier experience
+  ;;   (setq sly-contribs '(sly-fancy slynk-mrepl sly-mrepl sly-cl-indent)) ;; slynk-mrepl is necessary contrib!
+
+  ;;   ;; Don't use tabs for indentation
+  ;;   (setq-default indent-tabs-mode nil)
+  ;;   )
+
+  ;; ;; Change keybindings for SLIME or SLY if necessary to avoid conflicts
+  ;; (with-eval-after-load 'sly
+  ;;   (define-key sly-mode-map (kbd "C-c C-s") 'sly-selector))
+
+  ;; (with-eval-after-load 'slime
+  ;;   (define-key slime-mode-map (kbd "C-c C-s") 'slime-selector))
+
+  ;; make results visible inline
+  (use-package lispy
+    :ensure t
+    :hook ((lisp-mode emacs-lisp-mode) . lispy-mode)
+    :config
+    ;; Define `C-,` as a prefix key
+    (define-prefix-command 'lispy-prefix)
+    (global-set-key (kbd "C-l") 'lispy-prefix)
+
+    ;; bind `C-, e` to lispy-eval-and-insert
+    (define-key lispy-prefix (kbd "e") 'lispy-eval-and-insert)
+    ;; Optionally, you can also configure other keys or customize lispy behavior here.
+    )
+
 #+END_SRC
 * Racket
 #+begin_src emacs-lisp
@@ -512,9 +582,13 @@ sudo pip install --upgrade epc
 
   (use-package paredit
     :ensure t
-    :hook
-    ((racket-mode . paredit-mode)
-     (racket-repl-mode . paredit-mode)))
+    :hook ((emacs-lisp-mode lisp-mode sly-mode sly-mrepl-mode racket-mode racket-repl-mode) . paredit-mode)
+    
+    :bind
+    (("C-c >" . paredit-forward-slurp-sexp)
+     ("C-c <" . paredit-backward-slurp-sexp)
+     ("C-c }" . paredit-forward-barf-sexp)
+     ("C-c {" . paredit-backward-barf-sexp))) ;; use C-c instead of just C-right etc because of MacOS
 #+end_src
 * R/Julia ESS
 
@@ -589,132 +663,127 @@ For conda use still `M-x pyvenv-activate RET path to conda env`
 * Org-roam
 
 #+begin_src elisp
-    ;; Enable Org-mode and Org-roam
-    (use-package org
-      :ensure t
-      :bind
-      ("C-c a" . org-agenda)
-      ("C-c c" . org-capture)
-      ("C-c o" . org-open-at-point)
-      ("C-c r" . org-refile)
-      ("C-c A" . org-archive-subtree)
-      ("C-c t" . org-todo)
-      ("C-c i" . org-clock-in)
-      ("C-c o" . org-clock-out)
-      ("C-c d" . org-deadline)
-      ("C-c s" . org-schedule)
-      ("C-c l" . org-store-link)
-      :config
-      ;; Basic Org-mode settings
-      (setq org-agenda-files '("~/org/tasks.org" "~/org/projects.org"))
+  ;; Enable Org-mode and Org-roam
+  (use-package org
+    :ensure t
+    :bind
+    ("C-c a" . org-agenda)
+    ("C-c c" . org-capture)
+    ("C-c o" . org-open-at-point)
+    ("C-c r" . org-refile)
+    ("C-c A" . org-archive-subtree)
+    ("C-c t" . org-todo)
+    ("C-c i" . org-clock-in)
+    ("C-c o" . org-clock-out)
+    ("C-c d" . org-deadline)
+    ("C-c s" . org-schedule)
+    ("C-c l" . org-store-link)
+    :config
+    ;; Basic Org-mode settings
+    (setq org-agenda-files '("~/org/tasks.org" "~/org/projects.org"))
 
-      (setq org-agenda-files (directory-files-recursively "~/org/" "\\.org$")) ;; all files in org folder in org agenda
-      (setq org-log-done 'time)  ;; Log when tasks are marked as DONE
-      (setq org-use-tag-inheritance t)  ;; Enable tag inheritance
+    (setq org-agenda-files (directory-files-recursively "~/org/" "\\.org$")) ;; all files in org folder in org agenda
+    (setq org-log-done 'time)  ;; Log when tasks are marked as DONE
+    (setq org-use-tag-inheritance t)  ;; Enable tag inheritance
 
 
-      ;; Custom TODO keywords
-      (setq org-todo-keywords
-            '((sequence "TODO(t)" "IN-PROGRESS(i)" "WAITING(w)" "BLOCKED(b)" "|" "DONE(d)" "CANCELED(c)")))
+    ;; Custom TODO keywords
+    (setq org-todo-keywords
+          '((sequence "TODO(t)" "IN-PROGRESS(i)" "WAITING(w)" "BLOCKED(b)" "|" "DONE(d)" "CANCELED(c)")))
 
-      ;; Define available tags globally
-      (setq org-tag-alist '((:startgroup)
-                            ("@work" . ?w)
-                            ("@home" . ?h)
-                            (:endgroup)
-                            ("urgent" . ?u)
-                            ("important" . ?i)
-                            ("lowpriority" . ?l)
-                            ("reading" . ?r)
-                            ("project" . ?p))
-            org-fast-tag-selection-include-custom t) ;; allow on-the-fly generation
+    ;; Define available tags globally
+    (setq org-tag-alist '((:startgroup)
+                          ("@work" . ?w)
+                          ("@home" . ?h)
+                          (:endgroup)
+                          ("urgent" . ?u)
+                          ("important" . ?i)
+                          ("lowpriority" . ?l)
+                          ("reading" . ?r)
+                          ("project" . ?p))
+          org-fast-tag-selection-include-custom t) ;; allow on-the-fly generation
 
-      ;; Custom agenda views for Eisenhower Matrix, PARA, etc.
-      (setq org-agenda-custom-commands
-            '(("e" "Eisenhower Matrix"
-               ((tags-todo "+urgent+important"
-                           ((org-agenda-overriding-header "Quadrant I: Urgent and Important")))
-                (tags-todo "+important-urgent"
-                           ((org-agenda-overriding-header "Quadrant II: Not Urgent but Important")))
-                (tags-todo "+urgent-important"
-                           ((org-agenda-overriding-header "Quadrant III: Urgent but Not Important")))
-                (tags-todo "+low"
-                           ((org-agenda-overriding-header "Quadrant IV: Not Urgent and Not Important")))))
-              ("p" "PARA View"
-               ((tags-todo "+project"
-                           ((org-agenda-overriding-header "Projects")))
-                (tags-todo "+area"
-                           ((org-agenda-overriding-header "Areas of Responsibility")))
-                (tags-todo "+resource"
-                           ((org-agenda-overriding-header "Resources")))
-                (tags-todo "+archive"
-                           ((org-agenda-overriding-header "Archives")))))))
+    ;; Custom agenda views for Eisenhower Matrix, PARA, etc.
+    (setq org-agenda-custom-commands
+          '(("e" "Eisenhower Matrix"
+             ((tags-todo "+urgent+important"
+                         ((org-agenda-overriding-header "Quadrant I: Urgent and Important")))
+              (tags-todo "+important-urgent"
+                         ((org-agenda-overriding-header "Quadrant II: Not Urgent but Important")))
+              (tags-todo "+urgent-important"
+                         ((org-agenda-overriding-header "Quadrant III: Urgent but Not Important")))
+              (tags-todo "+low"
+                         ((org-agenda-overriding-header "Quadrant IV: Not Urgent and Not Important")))))
+            ("p" "PARA View"
+             ((tags-todo "+project"
+                         ((org-agenda-overriding-header "Projects")))
+              (tags-todo "+area"
+                         ((org-agenda-overriding-header "Areas of Responsibility")))
+              (tags-todo "+resource"
+                         ((org-agenda-overriding-header "Resources")))
+              (tags-todo "+archive"
+                         ((org-agenda-overriding-header "Archives")))))))
 
-      ;; Enable time tracking and log idle time
-      (setq org-clock-idle-time 10)  ;; Auto-pause after 10 mins idle
-      )
+    ;; Enable time tracking and log idle time
+    (setq org-clock-idle-time 10)  ;; Auto-pause after 10 mins idle
+    )
 
-    ;; Enable Org-roam for Zettelkasten-like note-taking
-    (use-package org-roam
-      :ensure t
-      :custom
-      (org-roam-directory "~/org/roam/")  ;; Directory for Org-roam notes
-      :config
-      ;; Keybindings for Org-roam
-      (setq org-roam-v2-ack t)
-      (org-roam-db-autosync-mode)
+  ;; Enable Org-roam for Zettelkasten-like note-taking
+  (use-package org-roam
+    :ensure t
+    :custom
+    (org-roam-directory "~/org/roam/")  ;; Directory for Org-roam notes
+    :config
+    ;; Keybindings for Org-roam
+    (setq org-roam-v2-ack t)
+    (org-roam-db-autosync-mode)
 
-      ;; Set up daily notes
-      (use-package org-roam-dailies
-        :ensure nil
-        :after org-roam
-        :config
-        (setq org-roam-dailies-directory "daily/")
-        ;; Custom capture template for daily notes
-        (setq org-roam-dailies-capture-templates
-              '(("d" "default" entry
-                 "* %<%H:%M> - %?"
-                 :target (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n")))))
+    ;; Keybindings for Org-roam
+    (global-set-key (kbd "C-c n f") 'org-roam-node-find)
+    (global-set-key (kbd "C-c n i") 'org-roam-node-insert)
+    (global-set-key (kbd "C-c n l") 'org-roam-buffer-toggle)
+    (global-set-key (kbd "C-c n t") 'org-roam-dailies-capture-today)
 
-      ;; Keybindings for Org-roam
-      (global-set-key (kbd "C-c n f") 'org-roam-node-find)
-      (global-set-key (kbd "C-c n i") 'org-roam-node-insert)
-      (global-set-key (kbd "C-c n l") 'org-roam-buffer-toggle)
-      (global-set-key (kbd "C-c n t") 'org-roam-dailies-capture-today)
+    ;; Org-oram dailies configuration
+    (setq org-roam-dailies-directory "~/org/roam/daily/")
+    (setq org-roam-dailies-capture-templates
+          '(("d" "default" entry
+             "* %<%H:%M> - %?"
+             :target (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
 
-      ;; Add tags to Org-roam notes
-      (setq org-roam-tag-sources '(prop all-directories))
-      )
+    ;; Add tags to Org-roam notes
+    (setq org-roam-tag-sources '(prop all-directories))
+    )
 
-    ;; Enable Pomodoro Technique in Org-mode with org-pomodoro
-    (use-package org-pomodoro
-      :ensure t
-      :bind (:map org-mode-map
-                  ("C-c p" . org-pomodoro))  ;; Start Pomodoro timer
-      :config
-      ;; Customize sounds and settings for Pomodoro
-      (setq org-pomodoro-length 25)
-      (setq org-pomodoro-short-break-length 5)
-      (setq org-pomodoro-long-break-length 15)
-      (setq org-pomodoro-finished-sound "~/.emacs.d/mixkit-achievement-bell-600.wav")
-      ;; got it from: https://mixkit.co/free-sound-effects/bell/ it is free! You can search there for other bells.
-      )
+  ;; Enable Pomodoro Technique in Org-mode with org-pomodoro
+  (use-package org-pomodoro
+    :ensure t
+    :bind (:map org-mode-map
+                ("C-c p" . org-pomodoro))  ;; Start Pomodoro timer
+    :config
+    ;; Customize sounds and settings for Pomodoro
+    (setq org-pomodoro-length 25)
+    (setq org-pomodoro-short-break-length 5)
+    (setq org-pomodoro-long-break-length 15)
+    (setq org-pomodoro-finished-sound "~/.emacs.d/mixkit-achievement-bell-600.wav")
+    ;; got it from: https://mixkit.co/free-sound-effects/bell/ it is free! You can search there for other bells.
+    )
 
-    ;; Optional: Enable org-ql for advanced queries in Org-mode
-    (use-package org-ql
-      :ensure t
-      :config
-      (setq org-ql-search-headline-sorting-functions '(org-ql--sort-by-date org-ql--sort-by-todo))
-      )
+  ;; Optional: Enable org-ql for advanced queries in Org-mode
+  (use-package org-ql
+    :ensure t
+    :config
+    (setq org-ql-search-headline-sorting-functions '(org-ql--sort-by-date org-ql--sort-by-todo))
+    )
 
-    ;; Org-capture templates for GTD and PARA
-    (setq org-capture-templates
-          '(("t" "Todo" entry (file "~/org/inbox.org")
-             "* TODO %?\n  %u\n")
-            ("p" "Project" entry (file "~/org/projects.org")
-             "* PROJECT %?\n  %u\n")
-            ("n" "Note" entry (file "~/org/notes.org")
-             "* %u %?\n")))
+  ;; Org-capture templates for GTD and PARA
+  (setq org-capture-templates
+        '(("t" "Todo" entry (file "~/org/inbox.org")
+           "* TODO %?\n  %u\n")
+          ("p" "Project" entry (file "~/org/projects.org")
+           "* PROJECT %?\n  %u\n")
+          ("n" "Note" entry (file "~/org/notes.org")
+           "* %u %?\n")))
 #+end_src
 
 * General mac

@@ -1,2 +1,6 @@
 # content of elpa
 elpa/*
+.cache/*
+.#*
+#*#
+*~

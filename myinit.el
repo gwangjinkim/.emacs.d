@@ -305,6 +305,22 @@
 ;; ;; (linux-system-ram-size)
 
 
+;; ;; Define functions to manually switch between SLIME and SLY
+;; (defun use-sly ()
+;;   "Switch to using SLY for this session."
+;;   (interactive)
+;;   (remove-hook 'lisp-mode-hook 'slime-lisp-mode-hook)
+;;   (require 'sly)
+;;   (sly))
+
+;; (defun use-slime ()
+;;   "Switch to using SLIME for this session."
+;;   (interactive)
+;;   (remove-hook 'lisp-mode-hook 'sly-editing-mode)
+;;   (require 'slime)
+;;   (slime))
+
+;; long time my slime setting
 (use-package slime
   :ensure t
   :config
@@ -336,6 +352,10 @@
 
   )
 
+
+
+
+
 ;; (setq slime-lisp-implementations `(("sbcl" ("ros use sbcl && ros run --" "--dynamic-space-size"
 ;;                                             ,(number-to-string (linux-system-ram-size))))
 ;;                                    ("clisp" ("ros use clisp && ros run --" "-m"
@@ -364,6 +384,55 @@
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; (define-key sly-db-mode-map (kbd "C-c C-s") 'my-sly-step-display-value)
+
+
+;; sly
+
+;; (use-package sly
+;;   :ensure t
+;;   :config
+;;   ;; Roswell is not available for Windows.
+;;   (cond
+;;    ((eq system-type 'darwin) (load (expand-file-name "~/.roswell/helper.el")))
+;;    ((eq system-type 'gnu/linux) (load (expand-file-name "~/.roswell/helper.el")))
+;;    ((eq system-type 'windows-nt) (load (concat (getenv "USERPROFILE") "\\quicklisp\\sly-helper.el"))
+;;     (setq inferior-lisp-program (concat "sbcl --dynamic-space-size "
+;;                                         (number-to-string (system-ram-size-in-mb)))))
+;;    (t
+;;     (error "Failed to load helper.el")))
+
+;;   ;; Set dynamic-space-size for SBCL with Roswell for macOS and Linux
+;;   (cond
+;;    ((or (eq system-type 'darwin) (eq system-type 'gnu/linux))
+;;     (setq inferior-lisp-program (concat "ros -Q dynamic-space-size=" (number-to-string (system-ram-size-in-mb)) " run"))))
+
+;;   ;; Enable SLY contribs for a fancier experience
+;;   (setq sly-contribs '(sly-fancy slynk-mrepl sly-mrepl sly-cl-indent)) ;; slynk-mrepl is necessary contrib!
+
+;;   ;; Don't use tabs for indentation
+;;   (setq-default indent-tabs-mode nil)
+;;   )
+
+;; ;; Change keybindings for SLIME or SLY if necessary to avoid conflicts
+;; (with-eval-after-load 'sly
+;;   (define-key sly-mode-map (kbd "C-c C-s") 'sly-selector))
+
+;; (with-eval-after-load 'slime
+;;   (define-key slime-mode-map (kbd "C-c C-s") 'slime-selector))
+
+;; make results visible inline
+(use-package lispy
+  :ensure t
+  :hook ((lisp-mode emacs-lisp-mode) . lispy-mode)
+  :config
+  ;; Define `C-,` as a prefix key
+  (define-prefix-command 'lispy-prefix)
+  (global-set-key (kbd "C-l") 'lispy-prefix)
+
+  ;; bind `C-, e` to lispy-eval-and-insert
+  (define-key lispy-prefix (kbd "e") 'lispy-eval-and-insert)
+  ;; Optionally, you can also configure other keys or customize lispy behavior here.
+  )
 
 (use-package racket-mode
   :ensure t
@@ -523,23 +592,18 @@
   (setq org-roam-v2-ack t)
   (org-roam-db-autosync-mode)
 
-  ;; Set up daily notes
-  (use-package org-roam-dailies
-    :ensure nil
-    :after org-roam
-    :config
-    (setq org-roam-dailies-directory "daily/")
-    ;; Custom capture template for daily notes
-    (setq org-roam-dailies-capture-templates
-          '(("d" "default" entry
-             "* %<%H:%M> - %?"
-             :target (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n")))))
-
   ;; Keybindings for Org-roam
   (global-set-key (kbd "C-c n f") 'org-roam-node-find)
   (global-set-key (kbd "C-c n i") 'org-roam-node-insert)
   (global-set-key (kbd "C-c n l") 'org-roam-buffer-toggle)
   (global-set-key (kbd "C-c n t") 'org-roam-dailies-capture-today)
+
+  ;; Org-oram dailies configuration
+  (setq org-roam-dailies-directory "~/org/roam/daily/")
+  (setq org-roam-dailies-capture-templates
+        '(("d" "default" entry
+           "* %<%H:%M> - %?"
+           :target (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
 
   ;; Add tags to Org-roam notes
   (setq org-roam-tag-sources '(prop all-directories))
