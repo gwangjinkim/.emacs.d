@@ -2,4 +2,4 @@
 ;; Automatically written history of CIDER REPL session
 ;; Edit at your own risk
 
-nil
+("(java.time.LocalDate \"2025-13-99\")")

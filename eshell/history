@@ -1,0 +1,9 @@
+conda activate deepseek
+conda init
+conda activate deepseek
+conda init
+source ~/miniconda3/etc/profile.d/conda.sh
+ls /opt/homebrew/Caskroom/miniconda/
+source /opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh
+source /opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh
+exit

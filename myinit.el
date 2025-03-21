@@ -456,9 +456,13 @@
 
 (use-package paredit
   :ensure t
-  :hook
-  ((racket-mode . paredit-mode)
-   (racket-repl-mode . paredit-mode)))
+  :hook ((emacs-lisp-mode lisp-mode sly-mode sly-mrepl-mode racket-mode racket-repl-mode) . paredit-mode)
+
+  :bind
+  (("C-c <right>" . paredit-forward-slurp-sexp)
+   ("C-c <left>" . paredit-backward-slurp-sexp)
+   ("C-c <up>" . paredit-forward-barf-sexp)
+   ("C-c <down>" . paredit-backward-barf-sexp))) ;; use C-c instead of just C-right etc because of MacOS
 
 ;; (use-package ess
 ;;   :ensure t
