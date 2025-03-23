@@ -369,6 +369,52 @@ sudo pip install --upgrade epc
     (elpy-enable))
 #+END_SRC
 
+* Conda environment
+
+#+begin_src emacs-lisp
+    ;; add .bin/local to PATH variable the current
+    ;; this is because I start emacs with
+    ;; env HOME=$HOME/somefolder
+
+    (defun joindirs (root &rest dirs)
+      "Joins a series of directories together,
+         like Python's os.path.join
+         (joindirs \"/a\" \"b\" \"c\") => /a/b/c"
+      (if (not dirs)
+          root
+        (apply 'joindirs
+               (expand-file-name (car dirs) root)
+               (cdr dirs))))
+
+    (setenv "PATH" (concat (getenv "PATH") ":"
+                           (joindirs (getenv "HOME") ".bin" "local")))
+
+    ;; get conda environment
+    (require 'json)
+
+    (defun get-conda-envs-dir ()
+      "Get the primary directory where Conda environments are stored."
+      (let* ((output (process-lines "conda" "info" "--json"))
+             (json-object-type 'hash-table)
+             (json-array-type 'list)
+             (json-key-type 'string)
+             (info (json-read-from-string (mapconcat 'identity output "\n")))
+             (envs-dirs (gethash "envs_dirs" info)))
+        (if envs-dirs
+            (car envs-dirs)
+          (error "Could not determine Conda environments directory"))))
+
+    ;; set conda env as workon
+    (defun set-conda-envs-dir-as-workon ()
+      "Set the Conda environments directory as the WORKON environment variable."
+      (let ((conda-envs-dir (get-conda-envs-dir)))
+        (setenv "WORKON_HOME" conda-envs-dir)
+        (message "WORKON_HOME set to %s" conda-envs-dir)))
+#+end_src
+
+#+RESULTS:
+: set-conda-envs-dir-as-workon
+
 * Yasnippet
 
 #+BEGIN_SRC emacs-lisp
@@ -590,75 +636,110 @@ sudo pip install --upgrade epc
      ("C-c <up>" . paredit-forward-barf-sexp)
      ("C-c <down>" . paredit-backward-barf-sexp))) ;; use C-c instead of just C-right etc because of MacOS
 #+end_src
-* R/Julia ESS
+* R/
+Julia ESS
 
 For conda use still `M-x pyvenv-activate RET path to conda env`
 
 #+BEGIN_SRC emacs-lisp
-  ;; (use-package ess
-  ;;   :ensure t
-  ;;   :init 
-  ;;   (require 'ess-site)
-  ;;   (setq ess-use-flymake nil)
-  ;;   (setq ess-eval-visibly-p nil)
-  ;;   (setq ess-use-eldoc nil))
+    ;; (use-package ess
+    ;;   :ensure t
+    ;;   :init 
+    ;;   (require 'ess-site)
+    ;;   (setq ess-use-flymake nil)
+    ;;   (setq ess-eval-visibly-p nil)
+    ;;   (setq ess-use-eldoc nil))
 
-  (use-package ess
-    :ensure t
-    :mode (("\\.R\\'" . R-mode)
-           ("\\.Rmd\\'" . R-markdown-mode)
-           ("\\.Rnw\\'" . R-noweb-mode))
-    :init
-    (require 'ess-site)
-    (setq ess-eval-visibly 'nowait)
-    (setq ess-ask-for-ess-directory nil)
-    :config
-    (setq ess-toggle-underscore nil)
-    (setq ess-default-style 'DEFAULT)
-    (setq ess-indent-with-fancy-comments nil)
-    (setq ess-fancy-comments nil)
-    (setq ess-history-file nil)
-    (setq ess-use-flymake nil)
-    (setq ess-R-font-lock-keywords
-          '((ess-R-fl-keyword:fun-calls . t)
-            (ess-R-fl-keyword:keywords . t)
-            (ess-R-fl-keyword:assign-ops . t)
-            (ess-R-fl-keyword:constants . t)
-            (ess-R-fl-keyword:messages . t)
-            (ess-R-fl-keyword:modifiers . t)
-            (ess-R-fl-keyword:fun-defs . t)
-            (ess-R-fl-keyword:numbers . t)
-            (ess-R-fl-keyword:operators . t)
-            (ess-R-fl-keyword:delimiters . t)
-            (ess-R-fl-keyword:= . t)
-            (ess-R-fl-keyword:+ . t)
-            (ess-R-fl-keyword:- . t)
-            (ess-R-fl-keyword:* . t)
-            (ess-R-fl-keyword:/ . t)
-            (ess-R-fl-keyword:^ . t)
-            (ess-R-fl-keyword:< . t)
-            (ess-R-fl-keyword:> . t)
-            (ess-R-fl-keyword:! . t)
-            (ess-R-fl-keyword:% . t)
-            (ess-R-fl-keyword:%op% . t)
-            (ess-R-fl-keyword:%!in% . t)
-            (ess-R-fl-keyword:%notin% . t)))
-    :bind
-    (:map ess-mode-map
-          ("C-c C-j" . ess-eval-line-and-step)
-          ("C-c C-l" . ess-eval-region-or-function-or-paragraph-and-step)
-          ("C-c C-r" . ess-eval-region)
-          ("C-c C-p" . ess-eval-buffer)
-          ("C-c C-o" . ess-eval-chunk))
-    )
+    (use-package ess
+      :ensure t
+      :mode (("\\.R\\'" . R-mode)
+             ("\\.Rmd\\'" . R-markdown-mode)
+             ("\\.Rnw\\'" . R-noweb-mode)
+             ("\\.jl\\'" . ess-julia-mode))
+      :init
+      (require 'ess-site)
+      (setq ess-eval-visibly 'nowait)
+      (setq ess-ask-for-ess-directory nil)
+      :config
+      (setq ess-toggle-underscore nil)
+      (setq ess-default-style 'DEFAULT)
+      (setq ess-indent-with-fancy-comments nil)
+      (setq ess-fancy-comments nil)
+      (setq ess-history-file nil)
+      (setq ess-use-flymake nil)
+      (setq ess-R-font-lock-keywords
+            '((ess-R-fl-keyword:fun-calls . t)
+              (ess-R-fl-keyword:keywords . t)
+              (ess-R-fl-keyword:assign-ops . t)
+              (ess-R-fl-keyword:constants . t)
+              (ess-R-fl-keyword:messages . t)
+              (ess-R-fl-keyword:modifiers . t)
+              (ess-R-fl-keyword:fun-defs . t)
+              (ess-R-fl-keyword:numbers . t)
+              (ess-R-fl-keyword:operators . t)
+              (ess-R-fl-keyword:delimiters . t)
+              (ess-R-fl-keyword:= . t)
+              (ess-R-fl-keyword:+ . t)
+              (ess-R-fl-keyword:- . t)
+              (ess-R-fl-keyword:* . t)
+              (ess-R-fl-keyword:/ . t)
+              (ess-R-fl-keyword:^ . t)
+              (ess-R-fl-keyword:< . t)
+              (ess-R-fl-keyword:> . t)
+              (ess-R-fl-keyword:! . t)
+              (ess-R-fl-keyword:% . t)
+              (ess-R-fl-keyword:%op% . t)
+              (ess-R-fl-keyword:%!in% . t)
+              (ess-R-fl-keyword:%notin% . t)))
+       ;; to be able to use pyvenv-workon, one has to set $WORKON_HOME var
+      (set-conda-envs-dir-as-workon) ;; conda env need python!
+      :bind
+      (:map ess-mode-map
+            ("C-c C-j" . ess-eval-line-and-step)
+            ("C-c C-l" . ess-eval-region-or-function-or-paragraph-and-step)
+            ("C-c C-r" . ess-eval-region)
+            ("C-c C-p" . ess-eval-buffer)
+            ("C-c C-o" . ess-eval-chunk))
+      )
 
 #+END_SRC
+
+#+RESULTS:
+: ess-eval-chunk
 
 | Switch to buffer runnng R    | C-c C-z          |
 | evaluate code pieces         | C-c C-n, C-c C-r |
 | evaluate line/expression     | C-c C-c          |
 | interface to R documentation | C-c C-v          |
 | help                         | ess-help, C-h h  |
+
+`M-x pyvenv-workon` lists only conda environments which contain python!
+My workaround to see my `julia` environment in conda was to install python into it!
+`conda install -c conda-forge python`. After that, `M-x pyvenv-workon` listed julia.
+I chose it. And then with `M-x julia` I could start via ess Julia!
+
+C-c C-r however was not transpassing the region.
+
+So setting up the section for 
+(set-conda-envs-dir-as-workon)
+is crucial.
+
+Then, I can do `pyvenv-workon`.
+
+I think however, that I have not to rely on it.
+I could install the other conda manager.
+
+The ess package - it was crucial for Julia files
+to be recognized to set 
+` ("\\.jl\\'" . ess-julia-mode)`
+in the mode list.
+
+From then on, `C-c C-p` even worked.
+And `C-c C-r`.
+
+Setting the key bindings in the `use-package` is also important.
+
+
 
 * Org-roam
 

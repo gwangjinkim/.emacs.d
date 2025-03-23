@@ -7,3 +7,12 @@ ls /opt/homebrew/Caskroom/miniconda/
 source /opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh
 source /opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh
 exit
+git add --all
+git commit -m "add Dockerfile and yaml-mode support for code blocks in org mode"
+git pull
+git push
+exit
+conda env list
+conda activate julia
+conda init
+exit

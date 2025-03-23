@@ -648,3 +648,13 @@
   (setq mac-command-key-is-meta nil)
   (setq mac-command-modifier 'super)
   (setq mac-option-modifier 'meta))
+
+(use-package dockerfile-mode
+  :ensure t
+  :mode "Dockerfile\\'")
+
+(use-package yaml-mode
+  :ensure t
+  :mode "\\.ya?ml\\'"
+  :hook (yaml-mode . (lambda ()
+                       (define-key yaml-mode-map "\C-m" 'newline-and-indent))))
