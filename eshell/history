@@ -16,3 +16,16 @@ conda env list
 conda activate julia
 conda init
 exit
+ssh 51.195.138.36
+ssh 51.195.138.36
+exit
+cd
+nano test
+nano mytest
+nano
+emacs --help
+nano --help
+cat /usr/share/terminfo
+tail /usr/share/terminfo
+head /usr/share/terminfo
+exit

@@ -1,0 +1,1 @@
+("~/.emacs.d/" "~/org/" "~/emacs/emacs-for-clojure/" "~/emacs/emacs-for-python-lsp/" "~/emacs/emacs-for-python/" "~/projects/tcga-dlbc/")

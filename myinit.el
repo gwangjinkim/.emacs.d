@@ -51,6 +51,12 @@
   :config
   (tabbar-mode 1))
 
+(use-package eshell-vterm
+  :ensure t
+  :commands vterm
+  :config
+  (setq vterm-max-scrollback 10000)) ;; optional: increase scrollback
+
 ;; (windmove-default-keybindings)
 
 ;; (winner-mode 1)
@@ -90,6 +96,15 @@
     (global-set-key (kbd "C-x l") 'counsel-locate)
     (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
     (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)))
+
+(use-package projectile
+  :ensure t
+  :init
+  (projectile-mode +1)
+  :custom
+  (projectile-project-search-path '("~/projects/")) ;; optional
+  :bind-keymap
+  ("C-c p" . projectile-command-map))
 
 (use-package avy
   :ensure t
@@ -180,6 +195,9 @@
   ;; Set the command for TypeScript execution
   (setq org-babel-command:typescript "npx ts-node"))
 
+(use-package yaml-mode
+  :ensure t)
+
 ;; (add-to-list 'load-path (expand-file-name "~/src/lisp") t)
 ;; (add-to-list 'load-path (expand-file-name "~/path/to/orgdir/contrib/lisp") t)
 
@@ -200,10 +218,12 @@
  'org-babel-load-languages
  '((python . t)
    (R . t)
+   (julia . t)
    (lisp . t)
    (clojure . t)
    (js . t)
-   (typescript . t)))
+   (typescript . t)
+   (yaml . t)))
 
 ;; stop emacs asking for confirmation
 (setq org-confirm-babel-evaluate nil)
@@ -241,26 +261,203 @@
 ;;   :init
 ;;   (global-undo-tree-mode))  ;; erroneus package!
 
-(use-package flycheck
-  :ensure t
-  :init
-  (global-flycheck-mode t))
+;; add .bin/local to PATH variable the current
+;; this is because I start emacs with
+;; env HOME=$HOME/somefolder
 
-(use-package jedi
-  :ensure t
-  :init
-  (add-hook 'python-mode-hook 'jedi:setup)
-  (add-hook 'python-mode-hook 'jedi:ac-setup))
+(defun joindirs (root &rest dirs)
+  "Joins a series of directories together,
+     like Python's os.path.join
+     (joindirs \"/a\" \"b\" \"c\") => /a/b/c"
+  (if (not dirs)
+      root
+    (apply 'joindirs
+           (expand-file-name (car dirs) root)
+           (cdr dirs))))
 
+(setenv "PATH" (concat (getenv "PATH") ":"
+                       (joindirs (getenv "HOME") ".bin" "local")))
+
+;; get conda environment
+(require 'json)
+
+(defun get-conda-envs-dir ()
+  "Get the primary directory where Conda environments are stored."
+  (let* ((output (process-lines "conda" "info" "--json"))
+         (json-object-type 'hash-table)
+         (json-array-type 'list)
+         (json-key-type 'string)
+         (info (json-read-from-string (mapconcat 'identity output "\n")))
+         (envs-dirs (gethash "envs_dirs" info)))
+    (if envs-dirs
+        (car envs-dirs)
+      (error "Could not determine Conda environments directory"))))
+
+;; set conda env as workon
+(defun set-conda-envs-dir-as-workon ()
+  "Set the Conda environments directory as the WORKON environment variable."
+  (let ((conda-envs-dir (get-conda-envs-dir)))
+    (setenv "WORKON_HOME" conda-envs-dir)
+    (message "WORKON_HOME set to %s" conda-envs-dir)))
+
+;; (use-package flycheck
+;;   :ensure t
+;;   :init
+;;   (global-flycheck-mode t))
+
+;; (use-package jedi                       
+;;   :ensure t
+;;   :init
+;;   (add-hook 'python-mode-hook 'jedi:setup)
+;;   (add-hook 'python-mode-hook 'jedi:ac-setup))
+
+;; (use-package elpy
+;;   :ensure t
+;;   :config
+;;   (elpy-enable)
+;;   (set-conda-envs-dir-as-workon))
+
+;; manually add two dependencies
+
+(use-package spinner
+  :ensure t)
+
+(use-package compat
+  :ensure t)
+
+;; to then set elpy
 (use-package elpy
   :ensure t
   :config
-  (elpy-enable))
+  (elpy-enable)
+  ;; (setq elpy-rpc-virtualenv-path 'current) ;; otherwise error
+  ;; do: sudo apt install virtualenv
+  ;;     sudo apt install python3-pip
+  (setq elpy-rpc-python-command "python3")
+  ;; otherwise error on M-x elpy-config
+  ;; 'Neither easy_install nor pip found
+  ;;  use ipython
+  (setq python-shell-interpreter "ipython"
+        python-shell-interpreter-args "-i --simple-prompt")
+  ;; to be able to use pyvenv-workon, one has to set $WORKON_HOME var
+  (set-conda-envs-dir-as-workon))
+
+(use-package dape
+  :preface
+  ;; By default dape shares the same keybinding prefix as `gud'
+  ;; If you do not want to use any prefix, set it to nil.
+  ;; (setq dape-key-prefix "\C-x\C-a")
+
+  :hook
+  ;; Save breakpoints on quit
+  ((kill-emacs . dape-breakpoint-save)
+   ;; Load breakpoints on startup
+   (after-init . dape-breakpoint-load)
+   (dape-stopped-hook . dape-info)
+   (dape-start-hook . (lambda () (save-some-buffers t t))))
+
+  :init
+  ;; To use window configuration like gud (gdb-mi)
+  ;; (setq dape-buffer-window-arrangement 'gud)
+  (setq dape-buffer-window-arrangement 'right
+        dape-cwd-fn 'projectile-project-roo)
+
+  :bind (
+         ;; Global bindings
+         ("<f5>" . my/dape-python)
+         ("<f6>" . my/dape-project-debug)
+         ;; Local bindings inside dape-mode
+         ;; (:map dape-mode-map
+         ;;      ("C-c w a" . dape-watch-add)
+         ;;      ("C-c w r" . dape-watch-remove)
+         ;;      ("C-c w w" . dape-watch))
+         )
+
+
+  :config
+
+  ;; Optional: show locals/info buffer when stopped
+  (add-hook 'dape-stopped-hook #'dape-info)
+
+  ;; Save all buffers on debug start
+  (add-hook 'dape-start-hook (lambda () (save-some-buffers t t)))
+
+  ;; Info buffers to the right
+  (setq dape-buffer-window-arrangement 'right)
+
+  ;; Enable mouse-based breakpoint toggling
+  (dape-breakpoint-global-mode)
+
+  ;; Automatically add a watch expression when DAPE starts (optional!)
+  ;; You might prefer doing this manually, or define your own helper instead.
+  ;; (add-hook 'dape-start-hook (lambda () (dape-watch-add "my_variable")))
+
+
+  ;; Pulse source line (performance hit)
+  ;; (add-hook 'dape-display-source-hook 'pulse-momentary-highlight-one-line)
+
+  ;; To not display info and/or buffers on startup
+  ;; (remove-hook 'dape-start-hook 'dape-info)
+  ;; (remove-hook 'dape-start-hook 'dape-repl)
+
+  ;; To display info and/or repl buffers on stopped
+  ;; (add-hook 'dape-stopped-hook 'dape-info)
+  ;; (add-hook 'dape-stopped-hook 'dape-repl)
+
+  ;; Kill compile buffer on build success
+  ;; (add-hook 'dape-compile-hook 'kill-buffer)
+
+  ;; Save buffers on startup, useful for interpreted languages
+  ;; (add-hook 'dape-start-hook (lambda () (save-some-buffers t t)))
+
+  ;; Projectile users
+  (setq dape-cwd-fn 'projectile-project-root)
+
+  (setq dape-configs
+        (append
+         '((python
+            :name "Python :: Launch file"
+            :type "python"
+            :request "launch"
+            :program nil ;; Use buffer-file-name by default
+            :cwd nil     ;; Use `default-directory' by default
+            :env nil
+            :args nil
+            :console "integratedTerminal")) ;; or "internalConsole"
+         dape-configs))
+
+  (defun my/dape-python ()
+    "Start dape debug session for current Python file."
+    (interactive)
+    (let ((dape-config
+           `(:type "python"
+                   :name "Python :: current file"
+                   :request "launch"
+                   :program ,(buffer-file-name)
+                   :cwd ,(projectile-project-root)
+                   :console "integratedTerminal")))
+      (dape-debug dape-config)))
+
+  ;; Local keybindings after dape-mode-map is defined
+  (define-key dape-mode-map (kbd "C-c w a") #'dape-watch-add)
+  (define-key dape-mode-map (kbd "C-c w r") #'dape-watch-remove)
+  (define-key dape-mode-map (kbd "C-c w w") #'dape-watch)
+  )
 
 (use-package yasnippet
   :ensure t
   :init
   (yas-global-mode 1))
+
+;; Enable undo-tree globally
+(use-package undo-tree
+  :ensure t
+  ;; :init ;; only for early setting slike variables
+  :custom
+  (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo"))) ; optional: persistent history
+  (setq undo-tree-auto-save-history t)
+  :config ;; run after package is loaded
+  (global-undo-tree-mode))
 
 ;; Git integration for emacs
 (use-package magit
@@ -476,7 +673,8 @@
   :ensure t
   :mode (("\\.R\\'" . R-mode)
          ("\\.Rmd\\'" . R-markdown-mode)
-         ("\\.Rnw\\'" . R-noweb-mode))
+         ("\\.Rnw\\'" . R-noweb-mode)
+         ("\\.jl\\'" . ess-julia-mode))
   :init
   (require 'ess-site)
   (setq ess-eval-visibly 'nowait)
@@ -512,6 +710,8 @@
           (ess-R-fl-keyword:%op% . t)
           (ess-R-fl-keyword:%!in% . t)
           (ess-R-fl-keyword:%notin% . t)))
+   ;; to be able to use pyvenv-workon, one has to set $WORKON_HOME var
+  (set-conda-envs-dir-as-workon) ;; conda env need python!
   :bind
   (:map ess-mode-map
         ("C-c C-j" . ess-eval-line-and-step)
