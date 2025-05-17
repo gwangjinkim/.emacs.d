@@ -223,7 +223,8 @@
    (clojure . t)
    (js . t)
    (typescript . t)
-   (yaml . t)))
+
+   ))
 
 ;; stop emacs asking for confirmation
 (setq org-confirm-babel-evaluate nil)
@@ -255,11 +256,6 @@
 ;;          :map org-mode-map
 ;;          ("C-M-i"   . completion-at-point))
 ;;   :config (org-roam-setup))
-
-;; (use-package undo-tree
-;;   :ensure t
-;;   :init
-;;   (global-undo-tree-mode))  ;; erroneus package!
 
 ;; add .bin/local to PATH variable the current
 ;; this is because I start emacs with

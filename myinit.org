@@ -300,25 +300,26 @@ They recommend `:config (avy-setup-default)
 
 ** Org-babel-execute
 #+BEGIN_SRC emacs-lisp
-    ;; (require 'org)
-    ;; (require 'ob)
+        ;; (require 'org)
+        ;; (require 'ob)
 
-    ;; (require 'ob-clojure)
-    ;; (setq org-babel-clojure-backend 'cider)
+        ;; (require 'ob-clojure)
+        ;; (setq org-babel-clojure-backend 'cider)
 
-    (org-babel-do-load-languages
-     'org-babel-load-languages
-     '((python . t)
-       (R . t)
-       (julia . t)
-       (lisp . t)
-       (clojure . t)
-       (js . t)
-       (typescript . t)
-       (yaml . t)))
+        (org-babel-do-load-languages
+         'org-babel-load-languages
+         '((python . t)
+           (R . t)
+           (julia . t)
+           (lisp . t)
+           (clojure . t)
+           (js . t)
+           (typescript . t)
+           
+           ))
 
-    ;; stop emacs asking for confirmation
-    (setq org-confirm-babel-evaluate nil)
+        ;; stop emacs asking for confirmation
+        (setq org-confirm-babel-evaluate nil)
 
 #+END_SRC
 
@@ -364,17 +365,7 @@ results!
   ;;   :config (org-roam-setup))
 #+END_SRC
 
-* Undo tree
 
-#+BEGIN_SRC emacs-lisp
-  ;; (use-package undo-tree
-  ;;   :ensure t
-  ;;   :init
-  ;;   (global-undo-tree-mode))  ;; erroneus package!
-#+END_SRC
-
-Basic emacs undo and redo is C-/ and C-_
-Undo tree you can bring up with C-x u
 
 
 * Conda environment
@@ -512,25 +503,23 @@ I will instead put my Python settings with elpy.
 * Python Debugging
 
 #+begin_src emacs-lisp
+
   (use-package dape
-    :preface
-    ;; By default dape shares the same keybinding prefix as `gud'
-    ;; If you do not want to use any prefix, set it to nil.
-    ;; (setq dape-key-prefix "\C-x\C-a")
-
-    :hook
-    ;; Save breakpoints on quit
-    ((kill-emacs . dape-breakpoint-save)
-     ;; Load breakpoints on startup
-     (after-init . dape-breakpoint-load)
-     (dape-stopped-hook . dape-info)
-     (dape-start-hook . (lambda () (save-some-buffers t t))))
-
+    :ensure t
+    :defer t
     :init
+    ;; Window arrangement and working directory setup
+    (setq dape-buffer-window-arrangement 'right
+          dape-cwd-fn 'projectile-project-root)
     ;; To use window configuration like gud (gdb-mi)
     ;; (setq dape-buffer-window-arrangement 'gud)
-    (setq dape-buffer-window-arrangement 'right
-          dape-cwd-fn 'projectile-project-roo)
+
+    :hook
+    ((kill-emacs . dape-breakpoint-save) ;; save breakpoints on quit
+     (after-init . dape-breakpoint-load) ;; load breakpoints on startup
+     (dape-stopped-hook . dape-info)
+     (dape-start-hook . (lambda () (save-some-buffers t t)))
+     (dape-mode . my/setup-dape-bindings))
 
     :bind (
            ;; Global bindings
@@ -543,20 +532,44 @@ I will instead put my Python settings with elpy.
            ;;      ("C-c w w" . dape-watch))
            )
 
-
     :config
-
-    ;; Optional: show locals/info buffer when stopped
-    (add-hook 'dape-stopped-hook #'dape-info)
-
-    ;; Save all buffers on debug start
-    (add-hook 'dape-start-hook (lambda () (save-some-buffers t t)))
-
-    ;; Info buffers to the right
-    (setq dape-buffer-window-arrangement 'right)
-
-    ;; Enable mouse-based breakpoint toggling
+    ;; Enable global breakpoint toggling
     (dape-breakpoint-global-mode)
+
+    ;; Extend default dape configs with a Python example
+    (setq dape-configs
+          (append
+           '((python
+              :name "Python :: Launch file"
+              :type "python"
+              :request "launch"
+              :program nil ;; Use buffer-file-name by default
+              :cwd nil     ;; Use `default-directory' by default
+              :env nil
+              :args nil
+              :console "integratedTerminal"))
+           dape-configs))
+
+    ;; Function to start dape for current Python buffer
+    (defun my/dape-python ()
+      "Start dape debug session for current Python file."
+      (interactive)
+      (let ((dape-config
+             `(:type "python"
+                     :name "Python :: current file"
+                     :request "launch"
+                     :program ,(buffer-file-name)
+                     :cwd ,(projectile-project-root)
+                     :console "integratedTerminal")))
+        (dape-debug dape-config)))
+
+    ;; Local bindings in dape-mode
+    (defun my/setup-dape-bindings ()
+      (when (boundp 'dape-mode-map)
+        (define-key dape-mode-map (kbd "C-c w a") #'dape-watch-add)
+        (define-key dape-mode-map (kbd "C-c w r") #'dape-watch-remove)
+        (define-key dape-mode-map (kbd "C-c w w") #'dape-watch)
+        (define-key dape-mode-map (kbd "C-c C-c") #'dape-continue)))
 
     ;; Automatically add a watch expression when DAPE starts (optional!)
     ;; You might prefer doing this manually, or define your own helper instead.
@@ -576,42 +589,10 @@ I will instead put my Python settings with elpy.
 
     ;; Kill compile buffer on build success
     ;; (add-hook 'dape-compile-hook 'kill-buffer)
-
+  
     ;; Save buffers on startup, useful for interpreted languages
     ;; (add-hook 'dape-start-hook (lambda () (save-some-buffers t t)))
 
-    ;; Projectile users
-    (setq dape-cwd-fn 'projectile-project-root)
-
-    (setq dape-configs
-          (append
-           '((python
-              :name "Python :: Launch file"
-              :type "python"
-              :request "launch"
-              :program nil ;; Use buffer-file-name by default
-              :cwd nil     ;; Use `default-directory' by default
-              :env nil
-              :args nil
-              :console "integratedTerminal")) ;; or "internalConsole"
-           dape-configs))
-
-    (defun my/dape-python ()
-      "Start dape debug session for current Python file."
-      (interactive)
-      (let ((dape-config
-             `(:type "python"
-                     :name "Python :: current file"
-                     :request "launch"
-                     :program ,(buffer-file-name)
-                     :cwd ,(projectile-project-root)
-                     :console "integratedTerminal")))
-        (dape-debug dape-config)))
-
-    ;; Local keybindings after dape-mode-map is defined
-    (define-key dape-mode-map (kbd "C-c w a") #'dape-watch-add)
-    (define-key dape-mode-map (kbd "C-c w r") #'dape-watch-remove)
-    (define-key dape-mode-map (kbd "C-c w w") #'dape-watch)
     )
 #+end_src
 
@@ -754,8 +735,9 @@ undo-tree comes to rescue!
      move around: `arrows`
      restore versions: `RET`
   quit tree view: `q`
-
-
+  
+Basic emacs undo and redo is C-/ and C-_
+Undo tree you can bring up with C-x u
 * Git
 #+begin_src elisp
   ;; Git integration for emacs

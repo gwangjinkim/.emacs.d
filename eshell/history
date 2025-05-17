@@ -29,3 +29,21 @@ cat /usr/share/terminfo
 tail /usr/share/terminfo
 head /usr/share/terminfo
 exit
+cd .emacs.d
+git add --all
+git commit -m "yaml first step"
+nano .gitignore
+git push
+git add --all
+git commit -m "changed package management part in init.el"
+git push
+git commit --amend
+git commit --amend -m
+git commit --amend -m "gnu and melpa as package repos"
+git push
+git pull
+git pull --rebase
+git log
+git commit --amend -m "gnu and melpa as package repos"
+git push
+git push -f
