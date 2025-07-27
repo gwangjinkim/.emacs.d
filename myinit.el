@@ -1,33 +1,42 @@
 (setq inhibit-startup-message t)
-(tool-bar-mode -1)
+  (tool-bar-mode -1)
 
-;; maximize window
-(global-set-key (kbd "C-c M") 'toggle-frame-maximized)
+  ;; maximize window
+  (global-set-key (kbd "C-c M") 'toggle-frame-maximized)
 
-(defun enlarge-my-window (&optional height-increase-lines width-increase-columns)
-  "Resize the current window. Default: height by 10 lines and width by 20 columns.
-   You can specify custom values for both height and width."
-  (interactive
-   (list
-    (read-number "Increase height by (lines): " 10)  ;; Default is 10
-    (read-number "Increase width by (columns): " 20)))  ;; Default is 20
-  ;; Apply height and width increases
-  (enlarge-window height-increase-lines)
-  ;; (enlarge-window-horizontally width-increase-columns)
-  (enlarge-window width-increase-columns t))
+  (defun enlarge-my-window (&optional height-increase-lines width-increase-columns)
+    "Resize the current window. Default: height by 10 lines and width by 20 columns.
+     You can specify custom values for both height and width."
+    (interactive
+     (list
+      (read-number "Increase height by (lines): " 10)  ;; Default is 10
+      (read-number "Increase width by (columns): " 20)))  ;; Default is 20
+    ;; Apply height and width increases
+    (enlarge-window height-increase-lines)
+    ;; (enlarge-window-horizontally width-increase-columns)
+    (enlarge-window width-increase-columns t))
 
-(global-set-key (kbd "C-c w") 'enlarge-my-window)
+  (global-set-key (kbd "C-c w") 'enlarge-my-window)
 
 
-(use-package sweet-theme
-  :ensure t
-  :init
-  (load-theme 'sweet t))
+  (use-package sweet-theme
+    :ensure t
+    :init
+    (load-theme 'sweet t))
 
-(use-package doom-modeline
-  :ensure t
-  :hook
-  (after-init . doom-modeline-mode))
+  (use-package doom-modeline
+    :ensure t
+    :hook
+    (after-init . doom-modeline-mode))
+
+  ;; sly RET in mrepl fix
+  (defun my/sly-mrepl-ret-override ()
+  "Make RET evaluate the expression in SLY MREPL, even with paredit-mode active."
+  (define-key paredit-mode-map (kbd "RET") nil)
+  (local-set-key (kbd "RET") #'sly-mrepl-return)
+  (local-set-key (kbd "C-j") #'sly-mrepl-return)) ;; optional fallback
+
+(add-hook 'sly-mrepl-mode-hook #'my/sly-mrepl-ret-override)
 
 (use-package try
   :ensure t)
@@ -223,7 +232,7 @@
    (clojure . t)
    (js . t)
    (typescript . t)
-
+   
    ))
 
 ;; stop emacs asking for confirmation
@@ -296,6 +305,11 @@
     (setenv "WORKON_HOME" conda-envs-dir)
     (message "WORKON_HOME set to %s" conda-envs-dir)))
 
+(use-package yasnippet
+  :ensure t
+  :init
+  (yas-global-mode 1))
+
 ;; (use-package flycheck
 ;;   :ensure t
 ;;   :init
@@ -321,6 +335,9 @@
 (use-package compat
   :ensure t)
 
+(use-package highlight-indentation
+  :ensure t)
+
 ;; to then set elpy
 (use-package elpy
   :ensure t
@@ -339,24 +356,21 @@
   (set-conda-envs-dir-as-workon))
 
 (use-package dape
-  :preface
-  ;; By default dape shares the same keybinding prefix as `gud'
-  ;; If you do not want to use any prefix, set it to nil.
-  ;; (setq dape-key-prefix "\C-x\C-a")
-
-  :hook
-  ;; Save breakpoints on quit
-  ((kill-emacs . dape-breakpoint-save)
-   ;; Load breakpoints on startup
-   (after-init . dape-breakpoint-load)
-   (dape-stopped-hook . dape-info)
-   (dape-start-hook . (lambda () (save-some-buffers t t))))
-
+  :ensure t
+  :defer t
   :init
+  ;; Window arrangement and working directory setup
+  (setq dape-buffer-window-arrangement 'right
+        dape-cwd-fn 'projectile-project-root)
   ;; To use window configuration like gud (gdb-mi)
   ;; (setq dape-buffer-window-arrangement 'gud)
-  (setq dape-buffer-window-arrangement 'right
-        dape-cwd-fn 'projectile-project-roo)
+
+  :hook
+  ((kill-emacs . dape-breakpoint-save) ;; save breakpoints on quit
+   (after-init . dape-breakpoint-load) ;; load breakpoints on startup
+   (dape-stopped-hook . dape-info)
+   (dape-start-hook . (lambda () (save-some-buffers t t)))
+   (dape-mode . my/setup-dape-bindings))
 
   :bind (
          ;; Global bindings
@@ -369,20 +383,44 @@
          ;;      ("C-c w w" . dape-watch))
          )
 
-
   :config
-
-  ;; Optional: show locals/info buffer when stopped
-  (add-hook 'dape-stopped-hook #'dape-info)
-
-  ;; Save all buffers on debug start
-  (add-hook 'dape-start-hook (lambda () (save-some-buffers t t)))
-
-  ;; Info buffers to the right
-  (setq dape-buffer-window-arrangement 'right)
-
-  ;; Enable mouse-based breakpoint toggling
+  ;; Enable global breakpoint toggling
   (dape-breakpoint-global-mode)
+
+  ;; Extend default dape configs with a Python example
+  (setq dape-configs
+        (append
+         '((python
+            :name "Python :: Launch file"
+            :type "python"
+            :request "launch"
+            :program nil ;; Use buffer-file-name by default
+            :cwd nil     ;; Use `default-directory' by default
+            :env nil
+            :args nil
+            :console "integratedTerminal"))
+         dape-configs))
+
+  ;; Function to start dape for current Python buffer
+  (defun my/dape-python ()
+    "Start dape debug session for current Python file."
+    (interactive)
+    (let ((dape-config
+           `(:type "python"
+                   :name "Python :: current file"
+                   :request "launch"
+                   :program ,(buffer-file-name)
+                   :cwd ,(projectile-project-root)
+                   :console "integratedTerminal")))
+      (dape-debug dape-config)))
+
+  ;; Local bindings in dape-mode
+  (defun my/setup-dape-bindings ()
+    (when (boundp 'dape-mode-map)
+      (define-key dape-mode-map (kbd "C-c w a") #'dape-watch-add)
+      (define-key dape-mode-map (kbd "C-c w r") #'dape-watch-remove)
+      (define-key dape-mode-map (kbd "C-c w w") #'dape-watch)
+      (define-key dape-mode-map (kbd "C-c C-c") #'dape-continue)))
 
   ;; Automatically add a watch expression when DAPE starts (optional!)
   ;; You might prefer doing this manually, or define your own helper instead.
@@ -406,44 +444,7 @@
   ;; Save buffers on startup, useful for interpreted languages
   ;; (add-hook 'dape-start-hook (lambda () (save-some-buffers t t)))
 
-  ;; Projectile users
-  (setq dape-cwd-fn 'projectile-project-root)
-
-  (setq dape-configs
-        (append
-         '((python
-            :name "Python :: Launch file"
-            :type "python"
-            :request "launch"
-            :program nil ;; Use buffer-file-name by default
-            :cwd nil     ;; Use `default-directory' by default
-            :env nil
-            :args nil
-            :console "integratedTerminal")) ;; or "internalConsole"
-         dape-configs))
-
-  (defun my/dape-python ()
-    "Start dape debug session for current Python file."
-    (interactive)
-    (let ((dape-config
-           `(:type "python"
-                   :name "Python :: current file"
-                   :request "launch"
-                   :program ,(buffer-file-name)
-                   :cwd ,(projectile-project-root)
-                   :console "integratedTerminal")))
-      (dape-debug dape-config)))
-
-  ;; Local keybindings after dape-mode-map is defined
-  (define-key dape-mode-map (kbd "C-c w a") #'dape-watch-add)
-  (define-key dape-mode-map (kbd "C-c w r") #'dape-watch-remove)
-  (define-key dape-mode-map (kbd "C-c w w") #'dape-watch)
   )
-
-(use-package yasnippet
-  :ensure t
-  :init
-  (yas-global-mode 1))
 
 ;; Enable undo-tree globally
 (use-package undo-tree
@@ -466,6 +467,11 @@
 
 ;; for slime
 
+;; (with-eval-after-load 'sly-mrepl
+;;   (define-key sly-mrepl-mode-map (kbd "RET") #'sly-mrepl-return))
+
+;; (with-eval-after-load 'sly-mrepl
+;;  (define-key sly-mrepl-mode-map (kbd "S-RET") #'sly-mrepl-return))
 (defun string-trim (str)
   "Trim leading and trailing whitespace from STR."
   (replace-regexp-in-string "\\`[ \t\n\r]+" "" (replace-regexp-in-string "[ \t\n\r]+\\'" "" str)))
@@ -516,6 +522,7 @@
 ;; long time my slime setting
 (use-package slime
   :ensure t
+  :hook ((lisp-mode .slime-mode))
   :config
   ;; roswell is not available for windows.
   (cond
@@ -542,6 +549,10 @@
 
   ;; don't use tabs
   (setq-default indent-tabs-mode nil)
+
+  ;; actually for sly repl
+  (with-eval-after-load 'sly-mrepl
+    (define-key sly-mrepl-mode-map (kbd "RET") #'sly-mrepl-return))
 
   )
 
@@ -583,6 +594,7 @@
 
 ;; (use-package sly
 ;;   :ensure t
+;;   :hook ((lisp-mode .sly-editing-mode))
 ;;   :config
 ;;   ;; Roswell is not available for Windows.
 ;;   (cond
@@ -650,7 +662,7 @@
 (use-package paredit
   :ensure t
   :hook ((emacs-lisp-mode lisp-mode sly-mode sly-mrepl-mode racket-mode racket-repl-mode) . paredit-mode)
-
+  
   :bind
   (("C-c <right>" . paredit-forward-slurp-sexp)
    ("C-c <left>" . paredit-backward-slurp-sexp)
@@ -854,3 +866,48 @@
   :mode "\\.ya?ml\\'"
   :hook (yaml-mode . (lambda ()
                        (define-key yaml-mode-map "\C-m" 'newline-and-indent))))
+
+(use-package tree-sitter
+  :ensure t
+  :hook ((rust-mode . tree-sitter-mode)
+         (rust-mode . tree-sitter-hl-mode)))
+
+(use-package tree-sitter-langs
+  :ensure t)
+
+(use-package rust-ts-mode
+  :ensure t
+  :init
+  ;; Add tree-sitter recipe for Rust
+  (with-eval-after-load 'treesit
+    (add-to-list 'treesit-language-source-alist
+                 '(rust "https://github.com/tree-sitter/tree-sitter-rust")))
+  ;; Auto-install if missing
+  (unless (treesit-language-available-p 'rust)
+    (when (fboundp 'treesit-install-language-grammar)
+      (treesit-install-language-grammar 'rust)))
+  :mode "\\.rs\\'"
+  :hook ((rust-ts-mode .lsp))
+  :config
+  (setq rust-ts-mode-indent-offset 4))
+
+(use-package lsp-mode
+  :ensure t
+  :hook ((lsp-mode . lsp-enable-which-key-integration))
+  :commands lsp
+  :custom
+  (lsp-rust-analyzer-server-command '("rust-analyzer"))
+  (lsp-eldoc-hook nil)
+  (lsp-idle-delay 0.6)
+  (lsp-rust-analyzer-cargo-watch-command "clippy")
+  (lsp-rust-analyzer-proc-macro-enable t)
+  (lsp-rust-analyzer-inlay-hints-mode t)
+  (lsp-rust-analyzer-server-display-inlay-hints t)
+  (lsp-headerline-breadcrumb-enable t))
+
+(use-package lsp-ui
+  :ensure t
+  :commands lsp-ui-mode)
+
+(use-package toml-mode
+  :ensure t)

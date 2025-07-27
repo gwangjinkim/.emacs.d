@@ -1,8 +1,7 @@
 ;;; org-bullets.el --- Show bullets in org-mode as UTF-8 characters
 
-;; Version: 0.3.0
 ;; Package-Version: 20200317.1740
-;; Package-Commit: 767f55feb58b840a5a04eabfc3fbbf0d257c4792
+;; Package-Revision: 9ec0dbd30be7
 ;; Author: sabof
 ;; Maintainer: D. Williams <d.williams@posteo.net>
 ;; Homepage: https://github.com/integral-dw/org-bullets

@@ -47,3 +47,6 @@ git log
 git commit --amend -m "gnu and melpa as package repos"
 git push
 git push -f
+git add --all
+git commit -m "fix dape errors"
+git push

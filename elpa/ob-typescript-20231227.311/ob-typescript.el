@@ -5,7 +5,8 @@
 ;; Author: KURASHIKI Satoru
 ;; Keywords: literate programming, reproducible research, typescript
 ;; Homepage: https://github.com/lurdan/ob-typescript
-;; Version: 0.1
+;; Package-Version: 20231227.311
+;; Package-Revision: 5fe1762f8d86
 ;; Package-Requires: ((emacs "24") (org "8.0"))
 
 ;;; License:
