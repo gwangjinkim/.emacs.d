@@ -21,7 +21,7 @@
 
   (use-package sweet-theme
     :ensure t
-    :init
+    :config
     (load-theme 'sweet t))
 
   (use-package doom-modeline
@@ -232,7 +232,7 @@
    (clojure . t)
    (js . t)
    (typescript . t)
-   
+
    ))
 
 ;; stop emacs asking for confirmation
@@ -265,6 +265,117 @@
 ;;          :map org-mode-map
 ;;          ("C-M-i"   . completion-at-point))
 ;;   :config (org-roam-setup))
+
+;;; --- org smart fill: bullets + numbered + hanging indent ---
+
+(defun gjk--normalize-pasted-bullets (beg end)
+  "Normalize pasted bullets/numbers within [beg,end] to proper Org markers.
+Converts inline or line-start '•' to '- ', and 'N.' to 'N. ', each starting a new line."
+  (save-excursion
+    (save-restriction
+      (narrow-to-region beg end)
+
+      ;; 1) Line-start bullets:  ^\s*•\s+   ->  "- "
+      (goto-char (point-min))
+      (while (re-search-forward "^[ \t]*•[ \t]+" nil t)
+        (replace-match "- "))
+
+      ;; 2) Inline bullets:  \s+•\s+   ->  "\n- "
+      (goto-char (point-min))
+      (while (re-search-forward "[ \t]+•[ \t]+" nil t)
+        (replace-match "\n- "))
+
+      ;; 3) Line-start numbered:  ^\s*\([0-9]+\)\.\s+  ->  "N. "
+      (goto-char (point-min))
+      (while (re-search-forward "^[ \t]*\\([0-9]+\\)\\.[ \t]+" nil t)
+        (replace-match (concat (match-string 1) ". ")))
+
+      ;; 4) Inline numbered:  \s+\([0-9]+\)\.\s+  ->  "\nN. "
+      (goto-char (point-min))
+      (while (re-search-forward "[ \t]+\\([0-9]+\\)\\.[ \t]+" nil t)
+        (replace-match (concat "\n" (match-string 1) ". "))))))
+
+(defun gjk--item-end ()
+  "Move point to end of current list item (before next item or blank). Return point."
+  (forward-line 1)
+  (while (and (not (eobp))
+              (not (looking-at "^[ \t]*\\(- \\|[0-9]+\\. \\)"))
+              (not (looking-at "^[ \t]*$")))
+    (forward-line 1))
+  (point))
+
+(defun gjk-org-smart-fill (&optional justify)
+  "Like `fill-paragraph' in Org, plus:
+- Normalize pasted TAB•TAB to '- ' and TAB1.TAB to '1. '.
+- Hanging indent: '- ' items = 2 spaces; 'N. ' items = width of the marker (e.g. '1. ' ⇒ 3, '10. ' ⇒ 4)."
+  (interactive (list (when current-prefix-arg t)))
+  (unless (derived-mode-p 'org-mode)
+    (user-error "gjk-org-smart-fill is for Org buffers"))
+  (save-excursion
+    (let* ((use-region (use-region-p))
+           (beg (if use-region
+                    (region-beginning)
+                  (save-excursion (backward-paragraph) (point))))
+           (end (if use-region
+                    (region-end)
+                  (save-excursion (forward-paragraph) (point)))))
+      ;; 1) Normalize bullets/numbers
+      (gjk--normalize-pasted-bullets beg end)
+      ;; 2) Fill with per-item hanging indents
+      (save-restriction
+        (narrow-to-region beg end)
+        (goto-char (point-min))
+        (while (not (eobp))
+          (cond
+           ;; Skip src blocks
+           ((ignore-errors (org-in-src-block-p))
+            (goto-char (or (save-excursion (org-babel-end-of-src-block) (point))
+                           (line-end-position))))
+           ;; List item (bullet or numbered)
+           ((looking-at "^[ \t]*\$begin:math:text$- \\\\|\\\\([0-9]+\\\\. \\$end:math:text$\\)")
+            (let ((item-beg (point)))
+              (goto-char (gjk--item-end))
+              (let ((item-end (point)))
+                (save-restriction
+                  (narrow-to-region item-beg item-end)
+                  ;; Ensure exactly one space after marker on first line
+                  (goto-char (point-min))
+                  (cond
+                   ((looking-at "^[ \t]*-\$begin:math:text$[ \\t]*\\$end:math:text$")
+                    (replace-match "- "))
+                   ((looking-at "^[ \t]*\$begin:math:text$[0-9]+\\$end:math:text$\\.[ \t]*")
+                    (replace-match (concat (match-string 1) ". "))))
+                  ;; Hanging indent equals visual width of marker
+                  (let* ((m (save-excursion
+                              (goto-char (point-min))
+                              (cond
+                               ((looking-at "^[ \t]*- ") "- ")
+                               ((looking-at "^[ \t]*\$begin:math:text$[0-9]+\\\\. \\$end:math:text$") (match-string 1))
+                               (t "- "))))
+                         (fill-prefix (make-string (string-width m) ?\s)))
+                    (fill-region (point-min) (point-max) justify))))))
+           ;; Normal paragraph
+           (t
+            (let ((pbeg (point)))
+              (forward-paragraph)
+              (fill-region pbeg (point) justify))))
+          ;; Skip blank lines
+          (while (and (not (eobp)) (looking-at "^[ \t]*$"))
+            (forward-line 1)))))))
+
+;; Remap M-q (fill-paragraph) only in Org buffers
+(defvar gjk-org-smart-fill-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map [remap fill-paragraph] #'gjk-org-smart-fill)
+    map))
+
+(define-minor-mode gjk-org-smart-fill-mode
+  "Use `gjk-org-smart-fill' for M-q in Org buffers."
+  :lighter " gjk-fill"
+  :keymap gjk-org-smart-fill-mode-map)
+
+(add-hook 'org-mode-hook #'gjk-org-smart-fill-mode)
+;;; --- end ---
 
 ;; add .bin/local to PATH variable the current
 ;; this is because I start emacs with
@@ -519,6 +630,17 @@
 ;;   (require 'slime)
 ;;   (slime))
 
+ (use-package paredit
+  :ensure t
+  :hook ((emacs-lisp-mode lisp-mode sly-mode sly-mrepl-mode racket-mode racket-repl-mode) . paredit-mode)
+
+  :bind
+  (("C-c <right>" . paredit-forward-slurp-sexp)
+   ("C-c <left>" . paredit-backward-slurp-sexp)
+   ("C-c <up>" . paredit-forward-barf-sexp)
+   ("C-c <down>" . paredit-backward-barf-sexp))) ;; use C-c instead of just C-right etc because of MacOS
+
+
 ;; long time my slime setting
 (use-package slime
   :ensure t
@@ -658,16 +780,6 @@
   :hook
   ((racket-mode . rainbow-delimiters-mode)
    (racket-repl-mode . rainbow-delimiters-mode)))
-
-(use-package paredit
-  :ensure t
-  :hook ((emacs-lisp-mode lisp-mode sly-mode sly-mrepl-mode racket-mode racket-repl-mode) . paredit-mode)
-  
-  :bind
-  (("C-c <right>" . paredit-forward-slurp-sexp)
-   ("C-c <left>" . paredit-backward-slurp-sexp)
-   ("C-c <up>" . paredit-forward-barf-sexp)
-   ("C-c <down>" . paredit-backward-barf-sexp))) ;; use C-c instead of just C-right etc because of MacOS
 
 ;; (use-package ess
 ;;   :ensure t
@@ -867,47 +979,61 @@
   :hook (yaml-mode . (lambda ()
                        (define-key yaml-mode-map "\C-m" 'newline-and-indent))))
 
-(use-package tree-sitter
-  :ensure t
-  :hook ((rust-mode . tree-sitter-mode)
-         (rust-mode . tree-sitter-hl-mode)))
-
-(use-package tree-sitter-langs
-  :ensure t)
-
-(use-package rust-ts-mode
-  :ensure t
+;;; --- Tree-sitter core (built-in on Emacs 29) ---
+(use-package treesit
+  :ensure nil                  ;; built-in
+  :demand t
   :init
-  ;; Add tree-sitter recipe for Rust
-  (with-eval-after-load 'treesit
-    (add-to-list 'treesit-language-source-alist
-                 '(rust "https://github.com/tree-sitter/tree-sitter-rust")))
-  ;; Auto-install if missing
-  (unless (treesit-language-available-p 'rust)
-    (when (fboundp 'treesit-install-language-grammar)
-      (treesit-install-language-grammar 'rust)))
+  (setq treesit-language-source-alist
+        '((rust "https://github.com/tree-sitter/tree-sitter-rust")))
+  :config
+  ;; Install grammar once if missing (safe if already installed)
+  (when (and (fboundp 'treesit-language-available-p)
+             (not (treesit-language-available-p 'rust)))
+    (ignore-errors (treesit-install-language-grammar 'rust))))
+
+;;; --- Rust major mode (tree-sitter first, auto-fallback to classic) ---
+(use-package rust-ts-mode
+  :ensure nil                  ;; built-in on Emacs 29
   :mode "\\.rs\\'"
-  :hook ((rust-ts-mode .lsp))
+  :init
+  ;; Prefer ts-mode whenever classic rust-mode would be chosen
+  (when (and (featurep 'treesit)
+             (fboundp 'treesit-language-available-p)
+             (treesit-language-available-p 'rust))
+    (add-to-list 'major-mode-remap-alist '(rust-mode . rust-ts-mode)))
+  :hook
+  ;; start LSP automatically (deferred) when in ts-mode
+  (rust-ts-mode . lsp-deferred)
   :config
   (setq rust-ts-mode-indent-offset 4))
 
+;; If ts-mode can’t be used (no grammar or no treesit), ensure we still have a mode.
+(use-package rust-mode
+  :if (not (and (featurep 'treesit)
+                (fboundp 'treesit-language-available-p)
+                (treesit-language-available-p 'rust)))
+  :ensure t
+  :mode "\\.rs\\'"
+  :hook (rust-mode . lsp-deferred))
+
+;;; --- LSP for Rust ---
 (use-package lsp-mode
   :ensure t
-  :hook ((lsp-mode . lsp-enable-which-key-integration))
-  :commands lsp
+  :commands (lsp lsp-deferred)
+  :hook (lsp-mode . lsp-enable-which-key-integration)
   :custom
   (lsp-rust-analyzer-server-command '("rust-analyzer"))
-  (lsp-eldoc-hook nil)
   (lsp-idle-delay 0.6)
   (lsp-rust-analyzer-cargo-watch-command "clippy")
   (lsp-rust-analyzer-proc-macro-enable t)
-  (lsp-rust-analyzer-inlay-hints-mode t)
-  (lsp-rust-analyzer-server-display-inlay-hints t)
-  (lsp-headerline-breadcrumb-enable t))
+  ;; modern cross-language inlay hints toggle
+  (lsp-inlay-hint-enable t))
 
 (use-package lsp-ui
   :ensure t
-  :commands lsp-ui-mode)
+  :commands lsp-ui-mode
+  :hook (lsp-mode . lsp-ui-mode))
 
 (use-package toml-mode
   :ensure t)

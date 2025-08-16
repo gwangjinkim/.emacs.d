@@ -28,7 +28,7 @@
 
   (use-package sweet-theme
     :ensure t
-    :init
+    :config
     (load-theme 'sweet t))
 
   (use-package doom-modeline
@@ -1087,6 +1087,10 @@ Undo tree you can bring up with C-x u
     )
 
 #+END_SRC
+
+#+RESULTS:
+| paredit-mode | lispy-mode | ac-emacs-lisp-mode-setup | ert--activate-font-lock-keywords |
+
 * Racket
 #+begin_src emacs-lisp
   (use-package racket-mode
@@ -1432,48 +1436,61 @@ above the use-package command and did again `C-c C-c`
 
 * Rust
 #+begin_src elisp
-
-  (use-package tree-sitter
-    :ensure t
-    :hook ((rust-mode . tree-sitter-mode)
-           (rust-mode . tree-sitter-hl-mode)))
-
-  (use-package tree-sitter-langs
-    :ensure t)
-
-  (use-package rust-ts-mode
-    :ensure t
+  ;;; --- Tree-sitter core (built-in on Emacs 29) ---
+  (use-package treesit
+    :ensure nil                  ;; built-in
+    :demand t
     :init
-    ;; Add tree-sitter recipe for Rust
-    (with-eval-after-load 'treesit
-      (add-to-list 'treesit-language-source-alist
-                   '(rust "https://github.com/tree-sitter/tree-sitter-rust")))
-    ;; Auto-install if missing
-    (unless (treesit-language-available-p 'rust)
-      (when (fboundp 'treesit-install-language-grammar)
-        (treesit-install-language-grammar 'rust)))
+    (setq treesit-language-source-alist
+          '((rust "https://github.com/tree-sitter/tree-sitter-rust")))
+    :config
+    ;; Install grammar once if missing (safe if already installed)
+    (when (and (fboundp 'treesit-language-available-p)
+               (not (treesit-language-available-p 'rust)))
+      (ignore-errors (treesit-install-language-grammar 'rust))))
+
+  ;;; --- Rust major mode (tree-sitter first, auto-fallback to classic) ---
+  (use-package rust-ts-mode
+    :ensure nil                  ;; built-in on Emacs 29
     :mode "\\.rs\\'"
-    :hook ((rust-ts-mode .lsp))
+    :init
+    ;; Prefer ts-mode whenever classic rust-mode would be chosen
+    (when (and (featurep 'treesit)
+               (fboundp 'treesit-language-available-p)
+               (treesit-language-available-p 'rust))
+      (add-to-list 'major-mode-remap-alist '(rust-mode . rust-ts-mode)))
+    :hook
+    ;; start LSP automatically (deferred) when in ts-mode
+    (rust-ts-mode . lsp-deferred)
     :config
     (setq rust-ts-mode-indent-offset 4))
 
+  ;; If ts-mode can’t be used (no grammar or no treesit), ensure we still have a mode.
+  (use-package rust-mode
+    :if (not (and (featurep 'treesit)
+                  (fboundp 'treesit-language-available-p)
+                  (treesit-language-available-p 'rust)))
+    :ensure t
+    :mode "\\.rs\\'"
+    :hook (rust-mode . lsp-deferred))
+
+  ;;; --- LSP for Rust ---
   (use-package lsp-mode
     :ensure t
-    :hook ((lsp-mode . lsp-enable-which-key-integration))
-    :commands lsp
+    :commands (lsp lsp-deferred)
+    :hook (lsp-mode . lsp-enable-which-key-integration)
     :custom
     (lsp-rust-analyzer-server-command '("rust-analyzer"))
-    (lsp-eldoc-hook nil)
     (lsp-idle-delay 0.6)
     (lsp-rust-analyzer-cargo-watch-command "clippy")
     (lsp-rust-analyzer-proc-macro-enable t)
-    (lsp-rust-analyzer-inlay-hints-mode t)
-    (lsp-rust-analyzer-server-display-inlay-hints t)
-    (lsp-headerline-breadcrumb-enable t))
+    ;; modern cross-language inlay hints toggle
+    (lsp-inlay-hint-enable t))
 
   (use-package lsp-ui
     :ensure t
-    :commands lsp-ui-mode)
+    :commands lsp-ui-mode
+    :hook (lsp-mode . lsp-ui-mode))
 #+end_src
 
 * Toml
