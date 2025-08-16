@@ -955,6 +955,17 @@ Undo tree you can bring up with C-x u
   ;;   (require 'slime)
   ;;   (slime))
 
+   (use-package paredit
+    :ensure t
+    :hook ((emacs-lisp-mode lisp-mode sly-mode sly-mrepl-mode racket-mode racket-repl-mode) . paredit-mode)
+    
+    :bind
+    (("C-c <right>" . paredit-forward-slurp-sexp)
+     ("C-c <left>" . paredit-backward-slurp-sexp)
+     ("C-c <up>" . paredit-forward-barf-sexp)
+     ("C-c <down>" . paredit-backward-barf-sexp))) ;; use C-c instead of just C-right etc because of MacOS
+
+
   ;; long time my slime setting
   (use-package slime
     :ensure t
@@ -1098,16 +1109,11 @@ Undo tree you can bring up with C-x u
     ((racket-mode . rainbow-delimiters-mode)
      (racket-repl-mode . rainbow-delimiters-mode)))
 
-  (use-package paredit
-    :ensure t
-    :hook ((emacs-lisp-mode lisp-mode sly-mode sly-mrepl-mode racket-mode racket-repl-mode) . paredit-mode)
-    
-    :bind
-    (("C-c <right>" . paredit-forward-slurp-sexp)
-     ("C-c <left>" . paredit-backward-slurp-sexp)
-     ("C-c <up>" . paredit-forward-barf-sexp)
-     ("C-c <down>" . paredit-backward-barf-sexp))) ;; use C-c instead of just C-right etc because of MacOS
 #+end_src
+
+#+RESULTS:
+: paredit-backward-barf-sexp
+
 * R/
 Julia ESS
 
