@@ -376,116 +376,117 @@ results!
 
 ** Org: Smart fill for pasted bullets & numbered lists
 #+BEGIN_SRC emacs-lisp
-  ;;; --- org smart fill: bullets + numbered + hanging indent ---
+  ;; ;;; --- org smart fill: bullets + numbered + hanging indent ---
 
-  (defun gjk--normalize-pasted-bullets (beg end)
-    "Normalize pasted bullets/numbers within [beg,end] to proper Org markers.
-  Converts inline or line-start '•' to '- ', and 'N.' to 'N. ', each starting a new line."
-    (save-excursion
-      (save-restriction
-        (narrow-to-region beg end)
+  ;; (defun gjk--normalize-pasted-bullets (beg end)
+  ;;   "Normalize pasted bullets/numbers within [beg,end] to proper Org markers.
+  ;; Converts inline or line-start '•' to '- ', and 'N.' to 'N. ', each starting a new line."
+  ;;   (save-excursion
+  ;;     (save-restriction
+  ;;       (narrow-to-region beg end)
 
-        ;; 1) Line-start bullets:  ^\s*•\s+   ->  "- "
-        (goto-char (point-min))
-        (while (re-search-forward "^[ \t]*•[ \t]+" nil t)
-          (replace-match "- "))
+  ;;       ;; 1) Line-start bullets:  ^\s*•\s+   ->  "- "
+  ;;       (goto-char (point-min))
+  ;;       (while (re-search-forward "^[ \t]*•[ \t]+" nil t)
+  ;;         (replace-match "- "))
 
-        ;; 2) Inline bullets:  \s+•\s+   ->  "\n- "
-        (goto-char (point-min))
-        (while (re-search-forward "[ \t]+•[ \t]+" nil t)
-          (replace-match "\n- "))
+  ;;       ;; 2) Inline bullets:  \s+•\s+   ->  "\n- "
+  ;;       (goto-char (point-min))
+  ;;       (while (re-search-forward "[ \t]+•[ \t]+" nil t)
+  ;;         (replace-match "\n- "))
 
-        ;; 3) Line-start numbered:  ^\s*\([0-9]+\)\.\s+  ->  "N. "
-        (goto-char (point-min))
-        (while (re-search-forward "^[ \t]*\\([0-9]+\\)\\.[ \t]+" nil t)
-          (replace-match (concat (match-string 1) ". ")))
+  ;;       ;; 3) Line-start numbered:  ^\s*\([0-9]+\)\.\s+  ->  "N. "
+  ;;       (goto-char (point-min))
+  ;;       (while (re-search-forward "^[ \t]*\\([0-9]+\\)\\.[ \t]+" nil t)
+  ;;         (replace-match (concat (match-string 1) ". ")))
 
-        ;; 4) Inline numbered:  \s+\([0-9]+\)\.\s+  ->  "\nN. "
-        (goto-char (point-min))
-        (while (re-search-forward "[ \t]+\\([0-9]+\\)\\.[ \t]+" nil t)
-          (replace-match (concat "\n" (match-string 1) ". "))))))
+  ;;       ;; 4) Inline numbered:  \s+\([0-9]+\)\.\s+  ->  "\nN. "
+  ;;       (goto-char (point-min))
+  ;;       (while (re-search-forward "[ \t]+\\([0-9]+\\)\\.[ \t]+" nil t)
+  ;;         (replace-match (concat "\n" (match-string 1) ". "))))))
 
-  (defun gjk--item-end ()
-    "Move point to end of current list item (before next item or blank). Return point."
-    (forward-line 1)
-    (while (and (not (eobp))
-                (not (looking-at "^[ \t]*\\(- \\|[0-9]+\\. \\)"))
-                (not (looking-at "^[ \t]*$")))
-      (forward-line 1))
-    (point))
+  ;; (defun gjk--item-end ()
+  ;;   "Move point to end of current list item (before next item or blank). Return point."
+  ;;   (forward-line 1)
+  ;;   (while (and (not (eobp))
+  ;;               (not (looking-at "^[ \t]*\\(- \\|[0-9]+\\. \\)"))
+  ;;               (not (looking-at "^[ \t]*$")))
+  ;;     (forward-line 1))
+  ;;   (point))
 
-  (defun gjk-org-smart-fill (&optional justify)
-    "Like `fill-paragraph' in Org, plus:
-  - Normalize pasted TAB•TAB to '- ' and TAB1.TAB to '1. '.
-  - Hanging indent: '- ' items = 2 spaces; 'N. ' items = width of the marker (e.g. '1. ' ⇒ 3, '10. ' ⇒ 4)."
-    (interactive (list (when current-prefix-arg t)))
-    (unless (derived-mode-p 'org-mode)
-      (user-error "gjk-org-smart-fill is for Org buffers"))
-    (save-excursion
-      (let* ((use-region (use-region-p))
-             (beg (if use-region
-                      (region-beginning)
-                    (save-excursion (backward-paragraph) (point))))
-             (end (if use-region
-                      (region-end)
-                    (save-excursion (forward-paragraph) (point)))))
-        ;; 1) Normalize bullets/numbers
-        (gjk--normalize-pasted-bullets beg end)
-        ;; 2) Fill with per-item hanging indents
-        (save-restriction
-          (narrow-to-region beg end)
-          (goto-char (point-min))
-          (while (not (eobp))
-            (cond
-             ;; Skip src blocks
-             ((ignore-errors (org-in-src-block-p))
-              (goto-char (or (save-excursion (org-babel-end-of-src-block) (point))
-                             (line-end-position))))
-             ;; List item (bullet or numbered)
-             ((looking-at "^[ \t]*\$begin:math:text$- \\\\|\\\\([0-9]+\\\\. \\$end:math:text$\\)")
-              (let ((item-beg (point)))
-                (goto-char (gjk--item-end))
-                (let ((item-end (point)))
-                  (save-restriction
-                    (narrow-to-region item-beg item-end)
-                    ;; Ensure exactly one space after marker on first line
-                    (goto-char (point-min))
-                    (cond
-                     ((looking-at "^[ \t]*-\$begin:math:text$[ \\t]*\\$end:math:text$")
-                      (replace-match "- "))
-                     ((looking-at "^[ \t]*\$begin:math:text$[0-9]+\\$end:math:text$\\.[ \t]*")
-                      (replace-match (concat (match-string 1) ". "))))
-                    ;; Hanging indent equals visual width of marker
-                    (let* ((m (save-excursion
-                                (goto-char (point-min))
-                                (cond
-                                 ((looking-at "^[ \t]*- ") "- ")
-                                 ((looking-at "^[ \t]*\$begin:math:text$[0-9]+\\\\. \\$end:math:text$") (match-string 1))
-                                 (t "- "))))
-                           (fill-prefix (make-string (string-width m) ?\s)))
-                      (fill-region (point-min) (point-max) justify))))))
-             ;; Normal paragraph
-             (t
-              (let ((pbeg (point)))
-                (forward-paragraph)
-                (fill-region pbeg (point) justify))))
-            ;; Skip blank lines
-            (while (and (not (eobp)) (looking-at "^[ \t]*$"))
-              (forward-line 1)))))))
+  ;; (defun gjk-org-smart-fill (&optional justify)
+  ;;   "Like `fill-paragraph' in Org, plus:
+  ;;   - Normalize pasted TAB•TAB to '- ' and TAB1.TAB to '1. '.
+  ;;   - Hanging indent: '- ' items = 2 spaces; 'N. ' items = width of the marker (e.g. '1. ' ⇒ 3, '10. ' ⇒ 4)."
+  ;;   (interactive (list (when current-prefix-arg t)))
+  ;;   (unless (derived-mode-p 'org-mode)
+  ;;     (user-error "gjk-org-smart-fill is for Org buffers"))
+  ;;   (save-excursion
+  ;;     (let* ((use-region (use-region-p))
+  ;;            (beg (if use-region
+  ;;                     (region-beginning)
+  ;;                   (save-excursion (backward-paragraph) (point))))
+  ;;            (end (if use-region
+  ;;                     (region-end)
+  ;;                   (save-excursion (forward-paragraph) (point)))))
+  ;;       ;; 1) Normalize bullets/numbers
+  ;;       (gjk--normalize-pasted-bullets beg end)
+  ;;       ;; 2) Fill with per-item hanging indents
+  ;;       (save-restriction
+  ;;         (narrow-to-region beg end)
+  ;;         (goto-char (point-min))
+  ;;         (while (not (eobp))
+  ;;           (cond
+  ;;            ;; Skip src blocks
+  ;;            ((ignore-errors (org-in-src-block-p))
+  ;;             (goto-char (or (save-excursion (org-babel-end-of-src-block) (point))
+  ;;                            (line-end-position))))
+  ;;            ;; List item (bullet or numbered)
+  ;;            ((looking-at "^[ \t]*\$begin:math:text$- \\\\|\\\\([0-9]+\\\\. \\$end:math:text$\\)")
+  ;;             (let ((item-beg (point)))
+  ;;               (goto-char (gjk--item-end))
+  ;;               (let ((item-end (point)))
+  ;;                 (save-restriction
+  ;;                   (narrow-to-region item-beg item-end)
+  ;;                   ;; Ensure exactly one space after marker on first line
+  ;;                   (goto-char (point-min))
+  ;;                   (cond
+  ;;                    ((looking-at "^[ \t]*-\$begin:math:text$[ \\t]*\\$end:math:text$")
+  ;;                     (replace-match "- "))
+  ;;                    ((looking-at "^[ \t]*\$begin:math:text$[0-9]+\\$end:math:text$\\.[ \t]*")
+  ;;                     (replace-match (concat (match-string 1) ". "))))
+  ;;                   ;; Hanging indent equals visual width of marker
+  ;;                   (let* ((m (save-excursion
+  ;;                               (goto-char (point-min))
+  ;;                               (cond
+  ;;                                ((looking-at "^[ \t]*- ") "- ")
+  ;;                                ((looking-at "^[ \t]*\$begin:math:text$[0-9]+\\\\. \\$end:math:text$") (match-string 1))
+  ;;                                (t "- "))))
+  ;;                          (fill-prefix (make-string (string-width m) ?\s)))
+  ;;                     (fill-region (point-min) (point-max) justify))))))
+  ;;            ;; Normal paragraph
+  ;;            (t
+  ;;             (let ((pbeg (point)))
+  ;;               (forward-paragraph)
+  ;;               (fill-region pbeg (point) justify))))
+  ;;           ;; Skip blank lines
+  ;;           (while (and (not (eobp)) (looking-at "^[ \t]*$"))
+  ;;             (forward-line 1)))))))
 
-  ;; Remap M-q (fill-paragraph) only in Org buffers
-  (defvar gjk-org-smart-fill-mode-map
-    (let ((map (make-sparse-keymap)))
-      (define-key map [remap fill-paragraph] #'gjk-org-smart-fill)
-      map))
 
-  (define-minor-mode gjk-org-smart-fill-mode
-    "Use `gjk-org-smart-fill' for M-q in Org buffers."
-    :lighter " gjk-fill"
-    :keymap gjk-org-smart-fill-mode-map)
+  ;; ;; Remap M-q (fill-paragraph) only in Org buffers
+  ;; (defvar gjk-org-smart-fill-mode-map
+  ;;   (let ((map (make-sparse-keymap)))
+  ;;     (define-key map [remap fill-paragraph] #'gjk-org-smart-fill)
+  ;;     map))
 
-  (add-hook 'org-mode-hook #'gjk-org-smart-fill-mode)
-  ;;; --- end ---
+  ;; (define-minor-mode gjk-org-smart-fill-mode
+  ;;   "Use `gjk-org-smart-fill' for M-q in Org buffers."
+  ;;   :lighter " gjk-fill"
+  ;;   :keymap gjk-org-smart-fill-mode-map)
+
+  ;; (add-hook 'org-mode-hook #'gjk-org-smart-fill-mode)
+  ;; ;;; --- end ---
 #+END_SRC
 
 #+RESULTS:
