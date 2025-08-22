@@ -459,37 +459,49 @@ results!
   (global-set-key (kbd "C-c l") 'just-one-space-on-line)
   (global-set-key (kbd "C-c r") 'just-one-space-on-region)
 
-  (defun my-org-fill-block-and-clean-spaces ()
-    "Fill the current org block and collapse spaces on each line."
+  ;; (defun yank-and-just-one-space-on-lines ()
+  ;;   "Yank the most recent kill and apply `just-one-space-on-line` to each inserted line."
+  ;;   (interactive)
+  ;;   (let ((start (point))) ;; remember where yank started
+  ;;     (yank) ;; paste text from kill ring
+  ;;     (let ((end (point))) ;; end point after paste
+  ;;       (goto-char start)
+  ;;       (while (< (point) end)
+  ;;         (just-one-space-on-line)
+  ;;         (forward-line 1)))))
+
+  (defun yank-fill-lines-and-collapse-spaces ()
+    "Yank text, apply `fill-paragraph` (M-q) on each line, then collapse whitespaces in the pasted block."
     (interactive)
-    (save-excursion
-      ;; Fill the paragraph or block like M-q
-      (org-fill-paragraph)
-
-      ;; Get the start and end of current block/paragraph
-      (let ((start (save-excursion (org-backward-paragraph) (point)))
-            (end (save-excursion (org-forward-paragraph) (point))))
-        ;; For each line in the block, reduce multiple spaces to single space
+    (let ((start (point)))
+      (yank)  ;; Paste text from kill ring (clipboard)
+      (let ((end (point)))
         (goto-char start)
-        (while (< (point) end)
-          (just-one-space-on-line)
-          (forward-line 1)))))
+        (while (<= (point) end)
+          (beginning-of-line)  ;; Move to beginning of line to ensure fill-paragraph works correctly
+          (fill-paragraph)     ;; Apply M-q equivalent on current paragraph/line
+          (forward-line 1))
+        ;; Finally, collapse multiple spaces and tabs into a single space in entire pasted region
+        (goto-char start)
+        (while (re-search-forward "[ \t]+" end t)
+          (replace-match " ")))))
 
-  (define-key org-mode-map (kbd "C-c q") 'my-org-fill-block-and-clean-spaces)
 
-  (add-hook 'org-mode-hook
-            (lambda ()
-              (define-key org-mode-map (kbd "C-c s") 'my-org-fill-block-and-clean-spaces)))
+  (global-set-key (kbd "C-c v") 'yank-fill-lines-and-collapse-spaces)
 #+END_SRC
 
 #+RESULTS:
-| gjk-org-smart-fill-mode | #[0 \301\211\207 [imenu-create-index-function org-imenu-get-tree] 2] | #[nil ((org-bullets-mode 1)) nil] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-fold-show-all append local] 5] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes |
+: yank-and-just-one-space-on-lines
 
 
 Instead of M-q now C-c q would do what I want.
         
 
+required program ag not found in your path
 
+sudo apt-get install silversearcher-ag
+
+brew install the_silver_searcher
 * Conda environment
 
 #+begin_src emacs-lisp

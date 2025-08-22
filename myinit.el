@@ -6,7 +6,7 @@
 
 (defun enlarge-my-window (&optional height-increase-lines width-increase-columns)
   "Resize the current window. Default: height by 10 lines and width by 20 columns.
-           You can specify custom values for both height and width."
+               You can specify custom values for both height and width."
   (interactive
    (list
     (read-number "Increase height by (lines): " 10)  ;; Default is 10
@@ -29,18 +29,30 @@
   :ensure t
   :if (display-graphic-p))
 
-(setq nerd-icons-font-family "Symbols Nerd Font Mono")
-
-(when (member "Symbols Nerd Font Mono" (font-family-list))
-  (set-fontset-font t 'symbol (font-spec :family "Symbols Nerd Font Mono") nil 'prepend)
-  (set-fontset-font t '(#xE000 . #xF8FF) (font-spec :family "Symbols Nerd Font Mono") nil 'prepend))
-
 (use-package doom-modeline
   :ensure t
   :after nerd-icons
   :hook (after-init . doom-modeline-mode)
   :custom
-  (doom-modeline-icon t))
+  (doom-modeline-height 28)        ;; adjust bar height
+  :config
+  (let ((font "Symbols Nerd Font Mono"))
+    (if (and (display-graphic-p)
+             (fboundp 'font-family-list)
+             (member font (font-family-list)))
+        (progn
+          ;; Font is available → enable icons
+          (setq doom-modeline-icon t
+                doom-modeline-major-mode-icon t
+                nerd-icons-font-family font)
+          (set-fontset-font t 'symbol (font-spec :family font) nil 'prepend)
+          (set-fontset-font t '(#xE000 . #xF8FF)
+                            (font-spec :family font) nil 'prepend)
+          (message "doom-modeline: using Nerd Font icons (%s)" font))
+      ;; Font missing → disable icons to avoid ugly glyphs
+      (setq doom-modeline-icon nil
+            doom-modeline-major-mode-icon nil)
+      (message "doom-modeline: Nerd Font not found, icons disabled."))))
 
 ;; sly RET in mrepl fix
 (defun my/sly-mrepl-ret-override ()
@@ -279,117 +291,57 @@
 ;;          ("C-M-i"   . completion-at-point))
 ;;   :config (org-roam-setup))
 
-;; ;;; --- org smart fill: bullets + numbered + hanging indent ---
+(defun just-one-space-on-line ()
+    "Replace multiple spaces/tabs with single spaces on the current line."
+    (interactive)
+    (save-excursion
+      (let ((start (line-beginning-position))
+            (end (line-end-position)))
+        (goto-char start)
+        (while (re-search-forward "[ \t]+" end t)
+          (replace-match " ")))))
 
-;; (defun gjk--normalize-pasted-bullets (beg end)
-;;   "Normalize pasted bullets/numbers within [beg,end] to proper Org markers.
-;; Converts inline or line-start '•' to '- ', and 'N.' to 'N. ', each starting a new line."
-;;   (save-excursion
-;;     (save-restriction
-;;       (narrow-to-region beg end)
+  (defun just-one-space-on-region (start end)
+    "Replace multiple whitespace characters with a single space in the selected region."
+    (interactive "r")
+    (save-excursion
+      (goto-char start)
+      (while (re-search-forward "[ \t]+" end t)
+        (replace-match " "))))
 
-;;       ;; 1) Line-start bullets:  ^\s*•\s+   ->  "- "
-;;       (goto-char (point-min))
-;;       (while (re-search-forward "^[ \t]*•[ \t]+" nil t)
-;;         (replace-match "- "))
+;; Bind keys with C-c prefix:
+(global-set-key (kbd "C-c l") 'just-one-space-on-line)
+(global-set-key (kbd "C-c r") 'just-one-space-on-region)
 
-;;       ;; 2) Inline bullets:  \s+•\s+   ->  "\n- "
-;;       (goto-char (point-min))
-;;       (while (re-search-forward "[ \t]+•[ \t]+" nil t)
-;;         (replace-match "\n- "))
+;; (defun yank-and-just-one-space-on-lines ()
+;;   "Yank the most recent kill and apply `just-one-space-on-line` to each inserted line."
+;;   (interactive)
+;;   (let ((start (point))) ;; remember where yank started
+;;     (yank) ;; paste text from kill ring
+;;     (let ((end (point))) ;; end point after paste
+;;       (goto-char start)
+;;       (while (< (point) end)
+;;         (just-one-space-on-line)
+;;         (forward-line 1)))))
 
-;;       ;; 3) Line-start numbered:  ^\s*\([0-9]+\)\.\s+  ->  "N. "
-;;       (goto-char (point-min))
-;;       (while (re-search-forward "^[ \t]*\\([0-9]+\\)\\.[ \t]+" nil t)
-;;         (replace-match (concat (match-string 1) ". ")))
-
-;;       ;; 4) Inline numbered:  \s+\([0-9]+\)\.\s+  ->  "\nN. "
-;;       (goto-char (point-min))
-;;       (while (re-search-forward "[ \t]+\\([0-9]+\\)\\.[ \t]+" nil t)
-;;         (replace-match (concat "\n" (match-string 1) ". "))))))
-
-;; (defun gjk--item-end ()
-;;   "Move point to end of current list item (before next item or blank). Return point."
-;;   (forward-line 1)
-;;   (while (and (not (eobp))
-;;               (not (looking-at "^[ \t]*\\(- \\|[0-9]+\\. \\)"))
-;;               (not (looking-at "^[ \t]*$")))
-;;     (forward-line 1))
-;;   (point))
-
-;; (defun gjk-org-smart-fill (&optional justify)
-;;   "Like `fill-paragraph' in Org, plus:
-;;   - Normalize pasted TAB•TAB to '- ' and TAB1.TAB to '1. '.
-;;   - Hanging indent: '- ' items = 2 spaces; 'N. ' items = width of the marker (e.g. '1. ' ⇒ 3, '10. ' ⇒ 4)."
-;;   (interactive (list (when current-prefix-arg t)))
-;;   (unless (derived-mode-p 'org-mode)
-;;     (user-error "gjk-org-smart-fill is for Org buffers"))
-;;   (save-excursion
-;;     (let* ((use-region (use-region-p))
-;;            (beg (if use-region
-;;                     (region-beginning)
-;;                   (save-excursion (backward-paragraph) (point))))
-;;            (end (if use-region
-;;                     (region-end)
-;;                   (save-excursion (forward-paragraph) (point)))))
-;;       ;; 1) Normalize bullets/numbers
-;;       (gjk--normalize-pasted-bullets beg end)
-;;       ;; 2) Fill with per-item hanging indents
-;;       (save-restriction
-;;         (narrow-to-region beg end)
-;;         (goto-char (point-min))
-;;         (while (not (eobp))
-;;           (cond
-;;            ;; Skip src blocks
-;;            ((ignore-errors (org-in-src-block-p))
-;;             (goto-char (or (save-excursion (org-babel-end-of-src-block) (point))
-;;                            (line-end-position))))
-;;            ;; List item (bullet or numbered)
-;;            ((looking-at "^[ \t]*\$begin:math:text$- \\\\|\\\\([0-9]+\\\\. \\$end:math:text$\\)")
-;;             (let ((item-beg (point)))
-;;               (goto-char (gjk--item-end))
-;;               (let ((item-end (point)))
-;;                 (save-restriction
-;;                   (narrow-to-region item-beg item-end)
-;;                   ;; Ensure exactly one space after marker on first line
-;;                   (goto-char (point-min))
-;;                   (cond
-;;                    ((looking-at "^[ \t]*-\$begin:math:text$[ \\t]*\\$end:math:text$")
-;;                     (replace-match "- "))
-;;                    ((looking-at "^[ \t]*\$begin:math:text$[0-9]+\\$end:math:text$\\.[ \t]*")
-;;                     (replace-match (concat (match-string 1) ". "))))
-;;                   ;; Hanging indent equals visual width of marker
-;;                   (let* ((m (save-excursion
-;;                               (goto-char (point-min))
-;;                               (cond
-;;                                ((looking-at "^[ \t]*- ") "- ")
-;;                                ((looking-at "^[ \t]*\$begin:math:text$[0-9]+\\\\. \\$end:math:text$") (match-string 1))
-;;                                (t "- "))))
-;;                          (fill-prefix (make-string (string-width m) ?\s)))
-;;                     (fill-region (point-min) (point-max) justify))))))
-;;            ;; Normal paragraph
-;;            (t
-;;             (let ((pbeg (point)))
-;;               (forward-paragraph)
-;;               (fill-region pbeg (point) justify))))
-;;           ;; Skip blank lines
-;;           (while (and (not (eobp)) (looking-at "^[ \t]*$"))
-;;             (forward-line 1)))))))
+(defun yank-fill-lines-and-collapse-spaces ()
+  "Yank text, apply `fill-paragraph` (M-q) on each line, then collapse whitespaces in the pasted block."
+  (interactive)
+  (let ((start (point)))
+    (yank) ;; Paste clipboard/killed text
+    (let ((end (point)))
+      ;; Apply fill-paragraph (M-q) on each line in the pasted region
+      (goto-char start)
+      (while (< (point) end)
+        (fill-paragraph) ;; same as M-q on current paragraph/line
+        (forward-line 1))
+      ;; Collapse multiple spaces/tabs to single space in entire pasted region
+      (goto-char start)
+      (while (re-search-forward "[ \t]+" end t)
+        (replace-match " ")))))
 
 
-;; ;; Remap M-q (fill-paragraph) only in Org buffers
-;; (defvar gjk-org-smart-fill-mode-map
-;;   (let ((map (make-sparse-keymap)))
-;;     (define-key map [remap fill-paragraph] #'gjk-org-smart-fill)
-;;     map))
-
-;; (define-minor-mode gjk-org-smart-fill-mode
-;;   "Use `gjk-org-smart-fill' for M-q in Org buffers."
-;;   :lighter " gjk-fill"
-;;   :keymap gjk-org-smart-fill-mode-map)
-
-;; (add-hook 'org-mode-hook #'gjk-org-smart-fill-mode)
-;; ;;; --- end ---
+(global-set-key (kbd "C-c v") 'yank-and-just-one-space-on-lines)
 
 ;; add .bin/local to PATH variable the current
 ;; this is because I start emacs with
