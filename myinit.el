@@ -24,10 +24,27 @@
     :config
     (load-theme 'sweet t))
 
+  ;; Icons backend (doom-modeline uses nerd-icons now)
+  (use-package nerd-icons
+    :ensure t
+    :if (display-graphic-p))
+
   (use-package doom-modeline
     :ensure t
+    :after nerd-icons
     :hook
-    (after-init . doom-modeline-mode))
+    (after-init . doom-modeline-mode)
+    :custom
+    (doom-modeline-icon t)  ;; put only (var value pairs here)
+    (doom-modeline-height 28)
+    ;; (doom-modeline-major-mode-icon nil) ;; example toggle
+    :config
+    ;; function calls go here, not under :custom
+    ;; you need to do `brew tap homebrew/cask-fonts`
+    ;; then: `brew install --cask font-jetbrains-mono-nerd-font`
+    (when (member "JetBrainsMono Nerd Font" (font-family-list))
+      (set-face-attribute 'default nil :font "JetBrainsMono Nerd Font-13")))
+
 
   ;; sly RET in mrepl fix
   (defun my/sly-mrepl-ret-override ()
