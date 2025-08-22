@@ -1,53 +1,49 @@
 (setq inhibit-startup-message t)
-  (tool-bar-mode -1)
+(tool-bar-mode -1)
 
-  ;; maximize window
-  (global-set-key (kbd "C-c M") 'toggle-frame-maximized)
+;; maximize window
+(global-set-key (kbd "C-c M") 'toggle-frame-maximized)
 
-  (defun enlarge-my-window (&optional height-increase-lines width-increase-columns)
-    "Resize the current window. Default: height by 10 lines and width by 20 columns.
-     You can specify custom values for both height and width."
-    (interactive
-     (list
-      (read-number "Increase height by (lines): " 10)  ;; Default is 10
-      (read-number "Increase width by (columns): " 20)))  ;; Default is 20
-    ;; Apply height and width increases
-    (enlarge-window height-increase-lines)
-    ;; (enlarge-window-horizontally width-increase-columns)
-    (enlarge-window width-increase-columns t))
+(defun enlarge-my-window (&optional height-increase-lines width-increase-columns)
+  "Resize the current window. Default: height by 10 lines and width by 20 columns.
+           You can specify custom values for both height and width."
+  (interactive
+   (list
+    (read-number "Increase height by (lines): " 10)  ;; Default is 10
+    (read-number "Increase width by (columns): " 20)))  ;; Default is 20
+  ;; Apply height and width increases
+  (enlarge-window height-increase-lines)
+  ;; (enlarge-window-horizontally width-increase-columns)
+  (enlarge-window width-increase-columns t))
 
-  (global-set-key (kbd "C-c w") 'enlarge-my-window)
-
-
-  (use-package sweet-theme
-    :ensure t
-    :config
-    (load-theme 'sweet t))
-
-  ;; Icons backend (doom-modeline uses nerd-icons now)
-  (use-package nerd-icons
-    :ensure t
-    :if (display-graphic-p))
-
-  (use-package doom-modeline
-    :ensure t
-    :after nerd-icons
-    :hook
-    (after-init . doom-modeline-mode)
-    :custom
-    (doom-modeline-icon t)  ;; put only (var value pairs here)
-    (doom-modeline-height 28)
-    ;; (doom-modeline-major-mode-icon nil) ;; example toggle
-    :config
-    ;; function calls go here, not under :custom
-    ;; you need to do `brew tap homebrew/cask-fonts`
-    ;; then: `brew install --cask font-jetbrains-mono-nerd-font`
-    (when (member "JetBrainsMono Nerd Font" (font-family-list))
-      (set-face-attribute 'default nil :font "JetBrainsMono Nerd Font-13")))
+(global-set-key (kbd "C-c w") 'enlarge-my-window)
 
 
-  ;; sly RET in mrepl fix
-  (defun my/sly-mrepl-ret-override ()
+(use-package sweet-theme
+  :ensure t
+  :config
+  (load-theme 'sweet t))
+
+;; Icons backend (doom-modeline uses nerd-icons now)
+(use-package nerd-icons
+  :ensure t
+  :if (display-graphic-p))
+
+(setq nerd-icons-font-family "Symbols Nerd Font Mono")
+
+(when (member "Symbols Nerd Font Mono" (font-family-list))
+  (set-fontset-font t 'symbol (font-spec :family "Symbols Nerd Font Mono") nil 'prepend)
+  (set-fontset-font t '(#xE000 . #xF8FF) (font-spec :family "Symbols Nerd Font Mono") nil 'prepend))
+
+(use-package doom-modeline
+  :ensure t
+  :after nerd-icons
+  :hook (after-init . doom-modeline-mode)
+  :custom
+  (doom-modeline-icon t))
+
+;; sly RET in mrepl fix
+(defun my/sly-mrepl-ret-override ()
   "Make RET evaluate the expression in SLY MREPL, even with paredit-mode active."
   (define-key paredit-mode-map (kbd "RET") nil)
   (local-set-key (kbd "RET") #'sly-mrepl-return)

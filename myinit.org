@@ -5,56 +5,64 @@
 * Settings
   
 #+BEGIN_SRC emacs-lisp
-    (setq inhibit-startup-message t)
-    (tool-bar-mode -1)
+  (setq inhibit-startup-message t)
+  (tool-bar-mode -1)
 
-    ;; maximize window
-    (global-set-key (kbd "C-c M") 'toggle-frame-maximized)
+  ;; maximize window
+  (global-set-key (kbd "C-c M") 'toggle-frame-maximized)
 
-    (defun enlarge-my-window (&optional height-increase-lines width-increase-columns)
-      "Resize the current window. Default: height by 10 lines and width by 20 columns.
-       You can specify custom values for both height and width."
-      (interactive
-       (list
-        (read-number "Increase height by (lines): " 10)  ;; Default is 10
-        (read-number "Increase width by (columns): " 20)))  ;; Default is 20
-      ;; Apply height and width increases
-      (enlarge-window height-increase-lines)
-      ;; (enlarge-window-horizontally width-increase-columns)
-      (enlarge-window width-increase-columns t))
+  (defun enlarge-my-window (&optional height-increase-lines width-increase-columns)
+    "Resize the current window. Default: height by 10 lines and width by 20 columns.
+                 You can specify custom values for both height and width."
+    (interactive
+     (list
+      (read-number "Increase height by (lines): " 10)  ;; Default is 10
+      (read-number "Increase width by (columns): " 20)))  ;; Default is 20
+    ;; Apply height and width increases
+    (enlarge-window height-increase-lines)
+    ;; (enlarge-window-horizontally width-increase-columns)
+    (enlarge-window width-increase-columns t))
 
-    (global-set-key (kbd "C-c w") 'enlarge-my-window)
-
-
-    (use-package sweet-theme
-      :ensure t
-      :config
-      (load-theme 'sweet t))
-
-    ;; Icons backend (doom-modeline uses nerd-icons now)
-    (use-package nerd-icons
-      :ensure t
-      :if (display-graphic-p))
-
-    (use-package doom-modeline
-      :ensure t
-      :after nerd-icons
-      :hook
-      (after-init . doom-modeline-mode)
-      :custom
-      (doom-modeline-icon t)  ;; put only (var value pairs here)
-      (doom-modeline-height 28)
-      ;; (doom-modeline-major-mode-icon nil) ;; example toggle
-      :config
-      ;; function calls go here, not under :custom
-      ;; you need to do `brew tap homebrew/cask-fonts`
-      ;; then: `brew install --cask font-jetbrains-mono-nerd-font`
-      (when (member "JetBrainsMono Nerd Font" (font-family-list))
-        (set-face-attribute 'default nil :font "JetBrainsMono Nerd Font-13")))
+  (global-set-key (kbd "C-c w") 'enlarge-my-window)
 
 
-    ;; sly RET in mrepl fix
-    (defun my/sly-mrepl-ret-override ()
+  (use-package sweet-theme
+    :ensure t
+    :config
+    (load-theme 'sweet t))
+
+  ;; Icons backend (doom-modeline uses nerd-icons now)
+  (use-package nerd-icons
+    :ensure t
+    :if (display-graphic-p))
+
+  (use-package doom-modeline
+    :ensure t
+    :after nerd-icons
+    :hook (after-init . doom-modeline-mode)
+    :custom
+    (doom-modeline-height 28)        ;; adjust bar height
+    :config
+    (let ((font "Symbols Nerd Font Mono"))
+      (if (and (display-graphic-p)
+               (fboundp 'font-family-list)
+               (member font (font-family-list)))
+          (progn
+            ;; Font is available → enable icons
+            (setq doom-modeline-icon t
+                  doom-modeline-major-mode-icon t
+                  nerd-icons-font-family font)
+            (set-fontset-font t 'symbol (font-spec :family font) nil 'prepend)
+            (set-fontset-font t '(#xE000 . #xF8FF)
+                              (font-spec :family font) nil 'prepend)
+            (message "doom-modeline: using Nerd Font icons (%s)" font))
+        ;; Font missing → disable icons to avoid ugly glyphs
+        (setq doom-modeline-icon nil
+              doom-modeline-major-mode-icon nil)
+        (message "doom-modeline: Nerd Font not found, icons disabled."))))
+
+  ;; sly RET in mrepl fix
+  (defun my/sly-mrepl-ret-override ()
     "Make RET evaluate the expression in SLY MREPL, even with paredit-mode active."
     (define-key paredit-mode-map (kbd "RET") nil)
     (local-set-key (kbd "RET") #'sly-mrepl-return)
@@ -62,6 +70,37 @@
 
   (add-hook 'sly-mrepl-mode-hook #'my/sly-mrepl-ret-override)
 #+END_SRC
+
+Doom-modeline uses [[https://github.com/rainstormstudio/nerd-icons.el][nerd icons]], which require the *Symbols Nerd Font*.
+Without it, you'll see strange "Chinese letters" or empty boxes instead of icons.
+
+Install them in macos:
+#+begin_src bash
+  brew tap homebrew/cask-fonts
+  brew install --cask font-symbols-only-nerd-font
+#+end_src
+
+in linux:
+#+begin_src bash
+  # Ubuntu / Debian
+  sudo apt install fonts-nerd-fonts-symbols-mono
+  # Fedora
+  sudo dnf install nerd-fonts
+
+  # or manually source
+  wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/Symbols-Only.tar.xz
+  tar -xf Symbols-Only.tar.xz
+  mkdir -p ~/.local/share/fonts
+  cp *.ttf ~/.local/share/fonts/
+  fc-cache -fv   # refresh font cache
+#+end_src
+
+in windows:
+	1.	Download [[https://github.com/ryanoasis/nerd-fonts/releases][Symbols Nerd Font release]].
+	2.	Extract the .ttf files.
+	3.	Right-click → Install for all users.
+	4.	Restart Emacs.
+
 
 
 * Try
