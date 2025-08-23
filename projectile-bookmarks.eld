@@ -1,1 +1,4 @@
-("~/.emacs.d/" "~/org/" "~/" "~/projects/rust/my_test_project/" "~/projects/python/argsl/" "~/Downloads/" "~/projects/nimverta_site/" "~/projects/nimverta-website/" "~/projects/meghna-hugo/" "~/projects/go/" "~/projects/landingpage/meghna-hugo/" "~/emacs/emacs-for-python/" "~/emacs/emacs-for-python-lsp/" "~/emacs/emacs-for-clojure/" "~/projects/tcga-dlbc/" "~/projects/python/test/" "~/projects/php/php-multidispatch/")
+<<<<<<< Updated upstream
+=======
+("~/" "~/.emacs.d/" "~/org/" "~/projects/rust/my_test_project/" "~/projects/python/argsl/" "~/Downloads/" "~/projects/nimverta_site/" "~/projects/nimverta-website/" "~/projects/meghna-hugo/" "~/projects/go/" "~/projects/landingpage/meghna-hugo/" "~/emacs/emacs-for-python/" "~/emacs/emacs-for-python-lsp/" "~/emacs/emacs-for-clojure/" "~/projects/tcga-dlbc/" "~/projects/python/test/" "~/projects/php/php-multidispatch/")
+>>>>>>> Stashed changes

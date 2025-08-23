@@ -1436,34 +1436,52 @@ above the use-package command and did again `C-c C-c`
     (setq treesit-language-source-alist
           '((rust "https://github.com/tree-sitter/tree-sitter-rust")))
     :config
-    ;; Install grammar once if missing (safe if already installed)
-    (when (and (fboundp 'treesit-language-available-p)
-               (not (treesit-language-available-p 'rust)))
+    ;; Try to install grammar (safe if already installed)
+    (when (fboundp 'treesit-install-language-grammar)
       (ignore-errors (treesit-install-language-grammar 'rust))))
+
+  ;; Chooser: prefer rust-ts-mode; on error, fall back to rust-mode
+  (defun gjk/rust-open ()
+    "Open Rust files using rust-ts-mode if possible; else rust-mode.
+  Echo which mode was chosen."
+    (interactive)
+    (if (featurep 'treesit)
+        (condition-case err
+            (progn
+              (require 'rust-ts-mode) ; built-in in Emacs 29
+              (rust-ts-mode)
+              (message "✅ Using rust-ts-mode (tree-sitter)"))
+          (error
+           (require 'rust-mode nil t)
+           (rust-mode)
+           (message "❌ rust-ts-mode failed (%s) → using rust-mode"
+                    (error-message-string err))))
+      (progn
+        (require 'rust-mode nil t)
+        (rust-mode)
+        (message "ℹ️ treesit not available → using rust-mode"))))
+
+  ;; Route .rs through the chooser (keeps the rest of your setup intact)
+  (add-to-list 'auto-mode-alist '("\\.rs\\'" . gjk/rust-open))
 
   ;;; --- Rust major mode (tree-sitter first, auto-fallback to classic) ---
   (use-package rust-ts-mode
     :ensure nil                  ;; built-in on Emacs 29
-    :mode "\\.rs\\'"
+    ;; :mode "\\.rs\\'"          ;; handled by chooser above
     :init
-    ;; Prefer ts-mode whenever classic rust-mode would be chosen
-    (when (and (featurep 'treesit)
-               (fboundp 'treesit-language-available-p)
-               (treesit-language-available-p 'rust))
-      (add-to-list 'major-mode-remap-alist '(rust-mode . rust-ts-mode)))
+    ;; Informative message at init time only (actual choice happens per file)
+    (when (featurep 'treesit)
+      (message "ℹ️ Tree-sitter present; will try rust-ts-mode for .rs files"))
     :hook
     ;; start LSP automatically (deferred) when in ts-mode
     (rust-ts-mode . lsp-deferred)
     :config
     (setq rust-ts-mode-indent-offset 4))
 
-  ;; If ts-mode can’t be used (no grammar or no treesit), ensure we still have a mode.
+  ;; Ensure classic rust-mode exists for fallback; no treesit checks needed
   (use-package rust-mode
-    :if (not (and (featurep 'treesit)
-                  (fboundp 'treesit-language-available-p)
-                  (treesit-language-available-p 'rust)))
     :ensure t
-    :mode "\\.rs\\'"
+    :defer t
     :hook (rust-mode . lsp-deferred))
 
   ;;; --- LSP for Rust ---
