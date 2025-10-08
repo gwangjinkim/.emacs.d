@@ -324,24 +324,86 @@
 ;;         (just-one-space-on-line)
 ;;         (forward-line 1)))))
 
-(defun yank-fill-lines-and-collapse-spaces ()
-  "Yank text, apply `fill-paragraph` (M-q) on each line, then collapse whitespaces in the pasted block."
-  (interactive)
-  (let ((start (point)))
-    (yank) ;; Paste clipboard/killed text
-    (let ((end (point)))
-      ;; Apply fill-paragraph (M-q) on each line in the pasted region
-      (goto-char start)
-      (while (< (point) end)
-        (fill-paragraph) ;; same as M-q on current paragraph/line
+;; (defun yank-fill-lines-and-collapse-spaces ()
+;;   "Yank text, apply `fill-paragraph` (M-q) on each line, then collapse whitespaces in the pasted block."
+;;   (interactive)
+;;   (let ((start (point)))
+;;     (yank)  ;; Paste text from kill ring (clipboard)
+;;     (let ((end (point)))
+;;       (goto-char start)
+;;       (while (<= (point) end)
+;;         (beginning-of-line)  ;; Move to beginning of line to ensure fill-paragraph works correctly
+;;         (fill-paragraph)     ;; Apply M-q equivalent on current paragraph/line
+;;         (forward-line 1))
+;;       ;; Finally, collapse multiple spaces and tabs into a single space in entire pasted region
+;;       (goto-char start)
+;;       (while (re-search-forward "[ \t]+" end t)
+;;         (replace-match " ")))))
+
+
+(defun my-cleanup-region-with-blocks (start end)
+  "Process text between START and END in blocks.
+Bullet point blocks are processed separately from non-bullet blocks.
+Existing blank lines are preserved; multiple spaces reduced to one.
+Each paragraph gets `fill-paragraph` applied."
+  (interactive "r")
+  (save-excursion
+    (goto-char start)
+    (while (< (point) end)
+      ;; Find the start of the next block (skip empty lines)
+      (skip-chars-forward "\n" end)
+      (let ((block-start (point)))
+        ;; Find end of the block (stop on one or more blank lines or buffer end)
+        (if (re-search-forward "\n[ \t]*\n" end 'move)
+            (progn
+              (goto-char (match-beginning 0))
+              (let ((block-end (point)))
+                (my-process-block block-start block-end)))
+          ;; Last block till end
+          (my-process-block block-start end)
+          (goto-char end))))))
+
+(defun my-process-block (block-start block-end)
+  "Process a single block from BLOCK-START to BLOCK-END.
+Detects if block is bullet list or regular text and processes accordingly."
+  (save-restriction
+    (narrow-to-region block-start block-end)
+    (goto-char (point-min))
+    (let ((is-bullet-block
+           (save-excursion
+             (beginning-of-line)
+             (looking-at-p "^[ \t]*[-+*0-9]\\.?[\t ]"))))
+      ;; Reduce multiple spaces/tabs to single space on every line
+      (goto-char (point-min))
+      (while (< (point) (point-max))
+        (beginning-of-line)
+        (when (re-search-forward "[ \t]+" (line-end-position) t)
+          (replace-match " "))
         (forward-line 1))
-      ;; Collapse multiple spaces/tabs to single space in entire pasted region
-      (goto-char start)
-      (while (re-search-forward "[ \t]+" end t)
-        (replace-match " ")))))
+      ;; Apply fill-paragraph to each paragraph in block
+      (goto-char (point-min))
+      (while (< (point) (point-max))
+        (fill-paragraph)
+        (forward-paragraph 1)))))
 
+(defun my-yank-or-cleanup-region ()
+  "If no region is active, yank text.
+If region is active, clean it up by:
+- treating bullet blocks and text blocks separately,
+- preserving existing empty lines,
+- reducing multiple spaces to single spaces,
+- applying fill-paragraph (M-q) to each paragraph."
+  (interactive)
+  (if (use-region-p)
+      (my-cleanup-region-with-blocks (region-beginning) (region-end))
+    ;; no region active, yank and clean up newly yanked text
+    (let ((start (point)))
+      (yank)
+      (my-cleanup-region-with-blocks start (point)))))
 
-(global-set-key (kbd "C-c v") 'yank-and-just-one-space-on-lines)
+;; (global-set-key (kbd "C-c v") 'yank-fill-lines-and-collapse-spaces)
+;; (global-set-key (kbd "C-c v") 'my-cleanup-region-with-blocks)
+(global-set-key (kbd "C-c v") 'my-yank-or-cleanup-region)
 
 ;; add .bin/local to PATH variable the current
 ;; this is because I start emacs with
@@ -945,7 +1007,7 @@
   :hook (yaml-mode . (lambda ()
                        (define-key yaml-mode-map "\C-m" 'newline-and-indent))))
 
-;;; --- Tree-sitter core (built-in on Emacs 29) ---
+;;; --- Tree-sitter core (built-in on Emacs 29+) ---
 (use-package treesit
   :ensure nil                  ;; built-in
   :demand t
@@ -953,28 +1015,37 @@
   (setq treesit-language-source-alist
         '((rust "https://github.com/tree-sitter/tree-sitter-rust")))
   :config
-  ;; Install grammar once if missing (safe if already installed)
-  (when (and (fboundp 'treesit-language-available-p)
-             (not (treesit-language-available-p 'rust)))
+  ;; Make sure the core is really loaded so its C symbols exist.
+  (require 'treesit)
+  ;; Install grammar if missing, invalid, or ABI-mismatched.
+  (when (and (fboundp 'treesit-install-language-grammar)
+             (fboundp 'treesit-abi-version)
+             (fboundp 'treesit-language-abi-version)
+             (or (not (treesit-language-available-p 'rust))
+                 (not (ignore-errors (treesit-language-abi-version 'rust)))
+                 (not (equal (treesit-language-abi-version 'rust)
+                             (treesit-abi-version)))))
+    (message "[Tree-sitter] Installing or updating Rust grammar (ABI %s)..."
+             (treesit-abi-version))
     (ignore-errors (treesit-install-language-grammar 'rust))))
 
-;;; --- Rust major mode (tree-sitter first, auto-fallback to classic) ---
+;;; --- Rust major mode (Tree-sitter first, auto-fallback to classic) ---
 (use-package rust-ts-mode
-  :ensure nil                  ;; built-in on Emacs 29
+  :ensure nil                  ;; built-in on Emacs 29+
   :mode "\\.rs\\'"
   :init
-  ;; Prefer ts-mode whenever classic rust-mode would be chosen
+  ;; Prefer ts-mode whenever available
   (when (and (featurep 'treesit)
              (fboundp 'treesit-language-available-p)
              (treesit-language-available-p 'rust))
     (add-to-list 'major-mode-remap-alist '(rust-mode . rust-ts-mode)))
   :hook
-  ;; start LSP automatically (deferred) when in ts-mode
+  ;; Start LSP automatically (deferred) when in ts-mode
   (rust-ts-mode . lsp-deferred)
   :config
   (setq rust-ts-mode-indent-offset 4))
 
-;; If ts-mode can’t be used (no grammar or no treesit), ensure we still have a mode.
+;; Fallback if Tree-sitter not available
 (use-package rust-mode
   :if (not (and (featurep 'treesit)
                 (fboundp 'treesit-language-available-p)
@@ -993,7 +1064,6 @@
   (lsp-idle-delay 0.6)
   (lsp-rust-analyzer-cargo-watch-command "clippy")
   (lsp-rust-analyzer-proc-macro-enable t)
-  ;; modern cross-language inlay hints toggle
   (lsp-inlay-hint-enable t))
 
 (use-package lsp-ui
