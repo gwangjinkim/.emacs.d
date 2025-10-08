@@ -1045,13 +1045,10 @@ If region is active, clean it up by:
   :config
   (setq rust-ts-mode-indent-offset 4))
 
-;; Fallback if Tree-sitter not available
+;; Ensure classic rust-mode exists for fallback; no treesit checks needed
 (use-package rust-mode
-  :if (not (and (featurep 'treesit)
-                (fboundp 'treesit-language-available-p)
-                (treesit-language-available-p 'rust)))
   :ensure t
-  :mode "\\.rs\\'"
+  :defer t
   :hook (rust-mode . lsp-deferred))
 
 ;;; --- LSP for Rust ---

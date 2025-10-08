@@ -26,7 +26,3 @@
 
 (setq recentf-filter-changer-current 'nil)
 
-
-;; Local Variables:
-;; coding: utf-8-emacs
-;; End:
