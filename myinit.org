@@ -625,6 +625,10 @@ h1 {
 
 ** Ox-html
 #+begin_src elisp
+  ;; (org-confirm-babel-evaluate nil)
+  ;; (org-src-fontify-natively t)
+  ;; (org-src-tab-acts-natively t)
+  
   (use-package ox-html
     :ensure nil
     :custom
@@ -638,9 +642,10 @@ h1 {
 ** Ox-pandoc
 Org-> PDF directly
 #+begin_src elisp
-  (use-package ox-pandoc
-    :after org)
+  ;; (use-package ox-pandoc
+  ;;  :after org)
 #+end_src
+This is already there therefore deactivated!
 C-c C-e p p
 uses your CSS if referenced.
 
@@ -672,6 +677,23 @@ now export HTML buffer -> live preview in browser
 # #+end_src
 
 produce resume.css + resume.html       C-c C-v t
+
+
+#+begin_src elisp
+  (defun my/org-html-to-pdf ()
+  "Export Org to HTML, then convert to PDF via Pandoc."
+  (interactive)
+  (org-html-export-to-html)
+  (let ((html (concat (file-name-sans-extension buffer-file-name) ".html"))
+        (pdf  (concat (file-name-sans-extension buffer-file-name) ".pdf")))
+    (shell-command
+     (format "pandoc %s --pdf-engine=weasyprint -o %s" html pdf))
+    (message "PDF generated: %s" pdf)))
+
+  (global-set-key (kbd "C-c e p") #'my-org-html-to-pdf)
+#+end_src
+
+org -> HTML -> pdf     C-c e p
 
 * Conda environment
 
