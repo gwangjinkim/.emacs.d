@@ -600,6 +600,29 @@ So that C-c opens block inline - not in a new tap
     (org-src-window-setup 'current-window))
 #+end_src
 
++title:
++options: toc:nil num:nil
++html_head: <style>
++begin_src css :exports results
+body {
+  font-family: "Work Sangs", sans-serif;
+  color: #222;
+}
+h1 {
+  color: #2e2dcb;
+}
++end_src
++html_head: </style>
+
+ * John Doe
+
+   +begin_src html :exports results
+   <p><strong>Frontend Developer</string><br/>
+   Amsterdam, Netherlands</p>
+   +end_src
+
+
+
 ** Ox-html
 #+begin_src elisp
   (use-package ox-html
