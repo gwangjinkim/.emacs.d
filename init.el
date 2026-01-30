@@ -23,7 +23,6 @@
 (org-babel-load-file (expand-file-name "myinit.org" user-emacs-directory))
 
 
-
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ;; slime for common-lisp
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -76,7 +75,14 @@
      "/Users/josephus/org/r-metaprogramming.org"
      "/Users/josephus/org/racket-debugging.org"
      "/Users/josephus/org/tax-calculation.org"))
- '(package-selected-packages nil))
+ '(package-selected-packages
+   '(auto-complete counsel dape dockerfile-mode doom-modeline elpy
+                   eshell-vterm ess htmlize impatient-mode lispy
+                   lsp-ui magit ob-typescript org-bullets org-pomodoro
+                   org-ql org-roam ox-pandoc ox-reveal paredit
+                   projectile racket-mode rainbow-delimiters rust-mode
+                   slime sweet-theme tabbar toml-mode try
+                   typescript-mode undo-tree which-key yaml-mode)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

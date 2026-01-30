@@ -405,6 +405,22 @@ If region is active, clean it up by:
 ;; (global-set-key (kbd "C-c v") 'my-cleanup-region-with-blocks)
 (global-set-key (kbd "C-c v") 'my-yank-or-cleanup-region)
 
+(use-package org-pomodoro
+  :after org
+  :bind ("<f12>" . org-pomodoro)
+  :hook (org-pomodoro-finished . org-agenda-list)
+  :init
+  (setq org-pomodoro-length 25
+        org-pomodoro-short-break-length 5
+        org-pomodoro-long-break-length 15
+        org-pomodoro-long-break-frequency 4)
+
+  ;; Uncomment these lines if you have the sound files
+  ;; (setq org-pomodoro-start-sound (expand-file-name "start.wav" user-emacs-directory)
+  ;;       org-pomodoro-finished-sound (expand-file-name "done.wav" user-emacs-directory)
+  ;;       org-pomodoro-break-sound (expand-file-name "break.wav" user-emacs-directory))
+  )
+
 ;; add .bin/local to PATH variable the current
 ;; this is because I start emacs with
 ;; env HOME=$HOME/somefolder
@@ -829,8 +845,10 @@ If region is active, clean it up by:
   (setq ess-ask-for-ess-directory nil)
   :config
   (setq ess-toggle-underscore nil)
-  (setq ess-default-style 'DEFAULT)
+  (setq ess-default-style 'C) ;; simpler block indenting instead of 'DEFAULT
   (setq ess-indent-with-fancy-comments nil)
+  (setq ess-indent-level 2) ;; or 4
+  (setq ess-arg-align-mode nil) ;; align args to opening paren off
   (setq ess-fancy-comments nil)
   (setq ess-history-file nil)
   (setq ess-use-flymake nil)
@@ -1070,3 +1088,6 @@ If region is active, clean it up by:
 
 (use-package toml-mode
   :ensure t)
+
+(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
+(require 'leann)

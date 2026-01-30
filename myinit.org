@@ -370,26 +370,28 @@ They recommend `:config (avy-setup-default)
 
 ** Org-babel-execute
 #+BEGIN_SRC emacs-lisp
-        ;; (require 'org)
-        ;; (require 'ob)
+  ;; (require 'org)
+  ;; (require 'ob)
 
-        ;; (require 'ob-clojure)
-        ;; (setq org-babel-clojure-backend 'cider)
+  ;; (require 'ob-clojure)
+  ;; (setq org-babel-clojure-backend 'cider)
 
-        (org-babel-do-load-languages
-         'org-babel-load-languages
-         '((python . t)
-           (R . t)
-           (julia . t)
-           (lisp . t)
-           (clojure . t)
-           (js . t)
-           (typescript . t)
-           
-           ))
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((python . t)
+     (R . t)
+     (julia . t)
+     (lisp . t)
+     (clojure . t)
+     (js . t)
+     (typescript . t)
+     (css . t)
+     (html . t)
+     (shell . t)
+     ))
 
-        ;; stop emacs asking for confirmation
-        (setq org-confirm-babel-evaluate nil)
+  ;; stop emacs asking for confirmation
+  (setq org-confirm-babel-evaluate nil)
 
 #+END_SRC
 
@@ -587,6 +589,66 @@ brew install the_silver_searcher
 
 Use `F12` in any TODO task to start.
 
+** Org SRC for better editing inside blocks
+
+So that C-c opens block inline - not in a new tap
+
+#+begin_src elisp
+  (use-package org-src
+    :ensure nil
+    :custom
+    (org-src-window-setup 'current-window))
+#+end_src
+
+** Ox-html
+#+begin_src elisp
+  (use-package ox-html
+    :ensure nil
+    :custom
+    (org-html-doctype "html5")
+    (org-html-html5-fancy t)
+    (org-html-validation-link nil))
+#+end_src
+
+;; export to html by C-c C-e h h
+
+** Ox-pandoc
+Org-> PDF directly
+#+begin_src elisp
+  (use-package ox-pandoc
+    :after org)
+#+end_src
+C-c C-e p p
+uses your CSS if referenced.
+
+** Live preview workflow (very nice)
+#+begin_src elisp
+  (use-package impatient-mode)
+  (use-package simple-httpd)
+#+end_src
+
+M-x httpd-start
+M-x impatient-mode
+
+now export HTML buffer -> live preview in browser
+
+** Autotangle CSS/HTML files
+#+begin_src elisp
+  (setq org-confirm-babel-evaluate)
+#+end_src
+
+
+# #+property: header-args :tangle yes
+
+# #+begin_src css :tangle resume.css
+  h1 { color: #2e2ecb; }
+# #+end_src
+
+# #+begin_src html :tangle resume.html
+  <h1>John Doe</h1>
+# #+end_src
+
+produce resume.css + resume.html       C-c C-v t
 
 * Conda environment
 
@@ -1196,71 +1258,72 @@ Undo tree you can bring up with C-x u
 #+RESULTS:
 : paredit-backward-barf-sexp
 
-* R/
-Julia ESS
+* R/Julia ESS
 
 For conda use still `M-x pyvenv-activate RET path to conda env`
 
 #+BEGIN_SRC emacs-lisp
-    ;; (use-package ess
-    ;;   :ensure t
-    ;;   :init 
-    ;;   (require 'ess-site)
-    ;;   (setq ess-use-flymake nil)
-    ;;   (setq ess-eval-visibly-p nil)
-    ;;   (setq ess-use-eldoc nil))
+  ;; (use-package ess
+  ;;   :ensure t
+  ;;   :init 
+  ;;   (require 'ess-site)
+  ;;   (setq ess-use-flymake nil)
+  ;;   (setq ess-eval-visibly-p nil)
+  ;;   (setq ess-use-eldoc nil))
 
-    (use-package ess
-      :ensure t
-      :mode (("\\.R\\'" . R-mode)
-             ("\\.Rmd\\'" . R-markdown-mode)
-             ("\\.Rnw\\'" . R-noweb-mode)
-             ("\\.jl\\'" . ess-julia-mode))
-      :init
-      (require 'ess-site)
-      (setq ess-eval-visibly 'nowait)
-      (setq ess-ask-for-ess-directory nil)
-      :config
-      (setq ess-toggle-underscore nil)
-      (setq ess-default-style 'DEFAULT)
-      (setq ess-indent-with-fancy-comments nil)
-      (setq ess-fancy-comments nil)
-      (setq ess-history-file nil)
-      (setq ess-use-flymake nil)
-      (setq ess-R-font-lock-keywords
-            '((ess-R-fl-keyword:fun-calls . t)
-              (ess-R-fl-keyword:keywords . t)
-              (ess-R-fl-keyword:assign-ops . t)
-              (ess-R-fl-keyword:constants . t)
-              (ess-R-fl-keyword:messages . t)
-              (ess-R-fl-keyword:modifiers . t)
-              (ess-R-fl-keyword:fun-defs . t)
-              (ess-R-fl-keyword:numbers . t)
-              (ess-R-fl-keyword:operators . t)
-              (ess-R-fl-keyword:delimiters . t)
-              (ess-R-fl-keyword:= . t)
-              (ess-R-fl-keyword:+ . t)
-              (ess-R-fl-keyword:- . t)
-              (ess-R-fl-keyword:* . t)
-              (ess-R-fl-keyword:/ . t)
-              (ess-R-fl-keyword:^ . t)
-              (ess-R-fl-keyword:< . t)
-              (ess-R-fl-keyword:> . t)
-              (ess-R-fl-keyword:! . t)
-              (ess-R-fl-keyword:% . t)
-              (ess-R-fl-keyword:%op% . t)
-              (ess-R-fl-keyword:%!in% . t)
-              (ess-R-fl-keyword:%notin% . t)))
-       ;; to be able to use pyvenv-workon, one has to set $WORKON_HOME var
-      (set-conda-envs-dir-as-workon) ;; conda env need python!
-      :bind
-      (:map ess-mode-map
-            ("C-c C-j" . ess-eval-line-and-step)
-            ("C-c C-l" . ess-eval-region-or-function-or-paragraph-and-step)
-            ("C-c C-r" . ess-eval-region)
-            ("C-c C-p" . ess-eval-buffer)
-            ("C-c C-o" . ess-eval-chunk))
-      )
+  (use-package ess
+    :ensure t
+    :mode (("\\.R\\'" . R-mode)
+           ("\\.Rmd\\'" . R-markdown-mode)
+           ("\\.Rnw\\'" . R-noweb-mode)
+           ("\\.jl\\'" . ess-julia-mode))
+    :init
+    (require 'ess-site)
+    (setq ess-eval-visibly 'nowait)
+    (setq ess-ask-for-ess-directory nil)
+    :config
+    (setq ess-toggle-underscore nil)
+    (setq ess-default-style 'C) ;; simpler block indenting instead of 'DEFAULT
+    (setq ess-indent-with-fancy-comments nil)
+    (setq ess-indent-level 2) ;; or 4
+    (setq ess-arg-align-mode nil) ;; align args to opening paren off
+    (setq ess-fancy-comments nil)
+    (setq ess-history-file nil)
+    (setq ess-use-flymake nil)
+    (setq ess-R-font-lock-keywords
+          '((ess-R-fl-keyword:fun-calls . t)
+            (ess-R-fl-keyword:keywords . t)
+            (ess-R-fl-keyword:assign-ops . t)
+            (ess-R-fl-keyword:constants . t)
+            (ess-R-fl-keyword:messages . t)
+            (ess-R-fl-keyword:modifiers . t)
+            (ess-R-fl-keyword:fun-defs . t)
+            (ess-R-fl-keyword:numbers . t)
+            (ess-R-fl-keyword:operators . t)
+            (ess-R-fl-keyword:delimiters . t)
+            (ess-R-fl-keyword:= . t)
+            (ess-R-fl-keyword:+ . t)
+            (ess-R-fl-keyword:- . t)
+            (ess-R-fl-keyword:* . t)
+            (ess-R-fl-keyword:/ . t)
+            (ess-R-fl-keyword:^ . t)
+            (ess-R-fl-keyword:< . t)
+            (ess-R-fl-keyword:> . t)
+            (ess-R-fl-keyword:! . t)
+            (ess-R-fl-keyword:% . t)
+            (ess-R-fl-keyword:%op% . t)
+            (ess-R-fl-keyword:%!in% . t)
+            (ess-R-fl-keyword:%notin% . t)))
+     ;; to be able to use pyvenv-workon, one has to set $WORKON_HOME var
+    (set-conda-envs-dir-as-workon) ;; conda env need python!
+    :bind
+    (:map ess-mode-map
+          ("C-c C-j" . ess-eval-line-and-step)
+          ("C-c C-l" . ess-eval-region-or-function-or-paragraph-and-step)
+          ("C-c C-r" . ess-eval-region)
+          ("C-c C-p" . ess-eval-buffer)
+          ("C-c C-o" . ess-eval-chunk))
+    )
 
 #+END_SRC
 
@@ -1581,3 +1644,11 @@ above the use-package command and did again `C-c C-c`
   (use-package toml-mode
     :ensure t)
 #+end_src
+
+* Custom modules
+#+begin_src emacs-lisp
+(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
+(require 'leann)
+#+end_src
+ 
+
