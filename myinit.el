@@ -257,7 +257,9 @@
    (clojure . t)
    (js . t)
    (typescript . t)
-   
+   (css . t)
+   (html . t)
+   (shell . t)
    ))
 
 ;; stop emacs asking for confirmation
@@ -420,6 +422,42 @@ If region is active, clean it up by:
   ;;       org-pomodoro-finished-sound (expand-file-name "done.wav" user-emacs-directory)
   ;;       org-pomodoro-break-sound (expand-file-name "break.wav" user-emacs-directory))
   )
+
+(use-package org-src
+  :ensure nil
+  :custom
+  (org-src-window-setup 'current-window))
+
+;; (org-confirm-babel-evaluate nil)
+;; (org-src-fontify-natively t)
+;; (org-src-tab-acts-natively t)
+
+(use-package ox-html
+  :ensure nil
+  :custom
+  (org-html-doctype "html5")
+  (org-html-html5-fancy t)
+  (org-html-validation-link nil))
+
+;; (use-package ox-pandoc
+;;  :after org)
+
+(use-package impatient-mode)
+(use-package simple-httpd)
+
+(setq org-confirm-babel-evaluate)
+
+(defun my/org-html-to-pdf ()
+"Export Org to HTML, then convert to PDF via Pandoc."
+(interactive)
+(org-html-export-to-html)
+(let ((html (concat (file-name-sans-extension buffer-file-name) ".html"))
+      (pdf  (concat (file-name-sans-extension buffer-file-name) ".pdf")))
+  (shell-command
+   (format "pandoc %s --pdf-engine=weasyprint -o %s" html pdf))
+  (message "PDF generated: %s" pdf)))
+
+(global-set-key (kbd "C-c e p") #'my-org-html-to-pdf)
 
 ;; add .bin/local to PATH variable the current
 ;; this is because I start emacs with
