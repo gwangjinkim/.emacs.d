@@ -229,9 +229,19 @@
   ;; Set the command for TypeScript execution
   (setq org-babel-command:typescript "npx ts-node"))
 
+;; === Auto-download and load ob-html (since it's not on MELPA) ===
 (use-package ob-html
-  :ensure t
-  :after org)
+  :load-path "~/.emacs.d/lisp"
+  :after org
+  :config
+  (unless (file-exists-p "~/.emacs.d/lisp/ob-html.el")
+    (message "Downloading ob-html.el from GitHub...")
+    (make-directory "~/.emacs.d/lisp" t)
+    (url-copy-file
+     "https://raw.githubusercontent.com/misohena/ob-html/master/ob-html.el"
+     "~/.emacs.d/lisp/ob-html.el"
+     t)  ;; overwrite if exists
+    (message "ob-html.el downloaded successfully!")))
 
 ;; (add-to-list 'load-path (expand-file-name "~/src/lisp") t)
 ;; (add-to-list 'load-path (expand-file-name "~/path/to/orgdir/contrib/lisp") t)
