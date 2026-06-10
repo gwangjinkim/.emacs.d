@@ -229,9 +229,6 @@
   ;; Set the command for TypeScript execution
   (setq org-babel-command:typescript "npx ts-node"))
 
-(use-package yaml-mode
-  :ensure t)
-
 ;; (add-to-list 'load-path (expand-file-name "~/src/lisp") t)
 ;; (add-to-list 'load-path (expand-file-name "~/path/to/orgdir/contrib/lisp") t)
 
@@ -931,18 +928,18 @@ If region is active, clean it up by:
   :bind
   ("C-c a" . org-agenda)
   ("C-c c" . org-capture)
-  ("C-c o" . org-open-at-point)
+  ("C-c o" . org-open-at-point)  ;; small o
   ("C-c r" . org-refile)
   ("C-c A" . org-archive-subtree)
   ("C-c t" . org-todo)
   ("C-c i" . org-clock-in)
-  ("C-c o" . org-clock-out)
+  ("C-c O" . org-clock-out)      ;; capital O!
   ("C-c d" . org-deadline)
   ("C-c s" . org-schedule)
   ("C-c l" . org-store-link)
   :config
   ;; Basic Org-mode settings
-  (setq org-agenda-files '("~/org/tasks.org" "~/org/projects.org"))
+  ;; (setq org-agenda-files '("~/org/tasks.org" "~/org/projects.org"))
 
   (setq org-agenda-files (directory-files-recursively "~/org/" "\\.org$")) ;; all files in org folder in org agenda
   (setq org-log-done 'time)  ;; Log when tasks are marked as DONE
@@ -994,10 +991,10 @@ If region is active, clean it up by:
 (use-package org-roam
   :ensure t
   :custom
-  (org-roam-directory "~/org/roam/")  ;; Directory for Org-roam notes
+  (org-roam-directory (file-truename (expand-file-name "~/org/roam/")))  ;; Directory for Org-roam notes
   :config
   ;; Keybindings for Org-roam
-  (setq org-roam-v2-ack t)
+  ;; (setq org-roam-v2-ack t) ;; not more needed in modern setups
   (org-roam-db-autosync-mode)
 
   ;; Keybindings for Org-roam
@@ -1007,14 +1004,16 @@ If region is active, clean it up by:
   (global-set-key (kbd "C-c n t") 'org-roam-dailies-capture-today)
 
   ;; Org-oram dailies configuration
-  (setq org-roam-dailies-directory "~/org/roam/daily/")
+  ;; (setq org-roam-dailies-directory "~/org/roam/daily/") ;; should be relative
+  (setq org-roam-dailies-directory "daily/")
   (setq org-roam-dailies-capture-templates
         '(("d" "default" entry
            "* %<%H:%M> - %?"
            :target (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
 
   ;; Add tags to Org-roam notes
-  (setq org-roam-tag-sources '(prop all-directories))
+  (setq org-roam-tag-sources '(prop all-directories))  ;; this is suspicious - only prop? or (prop last-directory)
+  ;; If you want directory-based tags, we can add them once everything loads cleanly.
   )
 
 ;; Enable Pomodoro Technique in Org-mode with org-pomodoro
@@ -1039,13 +1038,14 @@ If region is active, clean it up by:
   )
 
 ;; Org-capture templates for GTD and PARA
-(setq org-capture-templates
-      '(("t" "Todo" entry (file "~/org/inbox.org")
-         "* TODO %?\n  %u\n")
-        ("p" "Project" entry (file "~/org/projects.org")
-         "* PROJECT %?\n  %u\n")
-        ("n" "Note" entry (file "~/org/notes.org")
-         "* %u %?\n")))
+(with-eval-after-load 'org
+  (setq org-capture-templates
+	'(("t" "Todo" entry (file "~/org/inbox.org")
+           "* TODO %?\n  %u\n")
+          ("p" "Project" entry (file "~/org/projects.org")
+           "* PROJECT %?\n  %u\n")
+          ("n" "Note" entry (file "~/org/notes.org")
+           "* %u %?\n"))))
 
 (when (eq system-type 'darwin)
   (setq mac-option-key-is-meta t)

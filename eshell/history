@@ -50,3 +50,16 @@ git push -f
 git add --all
 git commit -m "fix dape errors"
 git push
+cd ~/projects/julia
+mkdir WhaleTracker
+cd WhaleTracker
+conda activate julia
+conda init
+conda activate julia
+conda init
+conda init
+conda activate base
+conda env list
+conda activate julia
+conda init
+which julia

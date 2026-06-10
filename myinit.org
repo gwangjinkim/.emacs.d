@@ -347,12 +347,6 @@ They recommend `:config (avy-setup-default)
     (setq org-babel-command:typescript "npx ts-node"))
 #+end_src
 
-* YAML
-#+begin_src emacs-lisp
-  (use-package yaml-mode
-    :ensure t)
-  
-#+end_src
 * Org stuff
 #+BEGIN_SRC emacs-lisp
 ;; (add-to-list 'load-path (expand-file-name "~/src/lisp") t)
