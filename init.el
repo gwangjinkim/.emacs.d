@@ -19,6 +19,31 @@
 (setq use-package-always-ensure t)
 
 
+;; ========================================
+;; Auto-download ob-html (not on MELPA)
+;; ========================================
+(let ((ob-html-path (expand-file-name "lisp/ob-html.el" user-emacs-directory)))
+  (unless (file-exists-p ob-html-path)
+    (message "📥 Downloading ob-html.el from GitHub...")
+    (make-directory (expand-file-name "lisp" user-emacs-directory) t)
+    (condition-case err
+        (progn
+          (url-copy-file
+           "https://raw.githubusercontent.com/misohena/ob-html/master/ob-html.el"
+           ob-html-path
+           t)
+          (message "✅ ob-html.el downloaded successfully!"))
+      (error
+       (message "❌ Failed to download ob-html: %s" err)))))
+
+;; Add lisp directory to load-path
+(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
+
+
+
+
+
+
 ;; load myinit.org
 (org-babel-load-file (expand-file-name "myinit.org" user-emacs-directory))
 

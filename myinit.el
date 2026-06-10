@@ -229,7 +229,8 @@
   ;; Set the command for TypeScript execution
   (setq org-babel-command:typescript "npx ts-node"))
 
-;; === Auto-download and load ob-html (since it's not on MELPA) ===
+;
+; === Auto-download and load ob-html (since it's not on MELPA) ===
 (use-package ob-html
   :load-path "~/.emacs.d/lisp"
   :after org
