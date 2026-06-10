@@ -266,7 +266,6 @@ They recommend `:config (avy-setup-default)
 #+END_SRC
 
 
-
 * JavaScript and TypeScript
 #+begin_src emacs-lisp
   ;; js itself is natively recognized
@@ -347,6 +346,14 @@ They recommend `:config (avy-setup-default)
     (setq org-babel-command:typescript "npx ts-node"))
 #+end_src
 
+* HTML
+
+#+begin_src elisp
+  (use-package ob-html
+    :ensure t
+    :after org)
+#+end_src
+
 * Org stuff
 #+BEGIN_SRC emacs-lisp
 ;; (add-to-list 'load-path (expand-file-name "~/src/lisp") t)
@@ -380,7 +387,7 @@ They recommend `:config (avy-setup-default)
      (js . t)
      (typescript . t)
      (css . t)
-     (html . t)
+     ;; (html . t)
      (shell . t)
      ))
 
@@ -656,7 +663,7 @@ now export HTML buffer -> live preview in browser
 
 ** Autotangle CSS/HTML files
 #+begin_src elisp
-  (setq org-confirm-babel-evaluate)
+  (setq org-confirm-babel-evaluate nil)
 #+end_src
 
 
@@ -1458,6 +1465,7 @@ this will launch my/dape-julia on key stroke!
 
 org-mode + Julia debugging
 or automating launch via async-shell-command in emacs!
+
 * Org-roam
 
 #+begin_src elisp

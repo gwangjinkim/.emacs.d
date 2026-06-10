@@ -229,6 +229,10 @@
   ;; Set the command for TypeScript execution
   (setq org-babel-command:typescript "npx ts-node"))
 
+(use-package ob-html
+  :ensure t
+  :after org)
+
 ;; (add-to-list 'load-path (expand-file-name "~/src/lisp") t)
 ;; (add-to-list 'load-path (expand-file-name "~/path/to/orgdir/contrib/lisp") t)
 
@@ -255,7 +259,7 @@
    (js . t)
    (typescript . t)
    (css . t)
-   (html . t)
+   ;; (html . t)
    (shell . t)
    ))
 
