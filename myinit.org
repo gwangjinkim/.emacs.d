@@ -349,9 +349,7 @@ They recommend `:config (avy-setup-default)
 * HTML
 
 #+begin_src elisp
-  ;
-  ; === Auto-download and load ob-html (since it's not on MELPA) ===
-  (use-package ob-html
+   (use-package ob-html
     :load-path "~/.emacs.d/lisp"
     :after org
     :config
