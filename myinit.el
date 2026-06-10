@@ -446,7 +446,7 @@ If region is active, clean it up by:
 (use-package impatient-mode)
 (use-package simple-httpd)
 
-(setq org-confirm-babel-evaluate)
+(setq org-confirm-babel-evaluate nil)
 
 (defun my/org-html-to-pdf ()
 "Export Org to HTML, then convert to PDF via Pandoc."
