@@ -396,7 +396,7 @@ They recommend `:config (avy-setup-default)
      (js . t)
      (typescript . t)
      (css . t)
-     ;; (html . t)
+     (html . t)
      (shell . t)
      ))
 
