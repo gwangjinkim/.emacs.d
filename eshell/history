@@ -63,3 +63,16 @@ conda env list
 conda activate julia
 conda init
 which julia
+nano conver_all.sh
+exit
+zsh convert_all.sh
+zsh convert_all.sh
+zsh convert_all.sh
+tree
+zsh convert_all.sh
+tree
+zsh convert_all.sh
+tree
+mv resume_reusable_business_data_product.md resume_intervista_data_scientist_mobility_gwangjin_kim.pdf
+zsh rename_resumes.sh 
+tree

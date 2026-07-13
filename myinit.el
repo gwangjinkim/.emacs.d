@@ -268,7 +268,7 @@
    (js . t)
    (typescript . t)
    (css . t)
-   ;; (html . t)
+   (html . t)
    (shell . t)
    ))
 
@@ -557,6 +557,36 @@ If region is active, clean it up by:
         python-shell-interpreter-args "-i --simple-prompt")
   ;; to be able to use pyvenv-workon, one has to set $WORKON_HOME var
   (set-conda-envs-dir-as-workon))
+
+(use-package pyvenv
+  :ensure t)
+
+(defun my-python-project-venv ()
+  "Return the current project's .venv directory."
+  (when-let* ((project (project-current nil))
+              (root (project-root project))
+              (venv (expand-file-name ".venv" root)))
+    (when (file-directory-p venv)
+      venv)))
+
+(defun my-python-use-project-venv ()
+  "Use the current uv project's Python environment."
+  (when-let ((venv (my-python-project-venv)))
+    (pyvenv-activate venv)
+
+    (setq-local
+     python-shell-interpreter
+     (expand-file-name "bin/python" venv))
+    
+    (setq-local
+     elpy-rpc-python-command
+     (expand-file-name "bin/python" venv))))
+
+(add-hook 'python-mode-hook
+          #'my-python-use-project-venv)
+
+(add-hook 'python-ts-mode-hook
+          #'my-python-use-project-venv)
 
 (use-package dape
   :ensure t
