@@ -819,7 +819,13 @@ I will instead put my Python settings with elpy.
   ;; to then set elpy
   (use-package elpy
     :ensure t
+    ;; Silence non-fatal byte-compiler warnings globally
+    (setq warning-minimum-level :error)
+    ;; Ensure xref is loaded before elpy tries to macro-expand xref functions
+    (require 'xref)
+
     :config
+    ;; Enable elpy AFTER all packages are loaded
     (elpy-enable)
     ;; (setq elpy-rpc-virtualenv-path 'current) ;; otherwise error
     ;; do: sudo apt install virtualenv
@@ -831,7 +837,10 @@ I will instead put my Python settings with elpy.
     (setq python-shell-interpreter "ipython"
           python-shell-interpreter-args "-i --simple-prompt")
     ;; to be able to use pyvenv-workon, one has to set $WORKON_HOME var
-    (set-conda-envs-dir-as-workon))
+    (set-conda-envs-dir-as-workon)
+
+    ;; Disable backend warnings if you don't use find-file-in-project
+    (setq elpy-project-ignored-element-commands '()))
 #+end_src
 
 #+RESULTS:
